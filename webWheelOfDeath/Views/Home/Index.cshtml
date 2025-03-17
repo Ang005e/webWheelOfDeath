@@ -1,0 +1,299 @@
+﻿
+@{
+    ViewData["Title"] = "Home Page";
+
+    int duration = 15000;
+
+    int minBalloons = 12;
+    int maxBalloons = 16;
+    int maxThrows = 20;
+}
+
+@* <div class="text-center"> *@
+@*     <h1 class="display-4">Welcome</h1> *@
+@*     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p> *@
+@* </div> *@
+
+
+<!doctype html>
+<!--
+    Date: 2020-23
+    Author: Ramin Majidi
+    Purpose: This and all other code elements of this project (unless otherwise commented) are the work of the
+    author and may be used for TAFE Assessment purposes only.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <title>Wheel of Death</title>
+    <link href="pics/Wheel_of_Death.png" rel="icon" />
+    <link rel="stylesheet" href="/css/lib/modal.css" />
+    <link rel="stylesheet" href="/css/animations.css" />
+    <link rel="stylesheet" href="/css/statusPanel.css" />
+    <link rel="stylesheet" href="/css/theme.css" />
+</head>
+
+<body class="shadow-text">
+    <header>
+        <img class="logo"
+             src="pics/Wheel_of_Death_Logo.png"
+             alt="Wheel of Death"
+             height="159"
+             width="667" />
+    </header>
+
+    <main>
+        <div>
+            <div id="knife-gallery"></div>
+
+            <img src="pics/Left_Thrower.png"
+                 class="knife_thrower"
+                 alt="Knife thrower on left"
+                 height="2566"
+                 width="1887" />
+
+            <div class="wheel-outer-frame">
+                <figure class="wheel-inner-frame">
+                    <img id="wheel"
+                         src="pics/Wheel.jpg"
+                         alt="Wheel of Death"
+                         height="2820"
+                         width="2820" />
+
+                    <div id="victim">
+                        <img class="big-knife hidden" src="pics/Knife-Angled.png" alt="killer knife" />
+                    </div>
+                    <div id="below-the-belt">&nbsp;</div>
+                </figure>
+
+            </div>
+
+            <img src="pics/Right_Thrower.png"
+                 class="knife_thrower"
+                 alt="Knife thrower on right"
+                 height="2669"
+                 width="1648" />
+        </div>
+
+        <button id="btnStartStop" name="btnStartStop" type="button" class="ornate rounded">Start</button>
+
+        <div class="time-panel" id="time-panel-1">
+
+            <span class="countdown-max-seconds"></span>
+            <meter class="countdown-gauge" min="0" value="0" max="30000"></meter>
+            <span>0</span>
+            <span class="countdown-remaining"></span>
+        </div>
+
+        <h2 id="scorePanel">&nbsp;</h2>
+
+        <div id="statusPanel" class="hidden stopped">&nbsp;</div>
+    </main>
+
+    <footer>
+        Copyright &copy; 2020-24 SRT - Author: Ramin Majidi
+    </footer>
+
+    <!-- The following div elements act as a modal canvas for pop-up messages -->
+    <div id="modal-message-id" class="modal-canvas hidden">
+        <div class="main-panel modal-error">
+            <span class="close-popup">&#10006;</span>
+            <p class="message-display">&nbsp;</p>
+        </div>
+    </div>
+
+
+    <div id="modal-login-id" class="modal-canvas hidden">
+        <div class="main-panel modal-player">
+            <span class="close-popup">&#10006;</span>
+            <form>
+                <fieldset>
+                    <legend>Do You Have What It Takes?</legend>
+
+                    <fieldset class="borderless">
+                        <label for="txtPlayerFirstName">First Name:</label>
+                        <input type="text"
+                               name="txtPlayerFirstName"
+                               placeholder="[Enter First Name]"
+                               required="required" />
+                    </fieldset>
+
+
+                    <fieldset class="borderless">
+                        <label for="txtPlayerLastName">Last Name:</label>
+                        <input type="text"
+                               name="txtPlayerLastName"
+                               placeholder="[Enter Last Name]"
+                               required="required" />
+                    </fieldset>
+
+                    <button type="button" name="btnCreateAccount" class="ornate">Create Account</button>
+                    <button type="submit" name="btnBeginGame" class="ornate">Begin</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+
+    <div id="modal-game-selection-id" class="modal-canvas hidden">
+        <div class="main-panel modal-player">
+            <span class="close-popup">&#10006;</span>
+                <form>
+                    <fieldset>
+                        <fieldset>
+                            <label for="cboGameSelect">Select Game Mode</label>
+                            <select name="cboGameSelect" id="cboGameSelect">
+                                @{
+                                    for (int i = 0; i < 5; i++)
+                                    {
+                                        <option value="@i">Test</option>
+    };
+                                }
+                            </select>
+                        </fieldset>
+                    </fieldset>
+                <button type="button" name="btnConfirm" id="btnConfirm" class="ornate">Confirm</button>
+            </form>
+        </div>
+    </div>
+
+
+    <div id="modal-register-id" class="modal-canvas hidden">
+        <div class="main-panel modal-player">
+            <div class="main-panel modal-player">
+                <span class="close-popup">&#10006;</span>
+                <form>
+                    <fieldset>
+                        <legend>Do You Have What It Takes?</legend>
+
+                        <fieldset class="borderless">
+                            <label for="txtPlayerFirstName">First Name:</label>
+                            <input type="text"
+                                   name="txtPlayerFirstName"
+                                   placeholder="[Enter First Name]"
+                                   required="required" />
+                        </fieldset>
+
+
+                        <fieldset class="borderless">
+                            <label for="txtPlayerLastName">Last Name:</label>
+                            <input type="text"
+                                   name="txtPlayerLastName"
+                                   placeholder="[Enter Last Name]"
+                                   required="required" />
+                        </fieldset>
+
+                        <fieldset class="borderless">
+                            <label for="txtPlayerUsername">Username:</label>
+                            <input type="text"
+                                   name="txtPlayerUsername"
+                                   placeholder="[Enter Last Name]"
+                                   required="required" />
+                        </fieldset>
+
+                        <fieldset class="borderless">
+                            <label for="txtPlayerPassword">Password:</label>
+                            <input type="text"
+                                   name="txtPlayerPassword"
+                                   placeholder="[Enter Last Name]"
+                                   required="required" />
+                        </fieldset>
+
+                        <!-- ############## ToDo: add a confirm button ################## -->
+                        <button type="submit" name="btnConfirm" class="ornate">Confirm</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="modal-winner-id" class="modal-canvas hidden">
+        <div class="main-panel modal-winner">
+            <span class="close-popup">&#10006;</span>
+            <form>
+                <fieldset>
+                    <legend>Congratulations - You Won!</legend>
+
+                    <label for="numElapsedTime">Your Time (sec):</label>
+                    <output name="numElapsedTime" id="numElapsedTime"></output>
+
+                    <label for="numHits">Hits:</label>
+                    <output name="numHits" id="numHits"></output>
+
+                    <label for="numMisses">Misses:</label>
+                    <output name="numMisses" id="numMisses"></output>
+
+                    <output name="txtMiscMessage"></output>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        'use strict';
+
+        import {CWheelGame} from '/js/CWheelGame.js';
+        import {CMessageModal} from '/js/CAppModals.js';
+
+
+        // user detail entry, then start the game
+        // So, before that, I'll need to have the registration option
+        // and may need to extract the login from the wheelGame file, its not appropriate tyo have it in there
+
+        let _game;
+
+        try {
+            _game = new CWheelGame(@duration, @minBalloons, @maxBalloons, @maxThrows);
+
+            document.addEventListener('game-over', event => {
+                console.log(`Status: ${event.detail.gameStatus} Elapsed: ${event.detail.elapsed}`);
+            });
+
+        } catch (e) {
+            new CMessageModal('#modal-message-id').display(e.message, false, 7000);
+        }
+
+        // ToDo:
+        // login/make account
+        // choose game mode
+        // record details
+
+        // V1.1:
+        // create account - modal popup
+        
+        // V1.2
+        // login to account - modal popup (original game start popup)
+
+        // V1.3
+        // choose game mode - modal, again! after login.
+
+        //V1.4
+        // record game details
+
+        //V1.5 
+        // finishing touches
+
+        //V2.0: completed product
+
+    </script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

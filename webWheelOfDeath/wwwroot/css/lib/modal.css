@@ -1,0 +1,63 @@
+.modal-canvas{
+    height:100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,40%);
+    z-index: 100;
+    /*cursor: zoom-out;*/
+}
+
+.modal-canvas .close-popup {
+    position: absolute;
+    top: 2px;
+    right: 15px;
+    font-weight: bold;
+    font-size: x-large;
+    text-shadow: black 2px 2px 3px;
+    transition: color 150ms linear, text-shadow 150ms linear;
+    cursor: pointer;
+}
+
+.modal-canvas .close-popup:hover {
+    color: darkorange;
+}
+
+.modal-canvas .close-popup:active {
+    color: lightgrey;
+    text-shadow: none;
+}
+
+.modal-canvas.hidden {
+    visibility: hidden;
+}
+
+.main-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-block;
+    padding: 20px 10px 10px;
+    border-radius: 10px;
+    font-size: 24pt;
+    font-weight: bold;
+    text-shadow: black 2px 2px 5px;
+    box-shadow: black 4px 4px 10px;
+    font-family: "Franklin Gothic Book", sans-serif;
+}
+
+.close-popup {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+.centered-xy{
+    position: absolute;
+    top:50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+

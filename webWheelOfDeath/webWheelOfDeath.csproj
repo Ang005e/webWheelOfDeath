@@ -1,0 +1,73 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\css\animations.css" />
+    <None Include="wwwroot\css\lib\modal.css" />
+    <None Include="wwwroot\css\statusPanel.css" />
+    <None Include="wwwroot\css\theme.css" />
+    <None Include="wwwroot\js\CAppModals.js" />
+    <None Include="wwwroot\js\CBalloon.js" />
+    <None Include="wwwroot\js\CGameStatus.js" />
+    <None Include="wwwroot\js\CWheelGame.js" />
+    <None Include="wwwroot\js\lib\CModal.js" />
+    <None Include="wwwroot\js\lib\CTimer.js" />
+    <None Include="wwwroot\js\lib\Utilities.js" />
+    <None Include="wwwroot\pics\balloon1.png" />
+    <None Include="wwwroot\pics\balloon2.png" />
+    <None Include="wwwroot\pics\balloon3.png" />
+    <None Include="wwwroot\pics\balloon4.png" />
+    <None Include="wwwroot\pics\balloon5.png" />
+    <None Include="wwwroot\pics\balloon6.png" />
+    <None Include="wwwroot\pics\balloon7.png" />
+    <None Include="wwwroot\pics\gold-balloon-left.psd" />
+    <None Include="wwwroot\pics\green-balloon-right.psd" />
+    <None Include="wwwroot\pics\Knife-Angled.png" />
+    <None Include="wwwroot\pics\Knife-Bottom.png" />
+    <None Include="wwwroot\pics\Knife-Left.png" />
+    <None Include="wwwroot\pics\Knife-Right.png" />
+    <None Include="wwwroot\pics\Knife.jpg" />
+    <None Include="wwwroot\pics\Knife.png" />
+    <None Include="wwwroot\pics\Knife.psd" />
+    <None Include="wwwroot\pics\Knife_Thrower_1_Left.jpg" />
+    <None Include="wwwroot\pics\Knife_Thrower_1_Left.png" />
+    <None Include="wwwroot\pics\Knife_Thrower_1_Right.jpg" />
+    <None Include="wwwroot\pics\Knife_Thrower_1_Right.png" />
+    <None Include="wwwroot\pics\Knife_Thrower_2_Left.jpg" />
+    <None Include="wwwroot\pics\Knife_Thrower_2_Left.png" />
+    <None Include="wwwroot\pics\Knife_Thrower_2_Right.jpg" />
+    <None Include="wwwroot\pics\Knife_Thrower_2_Right.png" />
+    <None Include="wwwroot\pics\Left_Thrower.png" />
+    <None Include="wwwroot\pics\Left_Thrower.psd" />
+    <None Include="wwwroot\pics\pink-balloon-left.psd" />
+    <None Include="wwwroot\pics\red-balloon-left.psd" />
+    <None Include="wwwroot\pics\red-balloon.png" />
+    <None Include="wwwroot\pics\red_balloon.jpg" />
+    <None Include="wwwroot\pics\Right_Thrower.png" />
+    <None Include="wwwroot\pics\Right_Thrower.psd" />
+    <None Include="wwwroot\pics\Theater_Stage_Background.jpg" />
+    <None Include="wwwroot\pics\Theater_Stage_Background.png" />
+    <None Include="wwwroot\pics\Wheel.jpg" />
+    <None Include="wwwroot\pics\Wheel.psd" />
+    <None Include="wwwroot\pics\Wheel_of_Death.jpg" />
+    <None Include="wwwroot\pics\Wheel_of_Death.png" />
+    <None Include="wwwroot\pics\Wheel_of_Death_Logo.png" />
+    <None Include="wwwroot\pics\yellow-balloon-left.psd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="LibEntity">
+      <HintPath>..\..\..\..\Shared\LibEntity.NetCore\LibEntity\bin\Debug\net8.0\LibEntity.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

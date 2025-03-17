@@ -1,0 +1,63 @@
+
+/* Wheel Animations - See CWheelGame.js #startAnimation() */
+.wheelSpin1 {
+    animation: spin 3s ease-in-out infinite alternate;
+}
+
+.wheelSpin2 {
+    animation: spin 3s ease-in-out infinite alternate-reverse;
+}
+
+.wheelSpin3 {
+    animation: spin 4s linear infinite;
+}
+
+.wheelSpin4 {
+    animation: spin 4s linear infinite reverse;
+}
+
+.wheelSpin5 {
+    animation: spin 3s ease-in-out infinite;
+}
+
+.wheelSpin6 {
+    animation: spin 3s ease-in-out infinite reverse;
+}
+
+
+
+/* Balloon Animations - See CBalloon.js #startAnimation() */
+.balloonSpin1 {
+    animation: spin 1.5s linear infinite alternate;
+}
+
+.balloonSpin2 {
+    animation: spin 2s linear infinite;
+}
+
+.balloonSpin3 {
+    animation: spin 1.5s linear infinite reverse;
+}
+
+.balloonSpin4 {
+    animation: spin 1s ease-in-out infinite alternate-reverse;
+}
+
+.balloonSpin5 {
+    animation: spin 650ms linear infinite reverse;
+}
+
+.balloonSpin6 {
+    animation: spin 4s linear infinite;
+}
+
+/* Keyframes used by both Wheel and Balloon Animations */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

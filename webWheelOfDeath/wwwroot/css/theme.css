@@ -1,0 +1,346 @@
+﻿/*
+    Author: Ramin Majidi
+    Date: 15 May 2020
+    Purpose: Review of HTML & CSS constructs
+*/
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    height: 100vh;
+    width: 100%;
+    background-image: linear-gradient(to bottom right, black, red);
+    /*background-image: linear-gradient(to bottom right, rgba(0, 0, 0, 0.4), rgba(255, 0, 0, 0.4));*/
+    color: black;
+    text-rendering: optimizeLegibility;
+    text-align: center;
+    font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+    overflow-y: hidden;
+}
+
+    body > * {
+        width: 100%;
+        display: block;
+        margin: auto;
+
+    }
+
+    body > header {
+        height: 20vh;
+        border: none;
+        overflow-y: hidden;
+    }
+
+    body > main {
+        height: 75vh;
+        border: none;
+        overflow-y: auto;
+
+    }
+
+    body > footer {
+        height: 5vh;
+        line-height: 5vh;
+        border: none;
+        overflow-y: hidden;
+    }
+
+
+.logo {
+    margin: 20px auto;
+    width: 30%;
+    height: auto;
+    min-width: 200px;
+}
+
+.stage {
+    background-image: url("/pics/Theater_Stage_Background.jpg");
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+h1 {
+    font-size: 48px;
+    text-align: center;
+    /*text-transform: uppercase;*/
+    font-variant: small-caps;
+    letter-spacing: 3px;
+    color: black;
+}
+
+.shadow-text {
+    text-shadow: 3px 2px 2px red;
+}
+
+div {
+    margin: 0;
+    padding: 0;
+}
+
+.wheel-outer-frame {
+    /* Outer frame does not rotate to keep box-shadow stationary */
+    display: inline-block;
+    padding: 0;
+    border-style: none;
+    border-radius: 50%;
+    box-shadow: black 5px 5px 10px;
+}
+
+.wheel-inner-frame{
+    /* Inner frame rotates via animation */
+    position: relative;
+    display: inline-block;
+    margin: 0 auto;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    border-style: none;
+    border-radius: 50%;
+}
+
+#wheel {
+    display: block;
+    margin: auto;
+    padding: 0;
+    border-style: none;
+    width: 24vw;
+    height: auto;
+    border-radius: 50%;
+}
+
+#victim{
+    position: absolute;
+    height: 10%;
+    width: 10%;
+    /* border: 1px solid red; */
+    top: 30%;
+    left: 45%;
+    cursor: crosshair;
+}
+
+
+.big-knife {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: auto;
+}
+
+#below-the-belt {
+    position: absolute;
+    height: 7%;
+    width: 8%;
+    /*border: 1px solid red;*/
+    top: 52%;
+    left: 46%;
+    cursor: crosshair;
+}
+
+.knife_thrower{
+    display: inline-block;
+    width: 15%;
+    height: auto;
+}
+
+.balloon{
+    position: absolute;
+    width: 8%;
+    height: auto;
+    z-index: 2; /* Set higher than knife-gallery images so balloons aren't obscured */
+}
+
+
+button.ornate {
+    font-size: 16pt;
+    font-weight: bold;
+    text-shadow: darkslategrey 1px 1px 3px;
+    padding: 5px 20px;
+    box-shadow: black 3px 3px 10px;
+    border-style: hidden;
+    border-radius: 5px;
+    background-color: palevioletred;
+    transition: background-color 500ms linear,
+        box-shadow 100ms linear,
+        text-shadow 100ms linear;
+}
+
+button.ornate:hover {
+    background-color: lightskyblue;
+}
+
+button.ornate:active {
+    text-shadow: darkslategrey 3px 3px 5px;
+
+    box-shadow: darkslategrey 2px 2px 3px;
+}
+
+button.ornate[name=btnStartStop] {
+    width: 100px;
+    display: block;
+    margin: 30px auto 0;
+}
+
+button.rounded {
+    border-radius: 50%;
+}
+
+.time-panel{
+    position: relative;
+}
+
+.time-panel>*{
+    display: inline-block;
+    vertical-align: middle;
+    margin: 10px 5px;
+}
+
+.time-panel>span {
+    font-weight: bold;
+    color: black;
+    font-size: 14pt;
+    font-family: sans-serif;
+}
+
+.time-panel meter {
+    width: 30%;
+    height: 30px;
+    padding: 0 7px;
+    border-radius: 20px;
+    background: linear-gradient(to bottom right, white, grey);
+    box-shadow: black 2px 2px 5px;
+}
+
+.time-panel .countdown-remaining {
+    font-size: 8pt;
+    text-shadow: black 1px 1px 1px;
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: deepskyblue;
+}
+
+#knife-gallery {
+    vertical-align: middle;
+    min-height: 40px;
+}
+
+#knife-gallery img {
+    width: 0.7vw;
+    z-index: 1;
+}
+
+#scorePanel {
+    background-image: linear-gradient( to bottom right, rgba(255, 50, 0, 1), rgba(255, 0, 0, 0));
+    margin: 10px auto;
+    padding: 10px 20px;
+    display: inline-block;
+    color: lightpink;
+    text-shadow: black 3px 3px 5px;
+    box-shadow: black 5px 5px 10px;
+    border-radius: 6px;
+}
+
+#statusPanel {
+    position: fixed;
+    top: 50px;
+    right: 50px;
+    display: block;
+    padding: 10px 20px;
+    background-color: rgba(0,255,255,50%);
+    color: white;
+    box-shadow: black 5px 5px 10px;
+    border-radius: 15px;
+    font-size: 20pt;
+    text-shadow: grey 2px 2px 5px;
+    transition: all 1s linear;
+
+}
+
+
+.hidden {
+    visibility: hidden;
+}
+
+
+output[name="txtMiscMessage"] {
+    display: block;
+    margin-top: 15px;
+    color: yellow;
+}
+
+button {
+    cursor: pointer;
+}
+
+button[disabled] {
+    cursor: not-allowed;
+}
+
+/* Extensions to modal forms */
+.modal-error {
+    color: white;
+    background-image: linear-gradient(to bottom right, rgba(255, 0, 0, 0.8), red);
+}
+
+.modal-winner, .modal-player {
+    color: white;
+    background-image: linear-gradient(to bottom right, rgba(0, 125, 125, 0.8), darkgreen);
+}
+
+/*#modal-winner-id .modal-winner {
+    padding-bottom: 55px;
+}*/
+
+#modal-winner-id legend, #modal-login-id legend, #modal-register-id legend {
+    padding: 10px;
+    /*font-size: larger;*/
+    font-size: 18pt;
+}
+
+.modal-player input {
+    font-size: 16pt;
+}
+
+.borderless {
+    border-style: none;
+}
+
+::selection {
+    color: darkblue;
+    background-color: lightblue;
+}
+
+@media screen and (max-width: 500px) {
+    .knife_thrower {
+        display: none;
+    }
+
+    #wheel {
+        width: 90vw;
+    }
+
+    #statusPanel {
+        min-width: 250px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    #statusPanel.running {
+        top: 100px;
+    }
+
+    #knife-gallery img {
+        width: 1.5vw;
+    }
+}
