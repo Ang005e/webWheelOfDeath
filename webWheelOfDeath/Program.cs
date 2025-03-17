@@ -13,6 +13,12 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+// add your own types
+//public void ConfigureServices(IServiceCollection services)
+//{
+//    services.AddTransient()
+//}
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -23,5 +29,17 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// route that only maps to IDs that are strings
+//app.MapControllerRoute(
+//    name: "echoString",
+//    pattern: "{controller=Home}/{action=Post}/{id:string?}"); // constraint: ensure id is a string
+
+// route that only maps to ids that are integers
+//app.MapControllerRoute(
+//    name: "echoInt",
+//    pattern: "{controller=Home}/{action=Post}/{id:int?}"); // constraint: ensure id is an int
+
+app.UseFileServer();
 
 app.Run();
