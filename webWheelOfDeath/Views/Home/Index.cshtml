@@ -1,11 +1,13 @@
 ﻿
+@model webWheelOfDeath.Models.CUser
+
 @{
     ViewData["Title"] = "Home Page";
 
-    int duration = 15000;
+    int duration = 25000;
 
-    int minBalloons = 12;
-    int maxBalloons = 16;
+    int minBalloons = 2;
+    int maxBalloons = 3;
     int maxThrows = 20;
 }
 
@@ -14,7 +16,8 @@
 @*     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p> *@
 @* </div> *@
 
-
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<!--<a href="~/lib/jquery/dist/jquery.min.map">~/lib/jquery/dist/jquery.min.map</a>-->
 <!doctype html>
 <!--
     Date: 2020-23
@@ -105,17 +108,45 @@
     </div>
 
 
+    <!-- create a form tag (could just use HTML, but this helps keep things in sync, i.e. when refactoring) -->
+    @*@using (Html.BeginForm())
+        {
+        <p>
+            Html.TextAreaFor(x => x.Body)
+        </p>
+        }*@
+
+
+    <!-- 
+        TROUBLESHOOTING STEPS:
+        0. debug using browser breakpoints.
+        0.5 debug using serverside breakpoints.
+        1. clear browser cashe.
+        2. delete project .vs hidden file.
+        3. use ClearModelState is server side code.
+        4. Check that AJAX is correctly intercepting the form submission and preventing the default action.
+        6. Check that the form is not submitting (it's th button, fix the submit button and event.preventDefault).
+        7. check that the form IS submitting (remove event.preventDefault)
+        7. make sure that the events are being attached properly to server side 
+        HTML
+        
+        
+    -->
     <div id="modal-login-id" class="modal-canvas hidden">
+        @await Html.PartialAsync("_LoginPartial", new CUser())
+    </div>
+
+    <div id="modal-register-id" class="modal-canvas hidden">
         <div class="main-panel modal-player">
             <span class="close-popup">&#10006;</span>
-            <form>
+            <form method="post" asp-action="Register">
                 <fieldset>
                     <legend>Do You Have What It Takes?</legend>
 
                     <fieldset class="borderless">
                         <label for="txtPlayerFirstName">First Name:</label>
                         <input type="text"
-                               name="txtPlayerFirstName"
+                               asp-for="txtPlayerFirstName"
                                placeholder="[Enter First Name]"
                                required="required" />
                     </fieldset>
@@ -124,13 +155,29 @@
                     <fieldset class="borderless">
                         <label for="txtPlayerLastName">Last Name:</label>
                         <input type="text"
-                               name="txtPlayerLastName"
+                               asp-for="txtPlayerLastName"
                                placeholder="[Enter Last Name]"
                                required="required" />
                     </fieldset>
 
-                    <button type="button" name="btnCreateAccount" class="ornate">Create Account</button>
-                    <button type="submit" name="btnBeginGame" class="ornate">Begin</button>
+                    <fieldset class="borderless">
+                        <label for="txtPlayerUsername">Username:</label>
+                        <input type="text"
+                               asp-for="txtPlayerUsername"
+                               placeholder="[Enter Username]"
+                               required="required" />
+                    </fieldset>
+
+                    <fieldset class="borderless">
+                        <label for="txtPlayerPassword">Password:</label>
+                        <input type="text"
+                               asp-for="txtPlayerPassword"
+                               placeholder="[Enter Password]"
+                               required="required" />
+                    </fieldset>
+
+                    <!-- ############## ToDo: add a confirm button ################## -->
+                    <button type="submit" name="btnConfirm" class="ornate">Confirm</button>
                 </fieldset>
             </form>
         </div>
@@ -140,72 +187,22 @@
     <div id="modal-game-selection-id" class="modal-canvas hidden">
         <div class="main-panel modal-player">
             <span class="close-popup">&#10006;</span>
-                <form>
+            <form>
+                <fieldset>
                     <fieldset>
-                        <fieldset>
-                            <label for="cboGameSelect">Select Game Mode</label>
-                            <select name="cboGameSelect" id="cboGameSelect">
-                                @{
-                                    for (int i = 0; i < 5; i++)
-                                    {
-                                        <option value="@i">Test</option>
-    };
-                                }
-                            </select>
-                        </fieldset>
+                        <label for="cboGameSelect">Select Game Mode</label>
+                        <select name="cboGameSelect" id="cboGameSelect">
+                            @{
+                                for (int i = 0; i < 5; i++)
+                                {
+                                    <option value="@i">Test</option>
+                                };
+                            }
+                        </select>
                     </fieldset>
+                </fieldset>
                 <button type="button" name="btnConfirm" id="btnConfirm" class="ornate">Confirm</button>
             </form>
-        </div>
-    </div>
-
-
-    <div id="modal-register-id" class="modal-canvas hidden">
-        <div class="main-panel modal-player">
-            <div class="main-panel modal-player">
-                <span class="close-popup">&#10006;</span>
-                <form>
-                    <fieldset>
-                        <legend>Do You Have What It Takes?</legend>
-
-                        <fieldset class="borderless">
-                            <label for="txtPlayerFirstName">First Name:</label>
-                            <input type="text"
-                                   name="txtPlayerFirstName"
-                                   placeholder="[Enter First Name]"
-                                   required="required" />
-                        </fieldset>
-
-
-                        <fieldset class="borderless">
-                            <label for="txtPlayerLastName">Last Name:</label>
-                            <input type="text"
-                                   name="txtPlayerLastName"
-                                   placeholder="[Enter Last Name]"
-                                   required="required" />
-                        </fieldset>
-
-                        <fieldset class="borderless">
-                            <label for="txtPlayerUsername">Username:</label>
-                            <input type="text"
-                                   name="txtPlayerUsername"
-                                   placeholder="[Enter Last Name]"
-                                   required="required" />
-                        </fieldset>
-
-                        <fieldset class="borderless">
-                            <label for="txtPlayerPassword">Password:</label>
-                            <input type="text"
-                                   name="txtPlayerPassword"
-                                   placeholder="[Enter Last Name]"
-                                   required="required" />
-                        </fieldset>
-
-                        <!-- ############## ToDo: add a confirm button ################## -->
-                        <button type="submit" name="btnConfirm" class="ornate">Confirm</button>
-                    </fieldset>
-                </form>
-            </div>
         </div>
     </div>
 
@@ -256,6 +253,51 @@
             new CMessageModal('#modal-message-id').display(e.message, false, 7000);
         }
 
+
+
+        // to prevent the whole page from reloading when data is transferred from the server...
+        // 1. intercept the form submission
+        // 2. perform an AJAX request
+        // 3. update ONLY the targeted element with the response
+
+        // whenever any links are clicked inside this section, request that content via AJAX
+        // to prevent the need for a full re-render
+
+        // UPDATE THE LOGIN FORM WITH NEWLY CREATED ACCOUNT'S DETAILS
+        $(document).ready(function() {
+            // delegate the event to the document so that the
+            // handler is not lost when the element it targets is reloaded
+            $(document).on("submit", "#modal-register-id form", function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // ToDo: replace with Javascript fetch
+                $.ajax({
+                    url: '/Login',  // URL to the Login action
+                    type: 'POST',
+                    data: $(this).serialize(),  // Serialize the form data
+                    success: function (result) {
+                        // Update the modal content with the returned partial view HTML
+                        $("#modal-login-id").html(result);
+                        document.dispatchEvent(new CustomEvent("partial-refresh", {
+                            bubbles: true,
+                            detail:
+                            {
+                                form: "login-form"
+                            }
+                        }));
+                    },
+                    error: function () {
+                        alert("There was an error processing your request.");
+                    }
+                });
+            });
+            //$(document).on("submit", "#modal-login-id form", function (event) {
+            //    event.preventDefault(); 
+            //    // code for refresh of the login partial, if needed in the future
+            //})
+        });
+
+
         // ToDo:
         // login/make account
         // choose game mode
@@ -263,7 +305,7 @@
 
         // V1.1:
         // create account - modal popup
-        
+
         // V1.2
         // login to account - modal popup (original game start popup)
 
@@ -273,7 +315,7 @@
         //V1.4
         // record game details
 
-        //V1.5 
+        //V1.5
         // finishing touches
 
         //V2.0: completed product
@@ -283,17 +325,3 @@
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -27,6 +27,10 @@ export class CWheelGame extends CTimer {
     #showPopups;
     #balloons = new Map();
     #animationClass;
+
+    #loginModal;
+    #registerModal;
+    #gameSelectionModal;
     
     constructor(duration = 30000, minBalloons = 10, maxBalloons = 16,
         maxThrows = 0, showPopups = true) {
@@ -54,14 +58,14 @@ export class CWheelGame extends CTimer {
         if (this.#showPopups) {
 
             /// Configure the login modal popup
-            this.player = new CLoginModal('#modal-login-id', true, 'login-modal-hide');
-            this.player.startupCallbackFunction = () => this.start();
+            this.#loginModal = new CLoginModal('#modal-login-id', true, 'login-modal-hide');
+            this.#loginModal.callbackFunction = () => {this.start()};
 
             // Configure the register modal popup
-            this.newPlayer = new CRegisterModal('#modal-register-id', true, 'register-modal-hide');
+            this.#registerModal = new CRegisterModal('#modal-register-id', true, 'register-modal-hide');
 
             // Create the game difficulty selection modal
-            this.gameSelection = new CGameSelectModal('#modal-game-selection-id', true, 'game-selection-modal-hide')
+            this.#gameSelectionModal = new CGameSelectModal('#modal-game-selection-id', true, 'game-selection-modal-hide')
 
         }
 
@@ -105,36 +109,48 @@ export class CWheelGame extends CTimer {
                 this.#gameOver(EnumGameStatus.Stopped);
             } else if (this.#showPopups) {
 
-                this.newPlayer.hide();
+                this.#registerModal.hide();
                 // this.gameSelection.hide();
-                this.player.display();
+                this.#loginModal.display();
 
             } else {
                 this.start();
             }
         });
 
-        // ########### NAVIGATION LISTENERS ############
+        if (this.#showPopups) {
+            //// ########### AJAX CALL/CONTENT REFRESH LISTENERS ############
 
-        // Listen for a register request (links to the "create account" button on CLoginModal)
-        document.addEventListener("create-account", event => {
-            // event.preventDefault();     // As the button type is submit, this prevents postback to the server
-            event.stopPropagation();    // prevent event bubbling up to parent(s)
-            this.player.hide();
-            this.newPlayer.display();
-        })
+            // Call the login startup function to reapply its javascript/event listeners.
+            document.addEventListener("partial-refresh", (event) => {
+                if (event.detail.form === "login-form") {
+                    // Use after the login HTML is replaced by an AJAX call to the server.
+                    this.#loginModal.startupCallbackFunction()
+                }
+            })
 
-        // Ensure that the when the register modal is closed, the login modal re-opens
-        document.addEventListener('register-modal-hide', event => {
-            event.stopPropagation();
-            this.player.display();
-        })
+            // ########### NAVIGATION LISTENERS ############
 
-        // When the login modal is closed, open the game selection modal
-        document.addEventListener('login-modal-hide', event => {
-            event.stopPropagation();
-            this.gameSelection.display();
-        })
+            // Listen for a register request (links to the "create account" button on CLoginModal)
+            document.addEventListener("create-account", event => {
+                // event.preventDefault();     // As the button type is submit, this prevents postback to the server
+                event.stopPropagation();    // prevent event bubbling up to parent(s)
+                this.#loginModal.hide();
+                this.#registerModal.display();
+            })
+
+            // Ensure that the when the register modal is closed, the login modal re-opens
+            document.addEventListener('register-modal-hide', event => {
+                event.stopPropagation();
+                this.#loginModal.display();
+            })
+
+            // When the login modal is closed, open the game selection modal
+            document.addEventListener('login-modal-hide', event => {
+                event.stopPropagation();
+                this.#gameSelectionModal.display();
+            })
+        }
     }
 
     get #maxSeconds() {
@@ -372,7 +388,7 @@ export class CWheelGame extends CTimer {
             let message;
 
             if (fastestTimeOnRecord === null || this.elapsedTime < parseInt(fastestTimeOnRecord)) {
-                localStorage.setItem(FASTEST_PLAYER_KEY, this.player.playerFullName);
+                localStorage.setItem(FASTEST_PLAYER_KEY, this.#loginModal.playerUsername);
                 localStorage.setItem(FASTEST_TIME_KEY, this.elapsedTime.toString());
 
                 if (fastestTimeOnRecord === null) {

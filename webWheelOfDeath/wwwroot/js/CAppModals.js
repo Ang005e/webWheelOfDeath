@@ -30,46 +30,51 @@ export class CMessageModal extends CModal {
 
 
 //-------------------------------------------------------------------------------
-//--------------------------------CPlayerModal-----------------------------------
+//--------------------------------CLoginModal-----------------------------------
 //-------------------------------------------------------------------------------
 export class CLoginModal extends CModal {
 
     #form = this.mainPanel.querySelector('form');
+    #callbackFunction = () => { };
 
-    constructor(modalCanvasSelector, outerCanvasClickClosesPopup = false, startupCallbackFunction = ()=>{}) {
-        super(modalCanvasSelector, outerCanvasClickClosesPopup);
-        this.startupCallbackFunction = startupCallbackFunction;
-        this.playerFirstName = '';
-        this.playerLastName = '';
+    constructor(modalCanvasSelector, outerCanvasClickClosesPopup = false, onHideEventName /*, startupCallbackFunction = ()=>{}*/) {
+        super(modalCanvasSelector, outerCanvasClickClosesPopup, onHideEventName);
+        // this.startupCallbackFunction = startupCallbackFunction; KJBGHDBDFJKBNK
+        this.playerUsername = '';
+        this.playerPassword = '';
+        this.startupCallbackFunction(); // KJBGHDBDFJKBNKKJBGHDBDFJKBNK
     }
 
-    get playerFullName() {
-        return `${this.playerFirstName} ${this.playerLastName}`;
+    get callbackFunction() {
+        return this.#callbackFunction;
     }
-    set startupCallbackFunction(callbackFunction) {
+    set callbackFunction(value) {
+        this.#callbackFunction = value;
+    }
+    startupCallbackFunction() {
         this.#form.btnBeginGame.addEventListener('click', event=> {
             //console.log(`event.cancelable: ${event.cancelable}`);
             event.preventDefault();     // As the button type is submit, this prevents postback to the server
             event.stopPropagation();    // prevent event bubbling up to parent(s)
 
-            this.#form.txtPlayerFirstName.value = this.#form.txtPlayerFirstName.value.trim();
-            this.#form.txtPlayerLastName.value = this.#form.txtPlayerLastName.value.trim();
+            //this.#form.txtPlayerUsername.value = this.#form.txtPlayerUsername.value.trim();
+            //this.#form.txtPlayerPassword.value = this.#form.txtPlayerPassword.value.trim();
 
-            if (!this.#form.txtPlayerFirstName.value) {
-                this.#form.txtPlayerFirstName.focus();
+            if (!this.#form.txtPlayerUsername.value) {
+                this.#form.txtPlayerUsername.focus();
                 return;
             }
 
-            if (!this.#form.txtPlayerLastName.value) {
-                this.#form.txtPlayerLastName.focus();
+            if (!this.#form.txtPlayerPassword.value) {
+                this.#form.txtPlayerPassword.focus();
                 return;
             }
 
-            this.playerFirstName = this.#form.txtPlayerFirstName.value;
-            this.playerLastName = this.#form.txtPlayerLastName.value;
+            this.playerUsername = this.#form.txtPlayerUsername.value;
+            this.playerPassword = this.#form.txtPlayerPassword.value;
             this.hide();
 
-            callbackFunction();     // invoke the callback function
+            this.#callbackFunction();     // invoke the callback function
         });
         this.#form.btnCreateAccount.addEventListener('click', event => {
 
@@ -83,11 +88,11 @@ export class CLoginModal extends CModal {
 
 
     display(timeout = 0) {
-        this.#form.txtPlayerFirstName.value = this.playerFirstName;
-        this.#form.txtPlayerLastName.value = this.playerLastName;
+        this.#form.txtPlayerUsername.value = this.playerUsername;
+        this.#form.txtPlayerPassword.value = this.playerPassword;
         super.show(timeout);
-        this.#form.txtPlayerFirstName.select();
-        this.#form.txtPlayerFirstName.focus();
+        this.#form.txtPlayerUsername.select();
+        this.#form.txtPlayerUsername.focus();
     }
 }
 
@@ -117,12 +122,13 @@ export class CRegisterModal extends CModal {
     set startupCallbackFunction(callbackFunction) {
         this.#form.btnConfirm.addEventListener('click', event => {
             //console.log(`event.cancelable: ${event.cancelable}`);
-            event.preventDefault();     // As the button type is submit, this prevents postback to the server
+            // event.preventDefault();     // As the button type is submit, this prevents postback to the server // but we want postback now hehehehehehehe
             event.stopPropagation();    // prevent event bubbling up to parent(s)
+
 
             this.#form.txtPlayerFirstName.value = this.#form.txtPlayerFirstName.value.trim();
             this.#form.txtPlayerLastName.value = this.#form.txtPlayerLastName.value.trim();
-            this.#form.txtPlayerUsername.value = this.#form.txtPlayerFirstName.value.trim();
+            this.#form.txtPlayerUsername.value = this.#form.txtPlayerUsername.value.trim();
             this.#form.txtPlayerPassword.value = this.#form.txtPlayerLastName.value.trim();
 
 
@@ -161,8 +167,8 @@ export class CRegisterModal extends CModal {
         this.#form.txtPlayerUsername.value = this.playerUsername;
         this.#form.txtPlayerPassword.value = this.playerPassword;
         super.show(timeout);
-        this.#form.txtPlayerFirstName.select();
-        this.#form.txtPlayerFirstName.focus();
+        this.#form.txtPlayerUsername.select();
+        this.#form.txtPlayerUsername.focus();
     }
 }
 
@@ -185,7 +191,7 @@ export class CGameSelectModal extends CModal {
     set startupCallbackFunction(callbackFunction) {
         this.#form.btnConfirm.addEventListener('click', event => {
             //console.log(`event.cancelable: ${event.cancelable}`);
-            event.preventDefault();     // As the button type is submit, this prevents postback to the server
+            // event.preventDefault();     // As the button type is submit, this prevents postback to the server
             event.stopPropagation();    // prevent event bubbling up to parent(s)
 
             // this.#form.cboGameSelect.value = this.#form.cboGameSelect.value.trim();
@@ -198,7 +204,7 @@ export class CGameSelectModal extends CModal {
             }
 
             this.selectedGame = this.#form.cboGameSelect.value;
-            this.hide();
+            // this.hide();
 
             callbackFunction();     // invoke the callback function
         });
@@ -208,7 +214,6 @@ export class CGameSelectModal extends CModal {
     display(timeout = 0) {
         this.#form.cboGameSelect.value = this.selectedGame;
         super.show(timeout);
-        this.#form.cboGameSelect.select();
         this.#form.cboGameSelect.focus();
     }
 }

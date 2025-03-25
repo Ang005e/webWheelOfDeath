@@ -61,13 +61,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="jQuery" Version="3.7.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="LibEntity">
-      <HintPath>..\..\..\..\Shared\LibEntity.NetCore\LibEntity\bin\Debug\net8.0\LibEntity.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
   </ItemGroup>
 
 </Project>

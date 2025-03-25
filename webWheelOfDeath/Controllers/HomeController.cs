@@ -13,6 +13,8 @@ namespace webWheelOfDeath.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
+
+        // ##################### GENERAL ACTIONS ##################### \\
         // every controller action returns a result (ContentResult)
         public HomeController(ILogger<HomeController> logger)
         {
@@ -25,17 +27,10 @@ namespace webWheelOfDeath.Controllers
         // when the user enters a url named [controller]/post/[value], [value] will be returned as a contentresult
         // so, when navigating to any controller in a url, actions within that controller can
         // be navigated to within that... and they will be run!!
-        public ContentResult Post(string id)
+        public IActionResult Post(string id)
         {
             // contentResult:
             // the expected return value from an action
-            return new ContentResult { Content = id };
-        }
-
-        [Route("login")] //[Route("home/login/{userType:string}")] then add in constructor Login(string userType)
-        public ContentResult Login(string id)
-        {
-            // /login?id=[id]
             return new ContentResult { Content = id };
         }
 
@@ -45,6 +40,42 @@ namespace webWheelOfDeath.Controllers
             return View();
         }
 
+        // ##################### LOGIN ACTIONS ##################### \\
+        [HttpPost]
+        [Route("Login")]
+        //[Route("home/login/{userType:string}")] then add in constructor Login(string userType)
+        public IActionResult Login(CCredentials credentials)
+        {
+
+            //credentials.txtPlayerUsername = $"{credentials.txtPlayerUsername} 123456789";
+
+            // Database API silliness
+
+            // CLEAR THE FUCKING MODELSTATE ARRGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+            ModelState.Clear();
+
+            // once all processing is done, initialise and return the View
+            // make sure this is handled in javascript
+            return PartialView("_LoginPartial", credentials); // return View("Index", credentials); // do I even need this, or just PartialView??
+        }
+
+        //[HttpGet]
+        //[Route("login")]
+        //public IActionResult Login()
+        //{
+        //    return View();
+        //}
+
+        [HttpPost]
+        [Route("Register")]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+
+
+        // ##################### OTHER ACTIONS ##################### \\
         public IActionResult Privacy()
         {
             return View();

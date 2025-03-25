@@ -54,10 +54,10 @@ export class CModal extends CTimer {
 
     hide() {
         this.cancel();
+        Util.hide(this.modalCanvas);
         document.dispatchEvent(new CustomEvent(this.#hideEventName, {
             bubbles: true
         }));
-        Util.hide(this.modalCanvas);
     }
 
     timerCompleted() {
