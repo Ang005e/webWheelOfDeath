@@ -59,14 +59,14 @@ export class CWheelGame extends CTimer {
 
             /// Configure the login modal popup
             this.#loginModal = new CLoginModal('#modal-login-id', true, 'login-modal-hide');
-            this.#loginModal.callbackFunction = () => {this.start()};
+            // this.#loginModal.callbackFunction = () => {this.start()};
 
             // Configure the register modal popup
             this.#registerModal = new CRegisterModal('#modal-register-id', true, 'register-modal-hide');
 
             // Create the game difficulty selection modal
             this.#gameSelectionModal = new CGameSelectModal('#modal-game-selection-id', true, 'game-selection-modal-hide')
-
+            this.#gameSelectionModal.callbackFunction = () => { this.start() };
         }
 
         this.#countdownGauge.max = this.duration.toString();
@@ -144,9 +144,9 @@ export class CWheelGame extends CTimer {
                 event.stopPropagation();
                 this.#loginModal.display();
             })
-
-            // When the login modal is closed, open the game selection modal
-            document.addEventListener('login-modal-hide', event => {
+            
+            // When login is completed, open the game selection modal
+            document.addEventListener('login-complete', event => {
                 event.stopPropagation();
                 this.#gameSelectionModal.display();
             })

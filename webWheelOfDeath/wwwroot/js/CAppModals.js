@@ -52,9 +52,9 @@ export class CLoginModal extends CModal {
         this.#callbackFunction = value;
     }
     startupCallbackFunction() {
-        this.#form.btnBeginGame.addEventListener('click', event=> {
+        this.#form.btnLogin.addEventListener('click', event=> {
             //console.log(`event.cancelable: ${event.cancelable}`);
-            event.preventDefault();     // As the button type is submit, this prevents postback to the server
+            // event.preventDefault();     // As the button type is submit, this prevents postback to the server
             event.stopPropagation();    // prevent event bubbling up to parent(s)
 
             //this.#form.txtPlayerUsername.value = this.#form.txtPlayerUsername.value.trim();
@@ -74,7 +74,16 @@ export class CLoginModal extends CModal {
             this.playerPassword = this.#form.txtPlayerPassword.value;
             this.hide();
 
+            //
+            // LOGIN REQUEST HERE
+            //
+
+            document.dispatchEvent(new CustomEvent("login-complete", {
+                bubbles: true
+            }))
+
             this.#callbackFunction();     // invoke the callback function
+
         });
         this.#form.btnCreateAccount.addEventListener('click', event => {
 
@@ -180,22 +189,27 @@ export class CRegisterModal extends CModal {
 export class CGameSelectModal extends CModal {
     selectedGame = '';
     #form = this.mainPanel.querySelector('form');
+    #callbackFunction = () => { };
 
-    constructor(modalCanvasSelector, outerCanvasClickClosesPopup = false, onHideEventName, startupCallbackFunction = () => { }) {
+    constructor(modalCanvasSelector, outerCanvasClickClosesPopup = false, onHideEventName) {
 
         super(modalCanvasSelector, outerCanvasClickClosesPopup, onHideEventName);
-        this.startupCallbackFunction = startupCallbackFunction;
+        this.startupCallbackFunction(); 
     }
 
-    // clean certain fields on the form and configure properties
-    set startupCallbackFunction(callbackFunction) {
+    get callbackFunction() {
+        return this.#callbackFunction;
+    }
+    set callbackFunction(value) {
+        this.#callbackFunction = value;
+    }
+    startupCallbackFunction() {
         this.#form.btnConfirm.addEventListener('click', event => {
             //console.log(`event.cancelable: ${event.cancelable}`);
             // event.preventDefault();     // As the button type is submit, this prevents postback to the server
             event.stopPropagation();    // prevent event bubbling up to parent(s)
 
             // this.#form.cboGameSelect.value = this.#form.cboGameSelect.value.trim();
-
 
             // if the user has not entered a value, focus the field
             if (!this.#form.cboGameSelect.value) {
@@ -204,9 +218,9 @@ export class CGameSelectModal extends CModal {
             }
 
             this.selectedGame = this.#form.cboGameSelect.value;
-            // this.hide();
+            this.hide();
 
-            callbackFunction();     // invoke the callback function
+            this.#callbackFunction();     // invoke the callback function
         });
     }
 

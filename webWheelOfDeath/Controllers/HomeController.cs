@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using webWheelOfDeath.Models;
 
 namespace webWheelOfDeath.Controllers
@@ -9,6 +10,7 @@ namespace webWheelOfDeath.Controllers
 
     // controller doesn't HAVE to inherit from Controller.
 
+    // temporary, doesnt survive round trips
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -47,11 +49,13 @@ namespace webWheelOfDeath.Controllers
         public IActionResult Login(CCredentials credentials)
         {
 
-            //credentials.txtPlayerUsername = $"{credentials.txtPlayerUsername} 123456789";
-
             // Database API silliness
 
-            // CLEAR THE FUCKING MODELSTATE ARRGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+            // if login succeeds
+            string sessionId = $"session-{Random.Shared.Next(1000, int.MaxValue).ToString()}";
+            HttpContext.Session.SetString("session-id", sessionId);
+
+            // CLEAR THE MODELSTATE ARRGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
             ModelState.Clear();
 
             // once all processing is done, initialise and return the View
@@ -59,12 +63,18 @@ namespace webWheelOfDeath.Controllers
             return PartialView("_LoginPartial", credentials); // return View("Index", credentials); // do I even need this, or just PartialView??
         }
 
-        //[HttpGet]
-        //[Route("login")]
-        //public IActionResult Login()
-        //{
-        //    return View();
-        //}
+        [HttpGet]
+        [Route("Authenticate")]
+        public IActionResult Login()
+        {
+            // get values from the correct fields
+            // string username = Request.Form["txtLoginUsername"].ToString() ?? "";
+            // string password = Request.Form["txtLoginPassword"].ToString() ?? "";
+            // USE MODEL INSTEAD
+
+
+            return PartialView();
+        }
 
         [HttpPost]
         [Route("Register")]

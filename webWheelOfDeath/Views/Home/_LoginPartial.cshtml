@@ -4,10 +4,12 @@
 
 @model webWheelOfDeath.Models.CCredentials
 
+
+
 <!-- <div id="modal-login-id" class="modal-canvas hidden"> this section should be OUTSIDE the partial -->
 <div class="main-panel modal-player">
     <span class="close-popup">&#10006;</span>
-    <form> <!-- method="post" asp-action="Login"-->
+    <form method="post" asp-action="Login">
         <fieldset>
             <legend>Do You Have What It Takes?</legend>
 
@@ -15,6 +17,7 @@
                 <label asp-for="txtPlayerUsername">Username:</label>
                 <input type="text"
                         asp-for="txtPlayerUsername"
+                       id="txtPlayerLoginUsername"
                         placeholder="[Enter Username]"
                         required="required" />
             </fieldset>
@@ -24,13 +27,26 @@
                 <label asp-for="txtPlayerPassword">Password:</label>
                 <input type="text"
                         asp-for="txtPlayerPassword"
+                       id="txtPlayerLoginPassword"
                         placeholder="[Enter Password]"
                         required="required" />
             </fieldset>
 
             <button type="button" name="btnCreateAccount" class="ornate">Create Account</button>
-            <button type="button" name="btnBeginGame" class="ornate">Begin</button>
+            <button type="submit" name="btnLogin" class="ornate">Log In</button>
         </fieldset>
     </form>
 </div>
 <!-- </div> -->
+
+
+
+
+
+
+
+
+
+
+
+
