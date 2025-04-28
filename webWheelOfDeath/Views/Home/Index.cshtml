@@ -2,7 +2,7 @@
 @using System.Data
 @using Microsoft.Data.SqlClient
 @using LibEntity
- 
+
 @*
     TODO: SEPERATE YOUR CONCERNS, DUMBLEDOOR
     (remove webWheelOfDeath reference and code, move to model)
@@ -14,7 +14,7 @@
 @*
     TODO:
     convert to partial views:
-        Login
+        ~~Login~~
         Game
     Check which one to load based on session variable with user ID stored in it
 *@
@@ -38,16 +38,16 @@
 <!--<a href="~/lib/jquery/dist/jquery.min.map">~/lib/jquery/dist/jquery.min.map</a>-->
 <!doctype html>
 <!--
-    Date: 2020-23
-    Author: Ramin Majidi
-    Purpose: This and all other code elements of this project (unless otherwise commented) are the work of the
-    author and may be used for TAFE Assessment purposes only.
+Date: 2020-23
+Author: Ramin Majidi
+Purpose: This and all other code elements of this project (unless otherwise commented) are the work of the
+author and may be used for TAFE Assessment purposes only.
 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
     <title>Wheel of Death</title>
     <link href="pics/Wheel_of_Death.png" rel="icon" />
     <link rel="stylesheet" href="/css/lib/modal.css" />
@@ -59,10 +59,10 @@
 <body class="shadow-text">
     <header>
         <img class="logo"
-             src="pics/Wheel_of_Death_Logo.png"
-             alt="Wheel of Death"
-             height="159"
-             width="667" />
+        src="pics/Wheel_of_Death_Logo.png"
+        alt="Wheel of Death"
+        height="159"
+        width="667" />
     </header>
 
     <main>
@@ -70,18 +70,18 @@
             <div id="knife-gallery"></div>
 
             <img src="pics/Left_Thrower.png"
-                 class="knife_thrower"
-                 alt="Knife thrower on left"
-                 height="2566"
-                 width="1887" />
+            class="knife_thrower"
+            alt="Knife thrower on left"
+            height="2566"
+            width="1887" />
 
             <div class="wheel-outer-frame">
                 <figure class="wheel-inner-frame">
                     <img id="wheel"
-                         src="pics/Wheel.jpg"
-                         alt="Wheel of Death"
-                         height="2820"
-                         width="2820" />
+                    src="pics/Wheel.jpg"
+                    alt="Wheel of Death"
+                    height="2820"
+                    width="2820" />
 
                     <div id="victim">
                         <img class="big-knife hidden" src="pics/Knife-Angled.png" alt="killer knife" />
@@ -92,10 +92,10 @@
             </div>
 
             <img src="pics/Right_Thrower.png"
-                 class="knife_thrower"
-                 alt="Knife thrower on right"
-                 height="2669"
-                 width="1648" />
+            class="knife_thrower"
+            alt="Knife thrower on right"
+            height="2669"
+            width="1648" />
         </div>
 
         <button id="btnStartStop" name="btnStartStop" type="button" class="ornate rounded">Start</button>
@@ -136,160 +136,129 @@
 
 
     <!--
-        TROUBLESHOOTING STEPS:
-        0. debug using browser breakpoints.
-        0.5 debug using serverside breakpoints.
-        1. clear browser cashe.
-        2. delete project .vs hidden file.
-        3. use ClearModelState is server side code.
-        4. Check that AJAX is correctly intercepting the form submission and preventing the default action.
-        6. Check that the form is not submitting (it's the button, fix the submit button and event.preventDefault).
-        7. check that the form IS submitting (remove event.preventDefault)
-        8. make sure that the events are being attached properly to server side
-        HTML
-
+    TROUBLESHOOTING STEPS:
+    0. debug using browser breakpoints.
+    0.5 debug using serverside breakpoints.
+    1. clear browser cashe.
+    2. delete project .vs hidden file.
+    3. use ClearModelState is server side code.
+    4. Check that AJAX is correctly intercepting the form submission and preventing the default action.
+    6. Check that the form is not submitting (it's the button, fix the submit button and event.preventDefault).
+    7. check that the form IS submitting (remove event.preventDefault)
+    8. make sure that the events are being attached properly to server side
+    HTML
 
     -->
-    <div id="modal-login-id" class="modal-canvas hidden">
-        @await Html.PartialAsync("_LoginPartial", new CGameUser())
-    </div>
-    
-    <div id="modal-register-id" class="modal-canvas hidden">
-        <div class="main-panel modal-player">
-            <span class="close-popup">&#10006;</span>
-            <form method="post" asp-action="Register">
-                <fieldset>
-                    <legend>Do You Have What It Takes?</legend>
 
-                    <fieldset class="borderless">
-                        <label for="txtPlayerFirstName">First Name:</label>
-                        <input type="text"
-                               asp-for="txtPlayerFirstName"
-                               placeholder="[Enter First Name]"
-                               required="required" />
-                    </fieldset>
+    @{
+        string? loggedUserId = Context.Session.GetString("user-id");
 
+        if ( ! string.IsNullOrWhiteSpace(loggedUserId))
+        {
 
-                    <fieldset class="borderless">
-                        <label for="txtPlayerLastName">Last Name:</label>
-                        <input type="text"
-                               asp-for="txtPlayerLastName"
-                               placeholder="[Enter Last Name]"
-                               required="required" />
-                    </fieldset>
+			// ToDo: Convert other pages to partial views too.
+			// NOTE: Minimise server traffic. But keep in mind that the server also sends the HTML anyway, so not too much difference lol!
 
-                    <fieldset class="borderless">
-                        <label for="txtPlayerUsername">Username:</label>
-                        <input type="text"
-                               asp-for="txtPlayerUsername"
-                               placeholder="[Enter Username]"
-                               required="required" />
-                    </fieldset>
+            <div id="modal-game-selection-id" class="modal-canvas hidden">
+                <div class="main-panel modal-player">
+                    <span class="close-popup">&#10006;</span>
+                    <form>
+                        <fieldset>
+                            <fieldset>
+                                <label for="cboGameSelect">Select Game Mode</label>
+                                <select name="cboGameSelect" id="cboGameSelect">
+                                    @{
+                                        string sql = @"
+                            select
+                            G.[Id], G.[Game], G.[FkDifficultyId], D.[Difficulty], D.[Id]
+                            from
+                            tblGame G inner join
+                            tblDifficulty D on D.[Id] = G.[FkDifficultyId]
+                            where
+                            (1=1)
+                            order by
+                            D.[Id],
+                            G.[Game]
+                            ";
+                                        DataTable table = sql.Fetch<DataTable>();
+                                        DataRow row = table.Rows[0];
+                                        int counter = 0;
 
-                    <fieldset class="borderless">
-                        <label for="txtPlayerPassword">Password:</label>
-                        <input type="text"
-                               asp-for="txtPlayerPassword"
-                               placeholder="[Enter Password]"
-                               required="required" />
-                    </fieldset>
+                                        while (counter < table.Rows.Count)
+                                        {
+                                            string? difficultyName = row.Field<string>("Difficulty") ?? "";
 
-                    <!-- ############## ToDo: add a confirm button ################## -->
-                    <button type="submit" name="btnConfirm" class="ornate">Confirm</button>
-                </fieldset>
-            </form>
-        </div>
-    </div>
+                                            long difficultyId = row.Field<long>("FkDifficultyId"); ;
+                                            long lastDifficultyId = difficultyId;
 
-    
+                                            if (difficultyName == "") break;
 
-    <div id="modal-game-selection-id" class="modal-canvas hidden">
-        <div class="main-panel modal-player">
-            <span class="close-popup">&#10006;</span>
-            <form>
-                <fieldset>
-                    <fieldset>
-                        <label for="cboGameSelect">Select Game Mode</label>
-                        <select name="cboGameSelect" id="cboGameSelect">
-                            @{
-                                string sql = @"
-                                                    select
-                                                        G.[Id], G.[Game], G.[FkDifficultyId], D.[Difficulty], D.[Id]
-                                                    from
-                                                        tblGame G inner join
-                                                        tblDifficulty D on D.[Id] = G.[FkDifficultyId]
-                                                    where
-                                                        (1=1)
-                                                    order by
-                                                        D.[Id],
-                                                        G.[Game]
-                                                    ";
-                                DataTable table = sql.Fetch<DataTable>();
-                                DataRow row = table.Rows[0];
-                                int counter = 0;
+                                            <optgroup label="@difficultyName">
+                                                @{
+                                                    while ((difficultyId == lastDifficultyId) && (counter < table.Rows.Count))
+                                                    {
+                                                        row = table.Rows[counter];
+                                                        difficultyId = row.Field<long>("FkDifficultyId");
+                                                        string? gameName = row.Field<string>("Game") ?? "";
 
-                                while (counter < table.Rows.Count)
-                                {
-                                    string? difficultyName = row.Field<string>("Difficulty") ?? "";
+                                                        if (gameName == "") break;
 
-                                    long difficultyId = row.Field<long>("FkDifficultyId"); ;
-                                    long lastDifficultyId = difficultyId;
+                                                        <option>@gameName</option>
 
-                                    if (difficultyName == "") break;
+                                                        difficultyId = row.Field<long>("FkDifficultyId");
 
-                                    <optgroup label="@difficultyName">
-                                        @{
-                                            while ((difficultyId == lastDifficultyId) && (counter < table.Rows.Count))
-                                            {
-                                                row = table.Rows[counter];
-                                                difficultyId = row.Field<long>("FkDifficultyId");
-                                                string? gameName = row.Field<string>("Game") ?? "";
-
-                                                if (gameName == "") break;
-
-                                                <option>@gameName</option>
-
-                                                difficultyId = row.Field<long>("FkDifficultyId");
-
-                                                counter++;
-                                            }
-                                            lastDifficultyId = difficultyId;
+                                                        counter++;
+                                                    }
+                                                    lastDifficultyId = difficultyId;
+                                                }
+                                            </optgroup>
                                         }
-                                    </optgroup>
-                                }
-                            }
+                                    }
 
-                        </select>
-                    </fieldset>
-                </fieldset>
-                <button type="button" name="btnConfirm" id="btnBeginGame" class="ornate">Confirm</button>
-            </form>
+                                </select>
+                            </fieldset>
+                        </fieldset>
+                        <button type="button" name="btnConfirm" id="btnBeginGame" class="ornate">Confirm</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="modal-winner-id" class="modal-canvas hidden">
+                <div class="main-panel modal-winner">
+                    <span class="close-popup">&#10006;</span>
+                    <form>
+                        <fieldset>
+                            <legend>Congratulations - You Won!</legend>
+
+                            <label for="numElapsedTime">Your Time (sec):</label>
+                            <output name="numElapsedTime" id="numElapsedTime"></output>
+
+                            <label for="numHits">Hits:</label>
+                            <output name="numHits" id="numHits"></output>
+
+                            <label for="numMisses">Misses:</label>
+                            <output name="numMisses" id="numMisses"></output>
+
+                            <output name="txtMiscMessage"></output>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        }
+    }
+    else {
+        <div id="modal-login-id" class="modal-canvas hidden">
+            @await Html.PartialAsync("_LoginPartial", new CGameUser())
         </div>
-    </div>
 
-    <div id="modal-winner-id" class="modal-canvas hidden">
-        <div class="main-panel modal-winner">
-            <span class="close-popup">&#10006;</span>
-            <form>
-                <fieldset>
-                    <legend>Congratulations - You Won!</legend>
-
-                    <label for="numElapsedTime">Your Time (sec):</label>
-                    <output name="numElapsedTime" id="numElapsedTime"></output>
-
-                    <label for="numHits">Hits:</label>
-                    <output name="numHits" id="numHits"></output>
-
-                    <label for="numMisses">Misses:</label>
-                    <output name="numMisses" id="numMisses"></output>
-
-                    <output name="txtMiscMessage"></output>
-                </fieldset>
-            </form>
+        <div id="modal-register-id" class="modal-canvas hidden">
+            @await Html.PartialAsync("_Register", new CGameUser())
         </div>
-    </div>
+    }
 
-    <script type="module">
+
+
+    <script type="module" defer="defer">
         'use strict';
 
         import {CWheelGame} from '/js/CWheelGame.js';
@@ -324,6 +293,15 @@
         // to prevent the need for a full re-render
 
         // UPDATE THE LOGIN FORM WITH NEWLY CREATED ACCOUNT'S DETAILS
+        
+        fetch('/Home/Login', { method:'POST', body:formData })
+            .then(r => r.text())
+            .then(html => {
+                document.querySelector('#modal-login-id').innerHTML = html;
+                initialiseWheel();   // call a function that hooks listeners again
+            });
+
+
         $(document).ready(function() {
             // delegate the event to the document so that the
             // handler is not lost when the element it targets is reloaded

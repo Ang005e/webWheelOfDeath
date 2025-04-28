@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 using webWheelOfDeath.Models;
 
 namespace webWheelOfDeath.Controllers
@@ -45,58 +44,38 @@ namespace webWheelOfDeath.Controllers
         // ##################### LOGIN ACTIONS ##################### \\
         [HttpPost]
         [Route("Login")]
-        //[Route("home/login/{userType:string}")] then add in constructor Login(string userType)
-        public IActionResult Login(CGameUser player)
+        public IActionResult Login(CCredentials playerLogin)
         {
 
-            // Get Credentials
-            //string username = Request.Form["txtLoginUsername"].ToString() ?? "";
-            //string password = Request.Form["txtLoginPassword"].ToString() ?? "";
+            // attempt authentication.
+            playerLogin.Authenticate();
 
-            //  ToDo: MOVE TO MODEL
-            // Database API silliness...
-            // make a CUser object and authenticate using it
-            CCredentials userLogin = player;
-            //{
-            //    txtPlayerUsername = username,
-            //    txtPlayerPassword = password
-            //};
+            HttpContext.Session.SetString("previous-login-attempted", "true");
 
-            // ways to do this:
-            // 1. 
-
-            if ( ! userLogin.loginAttemptFailed)
+            if ( ! playerLogin.loginAttemptFailed)
             {
-                string sessionId = $"session-{Random.Shared.Next(1000, int.MaxValue).ToString()}";
-                HttpContext.Session.SetString("session-id", sessionId);
+
+                // Set the "user-id" session variable to the player id (DB field)
+                //      Meaning, I'll need to get the ID from the CRUDS classes and pass through the model.
+
+                //ToDo: SET USING ID, NOT USERNAME
+                HttpContext.Session.SetString("user-id", playerLogin.txtPlayerUsername);
 
                 // CLEAR THE MODELSTATE ARRGGGGGGGGHHH
                 ModelState.Clear();
 
-                // once all processing is done, initialise and return the View
-                return PartialView("_LoginPartial"); // return View("Index", credentials); // do I even need this, or just PartialView??
+                return PartialView("_LoginPartial");
             }
             else
             {
-                
-                return View("Index");
+                // otherwise, only return the Login view.
+                return View("_LoginPartial");
             }
         }
 
-        //[HttpGet]
-        //[Route("Authenticate")]
-        //public IActionResult Login()
-        //{
-        //    // get values from the correct fields
-
-        //    // USE MODEL INSTEAD
-
-        //    return PartialView();
-        //}
-
         [HttpPost]
         [Route("Register")]
-        public IActionResult Register()
+        public IActionResult Register(CGameUser player)
         {
             return View();
         }

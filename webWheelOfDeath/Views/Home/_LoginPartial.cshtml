@@ -5,6 +5,15 @@
 @model webWheelOfDeath.Models.CCredentials
 
 
+@*
+    This is a partial view for the login form.
+    It is included in the main view (Index.cshtml) using the following syntax:
+    @Html.Partial("_LoginPartial", Model)
+    The model passed to this partial view should be of type CCredentials.
+
+    ToDo:
+    inside the _Login partial view, check if the user just failed a login (Request.Form["txtLoginUsername"].ToString()). If so, 
+*@ 
 
 <!-- <div id="modal-login-id" class="modal-canvas hidden"> this section should be OUTSIDE the partial -->
 <div class="main-panel modal-player">
@@ -14,9 +23,9 @@
             <legend>Do You Have What It Takes?</legend>
 
             <fieldset class="borderless">
-                <label asp-for="PlayerUsername">Username:</label>
+                <label asp-for="txtPlayerUsername">Username:</label>
                 <input type="text"
-                        asp-for="PlayerUsername"
+                        asp-for="txtPlayerUsername"
                        id="txtPlayerLoginUsername"
                         placeholder="[Enter Username]"
                         required="required" />
@@ -24,9 +33,9 @@
 
 
             <fieldset class="borderless">
-                <label asp-for="PlayerPassword">Password:</label>
+                <label asp-for="txtPlayerPassword">Password:</label>
                 <input type="text"
-                        asp-for="PlayerPassword"
+                        asp-for="txtPlayerPassword"
                        id="txtPlayerLoginPassword"
                         placeholder="[Enter Password]"
                         required="required" />

@@ -110,8 +110,9 @@ export class CWheelGame extends CTimer {
             } else if (this.#showPopups) {
 
                 this.#registerModal.hide();
-                // this.gameSelection.hide();
                 this.#loginModal.display();
+                // this.gameSelection.hide();
+
 
             } else {
                 this.start();

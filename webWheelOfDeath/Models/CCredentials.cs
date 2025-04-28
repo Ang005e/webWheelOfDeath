@@ -14,12 +14,12 @@ namespace webWheelOfDeath.Models
         public string txtPlayerPassword { get; set; } = string.Empty;
         public bool loginAttemptFailed { get; set; } = false;
 
-        public void Authenticate(string username, string password)
+        public void Authenticate()
         {
             CPlayer player = new CPlayer()
             {
-                Username = username,
-                Password = password,
+                Username = txtPlayerUsername,
+                Password = txtPlayerPassword,
             };
             loginAttemptFailed = !player.Authenticate();
         }
