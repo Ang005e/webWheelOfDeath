@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibWheelOfDeath", "..\LibWh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTester", "..\ConsoleTester\ConsoleTester.csproj", "{5D15F6E8-13CA-40B8-B2C9-7F9942A31E32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibEntity.NetCore", "..\..\..\Shared\LibEntity\LibEntity.NetCore\LibEntity.NetCore.csproj", "{8F7AC9F8-A399-480D-BDDA-10BFAC7A78F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibEntity.NetCore", "..\..\..\Shared\LibEntity\LibEntity.NetCore\LibEntity.NetCore.csproj", "{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{5D15F6E8-13CA-40B8-B2C9-7F9942A31E32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D15F6E8-13CA-40B8-B2C9-7F9942A31E32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D15F6E8-13CA-40B8-B2C9-7F9942A31E32}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8F7AC9F8-A399-480D-BDDA-10BFAC7A78F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8F7AC9F8-A399-480D-BDDA-10BFAC7A78F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8F7AC9F8-A399-480D-BDDA-10BFAC7A78F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8F7AC9F8-A399-480D-BDDA-10BFAC7A78F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
