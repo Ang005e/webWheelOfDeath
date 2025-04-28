@@ -60,6 +60,7 @@ namespace webWheelOfDeath.Controllers
 
                 //ToDo: SET USING ID, NOT USERNAME
                 HttpContext.Session.SetString("user-id", playerLogin.txtPlayerUsername);
+                HttpContext.Session.SetString("user-name", playerLogin.txtPlayerUsername);
 
                 // CLEAR THE MODELSTATE ARRGGGGGGGGHHH
                 ModelState.Clear();

@@ -3,7 +3,7 @@ import * as Util from './lib/Utilities.js';
 import {CTimer} from './lib/CTimer.js';
 import {CGameStatus, EnumGameStatus} from "./CGameStatus.js";
 import {CBalloon} from './CBalloon.js';
-import {CGameSelectModal, CLoginModal, CRegisterModal, CWinnerModal} from "./CAppModals.js";
+import {CGameSelectModal, CWinnerModal} from "./CAppModals.js";
 
 //-------------------------------------------------------------------------------
 //---------------------------------CWheelGame------------------------------------
@@ -24,16 +24,12 @@ export class CWheelGame extends CTimer {
     #maxCountdownSeconds = this.#countdownPanel.querySelector('.countdown-max-seconds');
     #countdownRemaining = this.#countdownPanel.querySelector('.countdown-remaining');
     #btnStartStop = document.getElementById('btnStartStop');
-    #showPopups;
     #balloons = new Map();
     #animationClass;
 
-    #loginModal;
-    #registerModal;
     #gameSelectionModal;
-    
-    constructor(duration = 30000, minBalloons = 10, maxBalloons = 16,
-        maxThrows = 0, showPopups = true) {
+    constructor(playerUsername, duration = 30000, minBalloons = 10, maxBalloons = 16,
+        maxThrows = 0) {
         // show popups can be set to false, to prevent default popups being shown... but things will not work
 
         if (minBalloons < 1) {
@@ -46,6 +42,8 @@ export class CWheelGame extends CTimer {
 
         super(duration, 100);
 
+        this.playerUsername = playerUsername
+
         this.minBalloons = minBalloons;
         this.maxBalloons = maxBalloons;
         this.maxThrows = maxThrows > 0 ? maxThrows : maxBalloons * 2;
@@ -55,19 +53,13 @@ export class CWheelGame extends CTimer {
         this.#countdownRemaining.innerText = this.#maxSeconds; // Must come AFTER this.duration
         this.#showPopups = showPopups;
 
-        if (this.#showPopups) {
 
-            /// Configure the login modal popup
-            this.#loginModal = new CLoginModal('#modal-login-id', true, 'login-modal-hide');
-            // this.#loginModal.callbackFunction = () => {this.start()};
-
-            // Configure the register modal popup
-            this.#registerModal = new CRegisterModal('#modal-register-id', true, 'register-modal-hide');
-
-            // Create the game difficulty selection modal
-            this.#gameSelectionModal = new CGameSelectModal('#modal-game-selection-id', true, 'game-selection-modal-hide')
-            this.#gameSelectionModal.callbackFunction = () => { this.start() };
-        }
+        // Create the game difficulty selection modal
+        this.#gameSelectionModal = new CGameSelectModal('#modal-game-selection-id', true, 'game-selection-modal-hide')
+        this.#gameSelectionModal.callbackFunction = () => {
+            this.#gameSelectionModal.hide();
+            this.start()
+        };
 
         this.#countdownGauge.max = this.duration.toString();
         this.#maxCountdownSeconds.innerText = this.#maxSeconds;
@@ -104,54 +96,21 @@ export class CWheelGame extends CTimer {
         this.#btnStartStop.addEventListener('mousedown', event=> {
             event.stopPropagation();    // prevent event bubbling up to parent(s)
 
-
             if (this.isRunning) {
                 this.#gameOver(EnumGameStatus.Stopped);
-            } else if (this.#showPopups) {
-
-                this.#registerModal.hide();
-                this.#loginModal.display();
-                // this.gameSelection.hide();
-
-
             } else {
                 this.start();
             }
         });
 
-        if (this.#showPopups) {
-            //// ########### AJAX CALL/CONTENT REFRESH LISTENERS ############
+        // ########### NAVIGATION LISTENERS ############
 
-            // Call the login startup function to reapply its javascript/event listeners.
-            document.addEventListener("partial-refresh", (event) => {
-                if (event.detail.form === "login-form") {
-                    // Use after the login HTML is replaced by an AJAX call to the server.
-                    this.#loginModal.startupCallbackFunction()
-                }
-            })
-
-            // ########### NAVIGATION LISTENERS ############
-
-            // Listen for a register request (links to the "create account" button on CLoginModal)
-            document.addEventListener("create-account", event => {
-                // event.preventDefault();     // As the button type is submit, this prevents postback to the server
-                event.stopPropagation();    // prevent event bubbling up to parent(s)
-                this.#loginModal.hide();
-                this.#registerModal.display();
-            })
-
-            // Ensure that the when the register modal is closed, the login modal re-opens
-            document.addEventListener('register-modal-hide', event => {
-                event.stopPropagation();
-                this.#loginModal.display();
-            })
-            
-            // When login is completed, open the game selection modal
-            document.addEventListener('login-complete', event => {
-                event.stopPropagation();
-                this.#gameSelectionModal.display();
-            })
-        }
+        // When login is completed, open the game selection modal
+        document.addEventListener('login-complete', event => {
+            event.stopPropagation();
+            this.#gameSelectionModal.display();
+        })
+        
     }
 
     get #maxSeconds() {
@@ -379,7 +338,7 @@ export class CWheelGame extends CTimer {
         this.cancel();
 
         // Check for a win...
-        if (this.#showPopups && status === EnumGameStatus.Won) {
+        if (status === EnumGameStatus.Won) {
             // Check for a new record...
             const FASTEST_PLAYER_KEY = 'fastest_player';
             const FASTEST_TIME_KEY = 'fastest_time';
@@ -389,7 +348,8 @@ export class CWheelGame extends CTimer {
             let message;
 
             if (fastestTimeOnRecord === null || this.elapsedTime < parseInt(fastestTimeOnRecord)) {
-                localStorage.setItem(FASTEST_PLAYER_KEY, this.#loginModal.playerUsername);
+
+                localStorage.setItem(FASTEST_PLAYER_KEY, this.playerUsername);
                 localStorage.setItem(FASTEST_TIME_KEY, this.elapsedTime.toString());
 
                 if (fastestTimeOnRecord === null) {

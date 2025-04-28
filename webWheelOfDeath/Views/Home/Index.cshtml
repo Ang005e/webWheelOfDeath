@@ -15,34 +15,21 @@
     TODO:
     convert to partial views:
         ~~Login~~
-        Game
+        ~~Game~~
     Check which one to load based on session variable with user ID stored in it
 *@
 
 @{
     ViewData["Title"] = "Home Page";
-
-    int duration = 25000;
-
-    int minBalloons = 2;
-    int maxBalloons = 3;
-    int maxThrows = 20;
 }
 
-@* <div class="text-center"> *@
-@*     <h1 class="display-4">Welcome</h1> *@
-@*     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p> *@
-@* </div> *@
-
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<!--<a href="~/lib/jquery/dist/jquery.min.map">~/lib/jquery/dist/jquery.min.map</a>-->
-<!doctype html>
 <!--
 Date: 2020-23
 Author: Ramin Majidi
 Purpose: This and all other code elements of this project (unless otherwise commented) are the work of the
 author and may be used for TAFE Assessment purposes only.
 -->
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -149,11 +136,11 @@ author and may be used for TAFE Assessment purposes only.
     HTML
 
     -->
-
-    @{
+     
+        @{
         string? loggedUserId = Context.Session.GetString("user-id");
-
-        if ( ! string.IsNullOrWhiteSpace(loggedUserId))
+        }
+        @if ( ! string.IsNullOrWhiteSpace(loggedUserId))
         {
 
 			// ToDo: Convert other pages to partial views too.
@@ -244,68 +231,46 @@ author and may be used for TAFE Assessment purposes only.
                     </form>
                 </div>
             </div>
+
+            <script type="module" defer="defer">
+            'use strict';
+
+            let _game;
+
+            try {
+
+                // get duration, throws, min and max balloons from session variable set in controller.
+                _game = new CWheelGame('@Context.Session.GetString("user-name")', 10000, 2, 10, 20);
+
+                    document.addEventListener('game-over', event => {
+                        console.log(`Status: ${event.detail.gameStatus} Elapsed: ${event.detail.elapsed}`);
+                    });
+
+            } catch (e) {
+                    new CMessageModal('#modal-message-id').display(e.message, false, 7000);
+                }
+            </script>
+            
         }
-    }
-    else {
-        <div id="modal-login-id" class="modal-canvas hidden">
-            @await Html.PartialAsync("_LoginPartial", new CGameUser())
-        </div>
+        else
+        {
+            <div id="modal-login-id" class="modal-canvas"> <!-- hidden"> -->
+                @await Html.PartialAsync("_LoginPartial", new CGameUser())
+            </div>
 
-        <div id="modal-register-id" class="modal-canvas hidden">
-            @await Html.PartialAsync("_Register", new CGameUser())
-        </div>
-    }
-
-
-
+            <div id="modal-register-id" class="modal-canvas hidden">
+                @await Html.PartialAsync("_Register", new CGameUser())
+            </div>
+        }
     <script type="module" defer="defer">
-        'use strict';
+        import { CAccountPopups } from "/js/CAccountPopups.js"
 
-        import {CWheelGame} from '/js/CWheelGame.js';
-        import {CMessageModal} from '/js/CAppModals.js';
+		let popups = new CAccountPopups();
 
-
-        // user detail entry, then start the game
-        // So, before that, I'll need to have the registration option
-        // and may need to extract the login from the wheelGame file, its not appropriate tyo have it in there
-
-        let _game;
-
-        try {
-            _game = new CWheelGame(@duration, @minBalloons, @maxBalloons, @maxThrows);
-
-            document.addEventListener('game-over', event => {
-                console.log(`Status: ${event.detail.gameStatus} Elapsed: ${event.detail.elapsed}`);
-            });
-
-        } catch (e) {
-            new CMessageModal('#modal-message-id').display(e.message, false, 7000);
-        }
-
-
-
-        // To prevent the whole page from reloading when data is transferred from the server...
-        // 1. Intercept the form submission
-        // 2. Perform an AJAX request
-        // 3. Update ONLY the targeted element with the response
-
-        // Whenever any links are clicked inside this section, request that content via AJAX
-        // to prevent the need for a full re-render
-
-        // UPDATE THE LOGIN FORM WITH NEWLY CREATED ACCOUNT'S DETAILS
-        
-        fetch('/Home/Login', { method:'POST', body:formData })
-            .then(r => r.text())
-            .then(html => {
-                document.querySelector('#modal-login-id').innerHTML = html;
-                initialiseWheel();   // call a function that hooks listeners again
-            });
-
-
-        $(document).ready(function() {
+                $(document).ready(function () {
             // delegate the event to the document so that the
             // handler is not lost when the element it targets is reloaded
-            $(document).on("submit", "#modal-register-id form", function(event) {
+            $(document).on("submit", "#modal-register-id form", function (event) {
                 event.preventDefault(); // Prevent the default form submission
 
                 // ToDo: replace with Javascript fetch
@@ -331,61 +296,9 @@ author and may be used for TAFE Assessment purposes only.
             });
             $(document).on("submit", "#modal-login-id form", function (event) {
                 event.preventDefault();
-                
-                // code for refresh of the login partial, if needed in the future
-                // perhaps... refresh it if the login fails?
-                // then, if it succeeds, store the login details and "successful login" on the client side,
-                // so that it can be later sent to the server to authenticate write operations?
-                // but this is weird, normally you'd just do the wacky magic authentication thingies on the
-                // server and "unlock" the client side content.
-
-                // I can do that!! I can send the JAVASCRIPT down!!!!!!!!
-
-                // client side:
-                // global session variable in javascript? no.
-                // cookie? have not covered cookies yet.
-                // session storage (NOT LOCAL) manually clear session storage for key when logged out *
-                //
-
-                // server side:
-                // viewbag or viewdata? no, only persists for one round trip
-                // session storage * (use in the code behind)
-                //
-                // button wired up to specifc onPost handler in cshtml class behind the page (view)
-
-
-                // so, todo:
-                // Post login data from the client via javascript fetch or form submission/ajax
-                // Handle in the controller, in Authenticate(), return a value indicative of success/failure
-                // Get the response, and if it's a success, navigate to the difficulty selection popup through another request
-            })
-        });
-
-
-        // ToDo:
-        // login/make account
-        // choose game mode
-        // record details
-
-        // V1.1:
-        // create account - modal popup
-
-        // V1.2
-        // login to account - modal popup (original game start popup)
-
-        // V1.3
-        // choose game mode - modal, again! after login.
-
-        //V1.4
-        // record game details
-
-        //V1.5
-        // finishing touches
-
-        //V2.0: completed product
 
     </script>
-
+    
 </body>
 
 </html>
