@@ -5,9 +5,19 @@
  
 @*
     TODO: SEPERATE YOUR CONCERNS, DUMBLEDOOR
+    (remove webWheelOfDeath reference and code, move to model)
 *@
-@model webWheelOfDeath.Models.CUser
 
+@model webWheelOfDeath.Models.CGameUser;
+
+
+@*
+    TODO:
+    convert to partial views:
+        Login
+        Game
+    Check which one to load based on session variable with user ID stored in it
+*@
 
 @{
     ViewData["Title"] = "Home Page";
@@ -141,7 +151,7 @@
 
     -->
     <div id="modal-login-id" class="modal-canvas hidden">
-        @await Html.PartialAsync("_LoginPartial", new CUser())
+        @await Html.PartialAsync("_LoginPartial", new CGameUser())
     </div>
     
     <div id="modal-register-id" class="modal-canvas hidden">
@@ -204,10 +214,10 @@
                             @{
                                 string sql = @"
                                                     select
-                                                        G.[Id], G.[Game], G.[ForiegnKey1], D.[Difficulty], D.[Id]
+                                                        G.[Id], G.[Game], G.[FkDifficultyId], D.[Difficulty], D.[Id]
                                                     from
                                                         tblGame G inner join
-                                                        tblDifficulty D on D.[Id] = G.[ForiegnKey1]
+                                                        tblDifficulty D on D.[Id] = G.[FkDifficultyId]
                                                     where
                                                         (1=1)
                                                     order by
@@ -222,7 +232,7 @@
                                 {
                                     string? difficultyName = row.Field<string>("Difficulty") ?? "";
 
-                                    long difficultyId = row.Field<long>("ForiegnKey1"); ;
+                                    long difficultyId = row.Field<long>("FkDifficultyId"); ;
                                     long lastDifficultyId = difficultyId;
 
                                     if (difficultyName == "") break;
@@ -232,14 +242,14 @@
                                             while ((difficultyId == lastDifficultyId) && (counter < table.Rows.Count))
                                             {
                                                 row = table.Rows[counter];
-                                                difficultyId = row.Field<long>("ForiegnKey1");
+                                                difficultyId = row.Field<long>("FkDifficultyId");
                                                 string? gameName = row.Field<string>("Game") ?? "";
 
                                                 if (gameName == "") break;
 
                                                 <option>@gameName</option>
 
-                                                difficultyId = row.Field<long>("ForiegnKey1");
+                                                difficultyId = row.Field<long>("FkDifficultyId");
 
                                                 counter++;
                                             }
@@ -305,12 +315,12 @@
 
 
 
-        // to prevent the whole page from reloading when data is transferred from the server...
-        // 1. intercept the form submission
-        // 2. perform an AJAX request
-        // 3. update ONLY the targeted element with the response
+        // To prevent the whole page from reloading when data is transferred from the server...
+        // 1. Intercept the form submission
+        // 2. Perform an AJAX request
+        // 3. Update ONLY the targeted element with the response
 
-        // whenever any links are clicked inside this section, request that content via AJAX
+        // Whenever any links are clicked inside this section, request that content via AJAX
         // to prevent the need for a full re-render
 
         // UPDATE THE LOGIN FORM WITH NEWLY CREATED ACCOUNT'S DETAILS

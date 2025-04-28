@@ -46,35 +46,53 @@ namespace webWheelOfDeath.Controllers
         [HttpPost]
         [Route("Login")]
         //[Route("home/login/{userType:string}")] then add in constructor Login(string userType)
-        public IActionResult Login(CCredentials credentials)
+        public IActionResult Login(CGameUser player)
         {
 
-            // Database API silliness
+            // Get Credentials
+            //string username = Request.Form["txtLoginUsername"].ToString() ?? "";
+            //string password = Request.Form["txtLoginPassword"].ToString() ?? "";
 
-            // if login succeeds
-            string sessionId = $"session-{Random.Shared.Next(1000, int.MaxValue).ToString()}";
-            HttpContext.Session.SetString("session-id", sessionId);
+            //  ToDo: MOVE TO MODEL
+            // Database API silliness...
+            // make a CUser object and authenticate using it
+            CCredentials userLogin = player;
+            //{
+            //    txtPlayerUsername = username,
+            //    txtPlayerPassword = password
+            //};
 
-            // CLEAR THE MODELSTATE ARRGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
-            ModelState.Clear();
+            // ways to do this:
+            // 1. 
 
-            // once all processing is done, initialise and return the View
-            // make sure this is handled in javascript
-            return PartialView("_LoginPartial", credentials); // return View("Index", credentials); // do I even need this, or just PartialView??
+            if ( ! userLogin.loginAttemptFailed)
+            {
+                string sessionId = $"session-{Random.Shared.Next(1000, int.MaxValue).ToString()}";
+                HttpContext.Session.SetString("session-id", sessionId);
+
+                // CLEAR THE MODELSTATE ARRGGGGGGGGHHH
+                ModelState.Clear();
+
+                // once all processing is done, initialise and return the View
+                return PartialView("_LoginPartial"); // return View("Index", credentials); // do I even need this, or just PartialView??
+            }
+            else
+            {
+                
+                return View("Index");
+            }
         }
 
-        [HttpGet]
-        [Route("Authenticate")]
-        public IActionResult Login()
-        {
-            // get values from the correct fields
-            // string username = Request.Form["txtLoginUsername"].ToString() ?? "";
-            // string password = Request.Form["txtLoginPassword"].ToString() ?? "";
-            // USE MODEL INSTEAD
+        //[HttpGet]
+        //[Route("Authenticate")]
+        //public IActionResult Login()
+        //{
+        //    // get values from the correct fields
 
+        //    // USE MODEL INSTEAD
 
-            return PartialView();
-        }
+        //    return PartialView();
+        //}
 
         [HttpPost]
         [Route("Register")]
