@@ -41,6 +41,9 @@ author and may be used for TAFE Assessment purposes only.
     <link rel="stylesheet" href="/css/animations.css" />
     <link rel="stylesheet" href="/css/statusPanel.css" />
     <link rel="stylesheet" href="/css/theme.css" />
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
 </head>
 
 <body class="shadow-text">
@@ -115,11 +118,11 @@ author and may be used for TAFE Assessment purposes only.
 
     <!-- create a form tag (could just use HTML, but this helps keep things in sync, i.e. when refactoring) -->
     @*@using (Html.BeginForm())
-        {
-        <p>
-            Html.TextAreaFor(x => x.Body)
-        </p>
-        }*@
+    {
+    <p>
+        Html.TextAreaFor(x => x.Body)
+    </p>
+    }*@
 
 
     <!--
@@ -261,43 +264,29 @@ author and may be used for TAFE Assessment purposes only.
             <div id="modal-register-id" class="modal-canvas hidden">
                 @await Html.PartialAsync("_Register", new CGameUser())
             </div>
-        }
-    <script type="module" defer="defer">
-        import { CAccountPopups } from "/js/CAccountPopups.js"
 
-		let popups = new CAccountPopups();
+            <script type="module" defer="defer">
+                import { CAccountPopups } from "/js/CAccountPopups.js"
+                import { partialLoader } from "/js/partialLoader.js"
 
-                $(document).ready(function () {
-            // delegate the event to the document so that the
-            // handler is not lost when the element it targets is reloaded
-            $(document).on("submit", "#modal-register-id form", function (event) {
-                event.preventDefault(); // Prevent the default form submission
+                let popups = new CAccountPopups();
 
-                // ToDo: replace with Javascript fetch
-                $.ajax({
-                    url: '/Login',  // URL to the Login action
-                    type: 'POST',
-                    data: $(this).serialize(),  // Serialize the form data
-                    success: function (result) {
-                        // Update the modal content with the returned partial view HTML
-                        $("#modal-login-id").html(result);
-                        document.dispatchEvent(new CustomEvent("partial-refresh", {
-                            bubbles: true,
-                            detail:
-                            {
-                                form: "login-form"
-                            }
-                        }));
-                    },
-                    error: function () {
-                        alert("There was an error processing your request.");
-                    }
+                $(document).ready( () => {
+                    // delegate the event to the document so that the
+                    // handler is not lost when the element it targets is reloaded
+                    $(document).on("submit", "#modal-register-id form", function (event) {
+                        event.preventDefault(); // Prevent the default form submission
+                    partialLoader("/Register", "#modal-login-id", "login-form");
+                    });
+
+                    $(document).on("submit", "#modal-login-id form", function (event) {
+                       event.preventDefault();
+                       // partialLoader("/Login");
+                    })
                 });
-            });
-            $(document).on("submit", "#modal-login-id form", function (event) {
-                event.preventDefault();
-
-    </script>
+                 
+            </script>
+        }
     
 </body>
 
