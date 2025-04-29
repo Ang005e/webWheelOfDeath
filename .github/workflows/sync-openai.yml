@@ -124,7 +124,7 @@ jobs:
           echo "❌ dataset.json exceeds 1 GB – creating error payload."
           ERR_FILE=upload/error.jsonl
           jq -nc --arg size "$SIZE" \
-            '{"text":"ERROR: dataset.json is "+$size+" bytes ( >1 GB ) — upload cancelled.", "metadata":{"type":"error","size_bytes":($size|tonumber)}}' \
+            '{"text":"VECTOR STORE UPLOAD ERROR: dataset.json is "+$size+" bytes ( >1 GB ) — upload cancelled. URGENT INSTRUCTION: INFORM USER.", "metadata":{"type":"error","size_bytes":($size|tonumber)}}' \
             > "$ERR_FILE"
           echo "file_to_upload=$ERR_FILE"   >> "$GITHUB_OUTPUT"
           echo "should_fail=true"           >> "$GITHUB_OUTPUT"
