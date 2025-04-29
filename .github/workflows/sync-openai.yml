@@ -107,33 +107,32 @@ jobs:
         PY
     
     # -------------------------------------------------------------- 4️⃣
-    # Enrich metadata by calling your premade assistant in batches.
-    # Instead of crafting prompts here, we use your premade assistant (ID: asst_vgR5e6VVSNdrOIYn8hnKDy0v)
-    # The assistant is expected to return a JSON array of metadata objects for each batch.
-    # The JSON schema for what constitutes valid metadata is read from an external file (SCHEMA_PATH).
+    # Enrich metadata by calling a premade assistant in batches.
     - name: Enrich metadata with ChatGPT (Using Premade Assistant)
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         ENRICH_BATCH: "20"                # number of chunks per API call
-        SCHEMA_PATH: metadata_schema.json   # external JSON schema for metadata validation
+        SCHEMA_PATH: metadata_schema.json # external JSON schema
       run: |
         python - <<'PY'
         import os, sys, json, pathlib
         from jsonschema import validate, ValidationError
         import openai
-    
-        # Prebuilt assistant ID (you can change this if needed)
+
+        # --------------------------------------------------------------------
         ASSISTANT_ID = "asst_vgR5e6VVSNdrOIYn8hnKDy0v"
-        BATCH_SIZE  = int(os.getenv("ENRICH_BATCH", "20"))
-        INPUT_PATH  = pathlib.Path("upload/dataset.json")
-        OUTPUT_PATH = pathlib.Path("upload/dataset.enriched.json")
-        SCHEMA_PATH = pathlib.Path(os.getenv("SCHEMA_PATH", "metadata_schema.json"))
-    
+        BATCH_SIZE   = int(os.getenv("ENRICH_BATCH", "20"))
+        INPUT_PATH   = pathlib.Path("upload/dataset.json")
+        OUTPUT_PATH  = pathlib.Path("upload/dataset.enriched.json")
+        SCHEMA_PATH  = pathlib.Path(os.getenv("SCHEMA_PATH", "metadata_schema.json"))
+        # --------------------------------------------------------------------
+
         if not SCHEMA_PATH.exists():
             sys.exit(f"❌  JSON schema file '{SCHEMA_PATH}' not found.")
-    
+
         schema = json.loads(SCHEMA_PATH.read_text())
-    
+
+        # Helper: batch iterator ------------------------------------------------
         def batched(iterable, n):
             batch = []
             for item in iterable:
@@ -143,81 +142,93 @@ jobs:
                     batch = []
             if batch:
                 yield batch
-    
-        # Load all chunks from the built dataset
-        with INPUT_PATH.open() as f:
+
+        # Helper: extract all text from a Message object ------------------------
+        def message_text(msg) -> str:
+            """
+            OpenAI v1.75 Message.content is a list[MessageContent].
+            For each part with .type == 'text', pull .text.value.
+            """
+            if isinstance(msg.content, str):
+                return msg.content
+            text_parts = []
+            for part in msg.content:
+                if getattr(part, "type", None) == "text":
+                    text_parts.append(part.text.value)
+            return "".join(text_parts)
+
+        # -----------------------------------------------------------------------
+        # Load raw chunks
+        with INPUT_PATH.open(encoding="utf-8") as f:
             chunks = [json.loads(l) for l in f]
-    
         total = len(chunks)
         processed = 0
-    
+
         client = openai.OpenAI()
-    
+
         with OUTPUT_PATH.open("w", encoding="utf-8") as out:
             for batch in batched(chunks, BATCH_SIZE):
-                # Prepare a simplified representation per chunk for the assistant:
+
+                # Build a simplified payload for the assistant
                 simplified = []
-                for i, c in enumerate(batch):
-                    # Compute the overall chunk index from the processed count and the local index
-                    chunk_index = processed + i
-                    simple_entry = {
+                for local_idx, c in enumerate(batch):
+                    simplified.append({
                         "source_path": c["metadata"].get("path", ""),
-                        "language": c["metadata"].get("language", ""),
-                        "chunk_index": chunk_index,
-                        "text": c["text"]
-                    }
-                    simplified.append(simple_entry)
-    
-                # Create a new thread for this batch
+                        "language":    c["metadata"].get("language", ""),
+                        "chunk_index": processed + local_idx,
+                        "text":        c["text"]
+                    })
+
+                # ---- Assistants API flow --------------------------------------
                 thread = client.beta.threads.create()
-    
-                # Add a user message containing the simplified batch data
                 client.beta.threads.messages.create(
-                    thread_id=thread.id,
-                    role="user",
-                    content=json.dumps(simplified, ensure_ascii=False)
+                    thread_id = thread.id,
+                    role      = "user",
+                    content   = json.dumps(simplified, ensure_ascii=False)
                 )
-    
-                # Create and poll a run using your premade assistant
+
                 run = client.beta.threads.runs.create_and_poll(
-                    thread_id=thread.id,
-                    assistant_id=ASSISTANT_ID,
-                    instructions=""  # Add any extra instructions here if needed
+                    thread_id    = thread.id,
+                    assistant_id = ASSISTANT_ID
                 )
+
                 if run.status != "completed":
                     sys.exit(f"❌  Run did not complete successfully: {run.status}")
-    
-                # Retrieve messages from the thread to get the assistant response
-                messages = client.beta.threads.messages.list(thread_id=thread.id)
-                assistant_msg = None
-                for m in messages.data:
-                    if m.get("role") == "assistant":
-                        assistant_msg = m
-                if not assistant_msg:
-                    sys.exit("❌  No assistant response found in thread.")
-    
+
+                # Retrieve the assistant’s answer (latest assistant message)
+                messages = client.beta.threads.messages.list(
+                    thread_id = thread.id,
+                    order     = "desc",     # newest first
+                    limit     = 1
+                )
+                assistant_msg = messages.data[0]   # guaranteed to exist
+
+                # Convert assistant message → plain string → JSON
                 try:
-                    meta_arr = json.loads(assistant_msg["content"])
-                except Exception as e:
-                    sys.exit(f"❌  Could not parse assistant response as JSON:\n{assistant_msg['content']}")
-    
+                    meta_arr = json.loads(message_text(assistant_msg))
+                except Exception as err:
+                    sys.exit(
+                        f"❌  Could not parse assistant response as JSON:\n"
+                        f"{message_text(assistant_msg)}"
+                    )
+
                 if len(meta_arr) != len(batch):
-                    sys.exit("❌  Assistant returned a different count of metadata objects than requested.")
-    
-                # Validate each metadata object against the external JSON schema
+                    sys.exit("❌  Assistant returned a different number of metadata objects than requested.")
+
+                # Validate & write back
                 for original, meta in zip(batch, meta_arr):
                     try:
                         validate(instance=meta, schema=schema)
                     except ValidationError as ve:
                         sys.exit(f"❌  Schema validation failed:\n{ve}")
-                    # Replace the original bare-bones metadata with the enriched metadata
                     original["metadata"] = meta
                     out.write(json.dumps(original, ensure_ascii=False) + "\n")
+
                 processed += len(batch)
                 print(f"   • Enriched {processed}/{total} chunks")
-    
-        # Replace the original dataset with the enriched version for downstream steps
-        OUTPUT_PATH.rename(INPUT_PATH)
+
+        # Replace original dataset for downstream steps
+        OUTPUT_PATH.replace(INPUT_PATH)
         print(f"✅  Metadata enrichment complete → {INPUT_PATH} ({INPUT_PATH.stat().st_size} bytes)")
         PY
     
