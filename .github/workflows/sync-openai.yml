@@ -41,9 +41,7 @@ jobs:
                 yield from page.data
                 if not page.has_more:
                     break
-                page = client.vector_stores.files.list(
-                    vector_store_id=vs, limit=100, order="asc",
-                    after=page.data[-1].id)
+                page = client.vector_stores.files.list(vector_store_id=vs, limit=100, order="asc", after=page.data[-1].id)
 
         # Delete everything
         for f in iter_vs_files(vs_id):
