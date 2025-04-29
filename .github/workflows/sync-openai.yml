@@ -149,21 +149,21 @@ jobs:
               file_id=os.environ["FILE_ID"])
           print("✅  Error file attached.")
           PY
-                    exit 1
-                  fi
+          exit 1
+        fi
           
-                  echo "📤  Uploading dataset.json…"
-                  json=$(openai api files.create -f "$DATASET" --purpose assistants)
-                  FILE_ID=$(jq -r '.id' <<<"$json")
-                  echo "   → File ID: $FILE_ID"
-                  export FILE_ID
-          
-                  echo "🔗  Attaching to vector-store…"
-                  python - <<'PY'
-          import os, openai
-          client = openai.OpenAI()
-          client.vector_stores.files.create(
-              vector_store_id=os.environ["VECTOR_ID"],
-              file_id=os.environ["FILE_ID"])
-          print("✅  Dataset attached.")
-          PY
+        echo "📤  Uploading dataset.json…"
+        json=$(openai api files.create -f "$DATASET" --purpose assistants)
+        FILE_ID=$(jq -r '.id' <<<"$json")
+        echo "   → File ID: $FILE_ID"
+        export FILE_ID
+
+        echo "🔗  Attaching to vector-store…"
+        python - <<'PY'
+        import os, openai
+        client = openai.OpenAI()
+        client.vector_stores.files.create(
+            vector_store_id=os.environ["VECTOR_ID"],
+            file_id=os.environ["FILE_ID"])
+        print("✅  Dataset attached.")
+        PY
