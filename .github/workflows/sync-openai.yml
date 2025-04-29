@@ -168,28 +168,12 @@ jobs:
 
                 messages = [
                     {
-                        "role": "system",
-                        "content": textwrap.dedent(f"""\
-                            You are a code-repository metadata assistant.
-                            The user will supply an array of objects; each describes a chunk of a file.
-                            For every array element, create a metadata object that SATISFIES the JSON schema below.
-                            Return ONLY a JSON array of metadata objects, preserving order.
-                            JSON schema to satisfy (do NOT quote it, just use it):
-                            {schema_str}
-                        """)
-                    },
-                    {
                         "role": "user",
                         "content": json.dumps(simplified, ensure_ascii=False)
                     }
                 ]
 
-                resp = client.chat.completions.create(
-                    model             = MODEL,
-                    messages          = messages,
-                    reasoning_effort  = "low",
-                    temperature = 0
-                )
+                resp = client.beta.assistants.retrieve("asst_vgR5e6VVSNdrOIYn8hnKDy0v")
 
                 try:
                     meta_arr = json.loads(resp.choices[0].message.content)
