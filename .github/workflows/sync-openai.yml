@@ -5,8 +5,6 @@ jobs:
   embed:
     runs-on: ubuntu-latest
 
-    # ------------------------------------------------------------------
-    # Shared constants
     env:
       ONE_GB_BYTES: 1073741824   # 1 GiB
 
@@ -15,7 +13,6 @@ jobs:
     - uses: actions/checkout@v4
 
     # -------------------------------------------------------------- 1️⃣
-    # Dependencies
     - name: Install OpenAI CLI + helpers
       run: |
         python -m pip install --upgrade pip
@@ -24,7 +21,6 @@ jobs:
         sudo apt-get install -y jq
 
     # -------------------------------------------------------------- 2️⃣
-    # Empty vector-store
     - name: Empty vector store
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -35,27 +31,24 @@ jobs:
         client = openai.OpenAI()
         vs_id  = os.environ["VECTOR_ID"]
 
-        def iter_vs_files(vs):
-            page = client.vector_stores.files.list(vector_store_id=vs, limit=100, order="asc")
+        def iter_files(vs):
+            page = client.vector_stores.files.list(vector_store_id=vs, limit=100)
             while True:
                 yield from page.data
                 if not page.has_more:
                     break
-                page = client.vector_stores.files.list(vector_store_id=vs, limit=100, order="asc", after=page.data[-1].id)
+                page = client.vector_stores.files.list(
+                    vector_store_id=vs, limit=100, after=page.data[-1].id)
 
-        # Delete everything
-        for f in iter_vs_files(vs_id):
+        for f in iter_files(vs_id):
             client.vector_stores.files.delete(vector_store_id=vs_id, file_id=f.id)
             try:
                 client.files.delete(file_id=f.id)
             except openai.NotFoundError:
                 pass
-
-        # Allow for eventual consistency
         time.sleep(2)
-
-        if list(iter_vs_files(vs_id)):
-            sys.exit("Vector-store not empty — aborting.")
+        if list(iter_files(vs_id)):
+            sys.exit("Vector store not empty — aborting.")
         PY
 
     # -------------------------------------------------------------- 3️⃣
@@ -115,12 +108,11 @@ jobs:
         PY
 
     # -------------------------------------------------------------- 4️⃣
-    # Upload / attach (with 1 GiB guard)
-    - name: Upload / attach (with size guard)
+    #  Decide what to upload  (adds 1 GiB guard)
+    - id: prepare-upload
+      shell: bash
       env:
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        VECTOR_ID:       ${{ secrets.OPENAI_VECTOR_ID }}
-        ONE_GB_BYTES:    ${{ env.ONE_GB_BYTES }}
+        ONE_GB_BYTES: ${{ env.ONE_GB_BYTES }}
       run: |
         set -euo pipefail
 
@@ -129,41 +121,44 @@ jobs:
         echo "📦 dataset.json size: $SIZE bytes"
 
         if [ "$SIZE" -gt "$ONE_GB_BYTES" ]; then
-          echo "❌ dataset.json exceeds 1 GB – cancelling upload."
-
+          echo "❌ dataset.json exceeds 1 GB – creating error payload."
           ERR_FILE=upload/error.jsonl
-          printf '{"text":"ERROR: dataset.json size (%d bytes) exceeds 1GB limit. Upload cancelled.","metadata":{"type":"error","size_bytes":%d}}\n' "$SIZE" "$SIZE" > "$ERR_FILE"
-
-          echo "📤 Uploading error record instead…"
-          json=$(openai api files.create -f "$ERR_FILE" --purpose assistants)
-          FILE_ID=$(jq -r '.id' <<<"$json")
-          echo "   → Error File ID: $FILE_ID"
-          export FILE_ID
-
-          echo "🔗  Attaching error file to vector-store…"
-          python - <<'PY'
-          import os, openai
-          client = openai.OpenAI()
-          client.vector_stores.files.create(
-              vector_store_id=os.environ["VECTOR_ID"],
-              file_id=os.environ["FILE_ID"])
-          print("✅  Error file attached.")
-          PY
-          exit 1
+          jq -nc --arg size "$SIZE" \
+            '{"text":"ERROR: dataset.json is "+$size+" bytes ( >1 GB ) — upload cancelled.", "metadata":{"type":"error","size_bytes":($size|tonumber)}}' \
+            > "$ERR_FILE"
+          echo "file_to_upload=$ERR_FILE"   >> "$GITHUB_OUTPUT"
+          echo "should_fail=true"           >> "$GITHUB_OUTPUT"
+        else
+          echo "file_to_upload=$DATASET"    >> "$GITHUB_OUTPUT"
+          echo "should_fail=false"          >> "$GITHUB_OUTPUT"
         fi
-          
-        echo "📤  Uploading dataset.json…"
-        json=$(openai api files.create -f "$DATASET" --purpose assistants)
-        FILE_ID=$(jq -r '.id' <<<"$json")
-        echo "   → File ID: $FILE_ID"
-        export FILE_ID
 
-        echo "🔗  Attaching to vector-store…"
-        python - <<'PY'
-        import os, openai
-        client = openai.OpenAI()
-        client.vector_stores.files.create(
-            vector_store_id=os.environ["VECTOR_ID"],
-            file_id=os.environ["FILE_ID"])
-        print("✅  Dataset attached.")
+    # -------------------------------------------------------------- 5️⃣
+    #  Upload chosen file & attach to vector store
+    - name: Upload & attach
+      if: success()            # still runs even if next step will mark job failed
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        VECTOR_ID:       ${{ secrets.OPENAI_VECTOR_ID }}
+      run: |
+        set -euo pipefail
+        FILE_PATH='${{ steps.prepare-upload.outputs.file_to_upload }}'
+        echo "📤  Uploading $FILE_PATH …"
+        FILE_ID=$(openai api files.create -f "$FILE_PATH" --purpose assistants | jq -r '.id')
+        echo "   → File ID: $FILE_ID"
+
+        python - "$VECTOR_ID" "$FILE_ID" <<'PY'
+        import sys, openai
+        vector_id, file_id = sys.argv[1:]
+        openai.OpenAI().vector_stores.files.create(
+            vector_store_id=vector_id,
+            file_id=file_id)
+        print("✅  Attached.")
         PY
+    # -------------------------------------------------------------- 6️⃣
+    #  If the data set was too large, fail the job so the check turns red
+    - name: Fail job when upload cancelled
+      if: steps.prepare-upload.outputs.should_fail == 'true'
+      run: |
+        echo "Dataset exceeded 1 GiB — upload skipped. Failing job so that the PR check turns red."
+        exit 1
