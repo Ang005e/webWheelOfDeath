@@ -115,7 +115,7 @@ jobs:
     - name: Enrich metadata with ChatGPT
       env:
         OPENAI_API_KEY:   ${{ secrets.OPENAI_API_KEY }}
-        OPENAI_MODEL:     gpt-4o-mini         # change freely
+        OPENAI_MODEL:     o3-mini        
         ENRICH_BATCH:     "20"                # number of chunks per API call
         SCHEMA_PATH:      metadata_schema.json
       run: |
@@ -185,8 +185,9 @@ jobs:
                 ]
 
                 resp = client.chat.completions.create(
-                    model       = MODEL,
-                    messages    = messages,
+                    model             = MODEL,
+                    messages          = messages,
+                    reasoning_effort  = "low",
                     temperature = 0
                 )
 
