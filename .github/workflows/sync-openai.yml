@@ -111,7 +111,7 @@ jobs:
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         ASSISTANT_ID:   "asst_vgR5e6VVSNdrOIYn8hnKDy0v"
-        ENRICH_BATCH:   "10"           # chunks per call
+        ENRICH_BATCH:   "10"         # change if you want
       run: |
         python - <<'PY'
         import os, json, time, pathlib, sys, openai
@@ -124,7 +124,7 @@ jobs:
         if not IN_PATH.exists():
             sys.exit("❌  upload/dataset.json not found.")
 
-        # ---------- helpers ---------------------------------------------------
+        # ------------------- helpers ----------------------------------------
         def batched(seq, n):
             buf = []
             for item in seq:
@@ -134,10 +134,9 @@ jobs:
                     buf = []
             if buf:
                 yield buf
-        # ----------------------------------------------------------------------
+        # --------------------------------------------------------------------
 
-        with IN_PATH.open(encoding="utf-8") as f:
-            chunks = [json.loads(line) for line in f]
+        chunks = [json.loads(l) for l in IN_PATH.open(encoding="utf-8")]
 
         client    = openai.OpenAI()
         processed = 0
@@ -145,28 +144,38 @@ jobs:
 
         with OUT_PATH.open("w", encoding="utf-8") as out:
             for batch in batched(chunks, BATCH_SIZE):
-                # minimal fields → assistant
-                payload = [{
-                    "source_path": c["metadata"].get("path", ""),
-                    "language":    c["metadata"].get("language", ""),
-                    "chunk_index": processed + i,
-                    "text":        c["text"]
-                } for i, c in enumerate(batch)]
 
+                # 1. ----------------------------------------------------------------
+                #    Create a dedicated thread for *this* batch only
                 thread = client.beta.threads.create()
                 client.beta.threads.messages.create(
                     thread_id = thread.id,
                     role      = "user",
-                    content   = json.dumps(payload, ensure_ascii=False)
+                    content   = json.dumps([
+                        {
+                            "source_path": c["metadata"]["path"],
+                            "language":    c["metadata"]["language"],
+                            "chunk_index": processed + i,
+                            "text":        c["text"]
+                        }
+                        for i, c in enumerate(batch)
+                    ], ensure_ascii=False)
                 )
 
+                # 2. ----------------------------------------------------------------
+                #    Start the run
                 run = client.beta.threads.runs.create(
                     thread_id    = thread.id,
                     assistant_id = ASSISTANT_ID
                 )
 
                 meta_items = None
+
+                # 3. ----------------------------------------------------------------
+                #    Poll until the run is DONE
                 while True:
+
+                    # Refresh run status
                     run = client.beta.threads.runs.retrieve(
                         thread_id = thread.id,
                         run_id    = run.id
@@ -176,27 +185,36 @@ jobs:
                         break
 
                     if run.status == "requires_action":
-                        tool_calls = run.required_action.submit_tool_outputs.tool_calls
-                        outputs    = []
-                        for call in tool_calls:
-                            if call.type == "function" and call.function.name == "return_metadata":
-                                meta_items = json.loads(call.function.arguments)["items"]
-                                outputs.append({"tool_call_id": call.id, "output": "ok"})
+                        outputs = []
+                        for call in run.required_action.\
+                                        submit_tool_outputs.tool_calls:
+                            if call.type == "function" and \
+                               call.function.name == "return_metadata":
+                                meta_items = json.loads(
+                                    call.function.arguments)["items"]
+                                outputs.append(
+                                    {"tool_call_id": call.id, "output": "ok"}
+                                )
 
                         run = client.beta.threads.runs.submit_tool_outputs(
-                            thread_id   = thread.id,
-                            run_id      = run.id,
-                            tool_outputs= outputs
+                            thread_id    = thread.id,
+                            run_id       = run.id,
+                            tool_outputs = outputs
                         )
-                    elif run.status in ("failed", "expired", "cancelled"):
-                        sys.exit(f"❌  Run status: {run.status}")
-                    else:
-                        time.sleep(1)
+                        # loop continues to poll the *same* run
 
+                    elif run.status in ("failed", "expired", "cancelled"):
+                        sys.exit(f"❌  Run ended with status: {run.status}")
+
+                    else:              # queued • in_progress
+                        time.sleep(1)   # be polite to the API
+
+                # 4. ----------------------------------------------------------------
+                #    Sanity-check & persist metadata
                 if meta_items is None:
-                    sys.exit("❌  Assistant did not call return_metadata.")
+                    sys.exit("❌  Assistant never called return_metadata.")
                 if len(meta_items) != len(batch):
-                    sys.exit("❌  Assistant returned a different number of items.")
+                    sys.exit("❌  Assistant returned the wrong number of items.")
 
                 for original, meta in zip(batch, meta_items):
                     original["metadata"] = meta
@@ -208,7 +226,7 @@ jobs:
         OUT_PATH.replace(IN_PATH)
         print(f"✅  Metadata enrichment done → {IN_PATH} ({IN_PATH.stat().st_size} bytes)")
         PY
-
+        
     # -------------------------------------------------------------- 5️⃣
     - id: prepare-upload
       shell: bash
