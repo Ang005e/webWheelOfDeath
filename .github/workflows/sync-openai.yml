@@ -114,6 +114,14 @@ jobs:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         VECTOR_ID:       ${{ secrets.OPENAI_VECTOR_ID }}
       run: |
+
+        dataset = "upload/dataset.json"
+        size_bytes = os.path.getsize(dataset)
+        if size_bytes > 1 * 1024**3:  # 1 GiB
+            sys.exit(f"❌ {dataset} is {size_bytes/1024**3:.2f} GiB (> 1 GiB), aborting.")
+        else:
+            print(f"✅ {dataset} is {size_bytes/1024**2:.1f} MiB, within limit.")
+              
         set -e
         echo "📤  Uploading dataset.json…"
         json=$(openai api files.create -f upload/dataset.json --purpose assistants)
@@ -124,7 +132,7 @@ jobs:
         python - <<'PY'
         import os, openai
         client = openai.OpenAI()
-        # client.vector_stores.files.create(
+        client.vector_stores.files.create(
             vector_store_id=os.environ["VECTOR_ID"],
             file_id=os.environ["FILE_ID"])
         print("✅  Attached.")
