@@ -111,7 +111,7 @@ jobs:
     - name: Enrich metadata with ChatGPT (Using Premade Assistant)
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        ENRICH_BATCH: "20"                # number of chunks per API call
+        ENRICH_BATCH: "5"                # number of chunks per API call (previous default, 20)
         SCHEMA_PATH: metadata_schema.json # external JSON schema
       run: |
         python - <<'PY'
