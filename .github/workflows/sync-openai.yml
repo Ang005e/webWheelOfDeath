@@ -6,21 +6,24 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      ONE_GB_BYTES: 1073741824   # 1 GiB
+      ONE_GB_BYTES: 1073741824        # 1 GiB guard
 
     steps:
     # -------------------------------------------------------------- 0️⃣
     - uses: actions/checkout@v4
 
     # -------------------------------------------------------------- 1️⃣
+    # OpenAI CLI + helpers (add jsonschema for validation)
     - name: Install OpenAI CLI + helpers
       run: |
         python -m pip install --upgrade pip
-        python -m pip install --upgrade "openai>=1.75" "tiktoken>=0.5"
+        python -m pip install --upgrade \
+          "openai>=1.75" "tiktoken>=0.5" "jsonschema>=4.22"
         sudo apt-get update -y
         sudo apt-get install -y jq
 
     # -------------------------------------------------------------- 2️⃣
+    # Empty the vector store exactly as before
     - name: Empty vector store
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -52,7 +55,7 @@ jobs:
         PY
 
     # -------------------------------------------------------------- 3️⃣
-    # Build dataset
+    # Build initial dataset (same logic as before)
     - name: Build dataset.json
       run: |
         mkdir -p upload
@@ -101,21 +104,126 @@ jobs:
                 tokens = enc.encode(text)
                 for i in range(0, len(tokens), MAX_TOKENS):
                     chunk = enc.decode(tokens[i:i+MAX_TOKENS])
-                    meta  = {"path": str(path), "language": lang}
+                    meta  = {"path": str(path), "language": lang}   # bare-bones for now
                     out.write(json.dumps({"text": chunk, "metadata": meta}) + "\n")
                     n_chunks += 1
         print(f"✅  Wrote {n_chunks} chunks → {OUT_FILE} ({OUT_FILE.stat().st_size} bytes)")
         PY
 
     # -------------------------------------------------------------- 4️⃣
-    #  Decide what to upload  (adds 1 GiB guard)
+    # Enrich metadata by calling ChatGPT in batches and validating with an external schema
+    - name: Enrich metadata with ChatGPT
+      env:
+        OPENAI_API_KEY:   ${{ secrets.OPENAI_API_KEY }}
+        OPENAI_MODEL:     gpt-4o-mini         # change freely
+        ENRICH_BATCH:     "20"                # number of chunks per API call
+        SCHEMA_PATH:      metadata_schema.json
+      run: |
+        python - <<'PY'
+        import os, sys, json, pathlib, textwrap
+        import openai
+        from jsonschema import validate, ValidationError
+
+        # Config -----------------------------------------------------------------
+        MODEL       = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+        BATCH_SIZE  = int(os.getenv("ENRICH_BATCH", "20"))
+        INPUT_PATH  = pathlib.Path("upload/dataset.json")
+        OUTPUT_PATH = pathlib.Path("upload/dataset.enriched.json")
+        SCHEMA_PATH = pathlib.Path(os.getenv("SCHEMA_PATH", "metadata_schema.json"))
+        # -------------------------------------------------------------------------
+
+        if not SCHEMA_PATH.exists():
+            sys.exit(f"❌  JSON schema file '{SCHEMA_PATH}' not found.")
+
+        schema      = json.loads(SCHEMA_PATH.read_text())
+        schema_str  = json.dumps(schema, indent=2)
+        client      = openai.OpenAI()
+
+        def batched(iterable, n):
+            batch = []
+            for item in iterable:
+                batch.append(item)
+                if len(batch) == n:
+                    yield batch
+                    batch = []
+            if batch:
+                yield batch
+
+        # Read all chunks into memory (we're ignoring token constraints per design)
+        with INPUT_PATH.open() as f:
+            chunks = [json.loads(l) for l in f]
+
+        total = len(chunks)
+        processed = 0
+
+        with OUTPUT_PATH.open("w") as out:
+            for batch in batched(chunks, BATCH_SIZE):
+                simplified = [
+                    {
+                        "path": c["metadata"]["path"],
+                        "language": c["metadata"]["language"],
+                        "text": c["text"]
+                    } for c in batch
+                ]
+
+                messages = [
+                    {
+                        "role": "system",
+                        "content": textwrap.dedent(f"""\
+                            You are a code-repository metadata assistant.
+                            The user will supply an array of objects; each describes a chunk of a file.
+                            For every array element, create a metadata object that SATISFIES the JSON schema below.
+                            Return ONLY a JSON array of metadata objects, preserving order.
+                            JSON schema to satisfy (do NOT quote it, just use it):
+                            {schema_str}
+                        """)
+                    },
+                    {
+                        "role": "user",
+                        "content": json.dumps(simplified, ensure_ascii=False)
+                    }
+                ]
+
+                resp = client.chat.completions.create(
+                    model       = MODEL,
+                    messages    = messages,
+                    temperature = 0
+                )
+
+                try:
+                    meta_arr = json.loads(resp.choices[0].message.content)
+                except json.JSONDecodeError as e:
+                    sys.exit(f"❌  Could not parse assistant response as JSON:\n{resp.choices[0].message.content}")
+
+                if len(meta_arr) != len(batch):
+                    sys.exit("❌  Assistant returned a different count of metadata objects than requested.")
+
+                # Validate and write out
+                for original, meta in zip(batch, meta_arr):
+                    try:
+                        validate(instance=meta, schema=schema)
+                    except ValidationError as ve:
+                        sys.exit(f"❌  Schema validation failed:\n{ve}")
+                    original["metadata"] = meta       # replace bare-bones metadata
+                    out.write(json.dumps(original, ensure_ascii=False) + "\n")
+
+                processed += len(batch)
+                print(f"   • Enriched {processed}/{total} chunks")
+
+        # Replace original for downstream steps
+        OUTPUT_PATH.rename(INPUT_PATH)
+        print(f"✅  Metadata enrichment complete → {INPUT_PATH} ({INPUT_PATH.stat().st_size} bytes)")
+        PY
+
+    # -------------------------------------------------------------- 5️⃣
+    # Decide what to upload  (adds 1 GiB guard) — unchanged, but now
+    # operates on the enriched upload/dataset.json produced above
     - id: prepare-upload
       shell: bash
       env:
         ONE_GB_BYTES: ${{ env.ONE_GB_BYTES }}
       run: |
         set -euo pipefail
-
         DATASET=upload/dataset.json
         SIZE=$(stat --printf="%s" "$DATASET")
         echo "📦 dataset.json size: $SIZE bytes"
@@ -133,10 +241,10 @@ jobs:
           echo "should_fail=false"          >> "$GITHUB_OUTPUT"
         fi
 
-    # -------------------------------------------------------------- 5️⃣
-    #  Upload chosen file & attach to vector store
+    # -------------------------------------------------------------- 6️⃣
+    #  Upload chosen file & attach to vector store (identical logic)
     - name: Upload & attach
-      if: success()            # still runs even if next step will mark job failed
+      if: success()
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         VECTOR_ID:       ${{ secrets.OPENAI_VECTOR_ID }}
@@ -155,7 +263,8 @@ jobs:
             file_id=file_id)
         print("✅  Attached.")
         PY
-    # -------------------------------------------------------------- 6️⃣
+
+    # -------------------------------------------------------------- 7️⃣
     #  If the data set was too large, fail the job so the check turns red
     - name: Fail job when upload cancelled
       if: steps.prepare-upload.outputs.should_fail == 'true'
