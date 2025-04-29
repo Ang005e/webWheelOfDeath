@@ -166,14 +166,16 @@ jobs:
                     } for c in batch
                 ]
 
-                messages = [
+                resp = client.chat.completions.create(
+                  model="gpt-4o-mini",
+                  assistant_id="asst_vgR5e6VVSNdrOIYn8hnKDy0v",
+                  messages=[
                     {
                         "role": "user",
                         "content": json.dumps(simplified, ensure_ascii=False)
                     }
-                ]
-
-                resp = client.beta.assistants.retrieve("asst_vgR5e6VVSNdrOIYn8hnKDy0v")
+                  ]
+                )
 
                 try:
                     meta_arr = json.loads(resp.choices[0].message.content)
