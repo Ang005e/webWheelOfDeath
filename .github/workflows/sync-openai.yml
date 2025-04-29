@@ -108,32 +108,34 @@ jobs:
         PY
 
     # ─────────────────────────────────────────────
-    # 2️⃣  Upload + attach to vector store
+    # 2️⃣  Upload + attach (size-safe, YAML-safe)
     - name: Upload & attach (size-safe)
       env:
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        VECTOR_ID:       ${{ secrets.OPENAI_VECTOR_ID }}
+        OPENAI_API_KEY: '${{ secrets.OPENAI_API_KEY }}'
+        VECTOR_ID:       '${{ secrets.OPENAI_VECTOR_ID }}'
       run: |
         set -e
+    
         SIZE=$(stat -c%s "upload/dataset.json")
-        LIMIT=$((1024*1024*1024))  # 1 GB
+        LIMIT=$((1024*1024*1024))  # 1 GiB
     
         if [ "$SIZE" -gt "$LIMIT" ]; then
-          echo "❌ dataset.json is too large (${SIZE} bytes > 1 GB). Cancelling upload."
+          echo "❌ dataset.json is too large (${SIZE} bytes > 1 GiB). Cancelling upload."
     
-          # Build a one-line JSONL file containing the error record
-          cat > upload/error.jsonl <<EOF
-    {"text":"ERROR: dataset.json is ${SIZE} bytes (>1 GB). Upload cancelled.","metadata":{"type":"error","size_bytes":${SIZE}}}
-    EOF
+          # Build a one-line JSONL error file (no heredoc → no YAML issues)
+          mkdir -p upload
+          printf '%s\n' \
+            "{\"text\":\"ERROR: dataset.json is ${SIZE} bytes (>1 GiB). Upload cancelled.\","\
+    "\"metadata\":{\"type\":\"error\",\"size_bytes\":${SIZE}}}" \
+            > upload/error.jsonl
     
-          echo "📤 Uploading error.jsonl instead so the assistant can alert the user…"
-          json=$(openai api files.create -f upload/error.jsonl --purpose assistants)
-          FILE_ID=$(jq -r '.id' <<<"$json")
-          echo "   → File ID: $FILE_ID"
+          echo "📤 Uploading error.jsonl so the assistant can alert the user…"
+          FILE_JSON=$(openai api files.create -f upload/error.jsonl --purpose assistants)
+          FILE_ID=$(jq -r '.id' <<<"$FILE_JSON")
     
           echo "🔗 Attaching error file to vector store…"
           python - <<'PY'
-    import os, openai, sys
+    import os, openai
     client = openai.OpenAI()
     client.vector_stores.files.create(
         vector_store_id=os.environ["VECTOR_ID"],
@@ -141,13 +143,12 @@ jobs:
     )
     print("⚠️  Error record attached.")
     PY
-          exit 1          # fail the job so you notice in GitHub Actions
+          exit 1   # fail the job so it’s visible in Actions
         fi
     
-        echo "📤 dataset.json size is OK ($SIZE bytes). Uploading…"
-        json=$(openai api files.create -f upload/dataset.json --purpose assistants)
-        FILE_ID=$(jq -r '.id' <<<"$json")
-        echo "   → File ID: $FILE_ID"
+        echo "📤 dataset.json is within limit (${SIZE} bytes). Uploading…"
+        FILE_JSON=$(openai api files.create -f upload/dataset.json --purpose assistants)
+        FILE_ID=$(jq -r '.id' <<<"$FILE_JSON")
     
         echo "🔗 Attaching to vector store…"
         python - <<'PY'
@@ -159,3 +160,4 @@ jobs:
     )
     print("✅  Attached.")
     PY
+
