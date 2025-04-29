@@ -1,0 +1,120 @@
+name: Sync repo to OpenAI
+on: [push]
+
+jobs:
+  embed:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    #  ───────────────────────────────────────────────────────────────
+    #  Dependencies
+    - name: Install OpenAI CLI + helpers
+      run: pip install --upgrade "openai>=1.75" "tiktoken>=0.5" jq
+
+    #  ───────────────────────────────────────────────────────────────
+    #  0️⃣  Wipe the vector-store completely
+    - name: Empty vector store
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        VECTOR_ID:       ${{ secrets.OPENAI_VECTOR_ID }}
+      run: |
+        python - <<'PY'
+        import os, sys, openai
+        client = openai.OpenAI()
+        vs_id  = os.environ["VECTOR_ID"]
+
+        def iter_vs_files(vs):
+            page = client.vector_stores.files.list(
+                vector_store_id=vs, limit=100, order="asc"
+            )
+            while True:
+                yield from page.data
+                if not page.has_more:
+                    break
+                page = client.vector_stores.files.list(
+                    vector_store_id=vs, limit=100,
+                    order="asc", after=page.data[-1].id
+                )
+
+        for f in iter_vs_files(vs_id):
+            client.vector_stores.files.delete(vector_store_id=vs_id, file_id=f.id)
+            try:
+                client.files.delete(file_id=f.id)
+            except openai.NotFoundError:
+                pass
+        if list(iter_vs_files(vs_id)):
+            sys.exit("Vector-store not empty – aborting.")
+        PY
+
+    #  ───────────────────────────────────────────────────────────────
+    #  1️⃣  Build a single JSON file with 2 000-token chunks + metadata
+    - name: Build dataset.json
+      run: |
+        mkdir -p upload
+        python - <<'PY'
+        import os, re, json, pathlib, tiktoken, subprocess
+        
+        # ── NEW: pull tracked paths from Git ────────────────────────────────
+        tracked = subprocess.check_output(
+            ["git", "ls-files", "--exclude-standard", "-z"],
+            text=True
+        ).split('\0')
+        
+        VENDOR_DIRS = {"Pods", "Carthage", "Build", ".build", "DerivedData"}
+        BIN_RE      = re.compile(rb"[\x00-\x08\x0E-\x1F]")  # crude binary check
+        enc         = tiktoken.get_encoding("cl100k_base")
+        MAX_TOKENS  = 2_000
+        OUT_FILE    = pathlib.Path("upload/dataset.json")
+        n_chunks    = 0
+        
+        def looks_binary(path: pathlib.Path) -> bool:
+            with path.open("rb") as f:
+                sample = f.read(8192)
+            return bool(BIN_RE.search(sample))
+        
+        with OUT_FILE.open("w", encoding="utf-8") as out:
+            for p in filter(None, tracked):
+                path = pathlib.Path(p)
+                if any(part in VENDOR_DIRS for part in path.parts):
+                    continue                # ✂️ vendored/derived
+                if looks_binary(path):
+                    continue                # ✂️ images, zips, etc.
+        
+                text = path.read_text("utf-8", errors="ignore")
+                tokens = enc.encode(text)
+                for i in range(0, len(tokens), MAX_TOKENS):
+                    chunk = enc.decode(tokens[i:i+MAX_TOKENS])
+                    meta  = {"path": str(path), "purpose": "source-code search"}
+                    out.write(json.dumps({"text": chunk, "metadata": meta}) + "\n")
+                    n_chunks += 1
+        print(f"✅  {n_chunks} chunks written")
+
+        
+        PY
+
+    #  ───────────────────────────────────────────────────────────────
+    #  2️⃣  Upload JSON and attach to vector store
+    - name: Upload & attach
+      id: upload
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        VECTOR_ID:       ${{ secrets.OPENAI_VECTOR_ID }}
+      run: |
+        set -e
+        echo "📤  Uploading dataset.json…"
+        json=$(openai api files.create -f upload/dataset.json --purpose assistants)
+        FILE_ID=$(jq -r '.id' <<<"$json")
+        echo "   → File ID: $FILE_ID"
+        export FILE_ID   # <— makes FILE_ID available to Python below
+
+        echo "🔗  Attaching to vector store $VECTOR_ID…"
+        python - <<'PY'
+        import os, openai
+        client = openai.OpenAI()
+        client.vector_stores.files.create(
+            vector_store_id=os.environ["VECTOR_ID"],
+            file_id=os.environ["FILE_ID"]
+        )
+        print("✅  Attached.")
+        PY
