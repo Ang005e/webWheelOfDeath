@@ -201,16 +201,28 @@ jobs:
                     order     = "desc",     # newest first
                     limit     = 1
                 )
-                assistant_msg = messages.data[0]   # guaranteed to exist
-
-                # Convert assistant message → plain string → JSON
+                
+                # ------------------------------------------------------------------
+                # 1. Collect every assistant message produced by this run
+                all_msgs = client.beta.threads.messages.list(
+                    thread_id = thread.id,
+                    order     = "asc"        # oldest → newest
+                )
+                
+                assistant_text_parts = [
+                    message_text(m) for m in all_msgs.data if m.role == "assistant"
+                ]
+                
+                if not assistant_text_parts:
+                    sys.exit("❌  No assistant messages found after run.")
+                
+                full_response = "".join(assistant_text_parts)
+                # ------------------------------------------------------------------
+                # 2. Convert to JSON
                 try:
-                    meta_arr = json.loads(message_text(assistant_msg))
+                    meta_arr = json.loads(full_response)
                 except Exception as err:
-                    sys.exit(
-                        f"❌  Could not parse assistant response as JSON:\n"
-                        f"{message_text(assistant_msg)}"
-                    )
+                    sys.exit(f"❌  Could not parse assistant response as JSON:\n{full_response}")
 
                 if len(meta_arr) != len(batch):
                     sys.exit("❌  Assistant returned a different number of metadata objects than requested.")
