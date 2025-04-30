@@ -241,10 +241,13 @@ jobs:
                 sys.exit("❌  Assistant did not return expected metadata.")
 
             for original, meta in zip(batch, meta_items):
-                original["metadata"] = meta
-                ready.append(original)    # add to final list
-                cache[meta["sha"]] = meta # update cache
-
+              # If the assistant did not include "sha", add it back from the original.
+              if "sha" not in meta:
+                  meta["sha"] = original["metadata"]["sha"]
+              original["metadata"] = meta
+              ready.append(original)        # add to final list
+              cache[meta["sha"]] = meta       # update cache
+            
             processed += len(batch)
             print(f"   • Enriched {processed}/{len(todo)} new chunks")
 
