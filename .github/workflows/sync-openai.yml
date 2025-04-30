@@ -103,6 +103,7 @@ jobs:
                     meta  = {"path": str(path), "language": lang}
                     out.write(json.dumps({"text": chunk, "metadata": meta}) + "\n")
                     n_chunks += 1
+                print(f"Chunked {path}")
         print(f"✅  Wrote {n_chunks} chunks → {OUT_FILE} ({OUT_FILE.stat().st_size} bytes)")
         PY
 
