@@ -32,7 +32,7 @@ export class CAccountPopups {
         //    .then(r => r.text())
         //    .then(html => {
         //        document.querySelector('#modal-login-id').innerHTML = html;
-        //        //initialiseWheel();   // call a function that hooks listeners again
+        //        //();   // call a function that hooks listeners again
         //    });
 
 

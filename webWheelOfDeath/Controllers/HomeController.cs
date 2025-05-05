@@ -44,15 +44,23 @@ namespace webWheelOfDeath.Controllers
         // ##################### LOGIN ACTIONS ##################### \\
         [HttpPost]
         [Route("Login")]
-        public IActionResult Login(CCredentials playerLogin)
+        public IActionResult Login()
         {
+            return PartialView("_LoginAndRegister");
+        }
+
+        [HttpPost]
+        [Route("Authenticate")]
+        public IActionResult Authenticate(CCredentials playerLogin)
+        {
+            // Request.Form[""];
 
             // attempt authentication.
             playerLogin.Authenticate();
 
-            HttpContext.Session.SetString("previous-login-attempted", "true");
+            string viewName = "";
 
-            if ( ! playerLogin.loginAttemptFailed)
+            if (!playerLogin.loginAttemptFailed)
             {
 
                 // Set the "user-id" session variable to the player id (DB field)
@@ -62,13 +70,21 @@ namespace webWheelOfDeath.Controllers
                 HttpContext.Session.SetString("user-id", playerLogin.txtPlayerUsername);
                 HttpContext.Session.SetString("user-name", playerLogin.txtPlayerUsername);
 
-                return PartialView("_Game");  // User login success - return the Game!
+                HttpContext.Session.SetString("previous-login-failed", "false");
+
+                viewName = "_Game";  // User login success - return the Game!
+            }
+            else
+            {
+                HttpContext.Session.SetString("previous-login-failed", "true");
+
+                viewName = "_LoginAndRegister";
             }
 
             // CLEAR THE MODELSTATE ARRGGGGGGGGHHH
             ModelState.Clear();
 
-            return PartialView("_LoginPartial");
+            return PartialView(viewName);
         }
 
         [HttpPost]
@@ -77,6 +93,13 @@ namespace webWheelOfDeath.Controllers
         {
             throw new NotImplementedException("Register action has not been implemented");
             // return PartialView("_LoginPartial"); // return user to the login page (if regitration succeeds)
+        }
+
+        [HttpPost]
+        [Route("UserEntry")]
+        public IActionResult UserEntry()
+        {
+            return PartialView("_LoginAndRegister");
         }
 
 

@@ -16,6 +16,12 @@ namespace webWheelOfDeath.Models
 
         public void Authenticate()
         {
+            if (string.IsNullOrWhiteSpace(txtPlayerUsername) || string.IsNullOrWhiteSpace(txtPlayerPassword))
+            {
+                loginAttemptFailed = true;
+                return;
+            }
+
             CPlayer player = new CPlayer()
             {
                 Username = txtPlayerUsername,
