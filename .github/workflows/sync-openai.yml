@@ -97,8 +97,12 @@ jobs:
         with OUT_FILE.open("w", encoding="utf-8") as out:
             for p in git_tracked():
                 path = pathlib.Path(p)
-                if any(part in SKIP_DIRS for part in path.parts):
+                if "wwwroot" in path.parts:
+                  if path.suffix.lower() not in {".js", ".css"}:
                     continue
+                  else:
+                    if any(part in SKIP_DIRS for part in path.parts):
+                      continue
                 if looks_binary(path):
                     continue
                 try:
