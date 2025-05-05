@@ -103,7 +103,7 @@ jobs:
           # If the file is in wwwroot and its extension is allowed, do NOT skip.
           if "wwwroot" in path.parts and path.suffix.lower() in ALLOWED_EXTENSIONS:
               return False
-          else if path.suffix.lower() in BANNED_EXTENSIONS:
+          elif path.suffix.lower() in BANNED_EXTENSIONS:
               return True
           # Otherwise, skip if any part is in the skip_dirs list.
           for part in path.parts:
