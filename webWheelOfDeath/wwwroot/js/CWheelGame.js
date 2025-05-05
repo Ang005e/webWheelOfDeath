@@ -106,10 +106,11 @@ export class CWheelGame extends CTimer {
         // ########### NAVIGATION LISTENERS ############
 
         // When login is completed, open the game selection modal
-        document.addEventListener('login-complete', event => {
-            event.stopPropagation();
-            this.#gameSelectionModal.display();
-        })
+        // [redundant]
+        //document.addEventListener('login-complete', event => {
+        //    event.stopPropagation();
+        //    this.#gameSelectionModal.display();
+        //})
         
     }
 

@@ -72,15 +72,11 @@ export class CLoginModal extends CModal {
 
             this.playerUsername = this.#form.txtPlayerUsername.value;
             this.playerPassword = this.#form.txtPlayerPassword.value;
-            this.hide();
+            // this.hide();
 
-            //
-            // LOGIN REQUEST HERE
-            //
-
-            document.dispatchEvent(new CustomEvent("login-complete", {
-                bubbles: true
-            }))
+            //document.dispatchEvent(new CustomEvent("login-complete", {
+            //    bubbles: true
+            //}))
 
             this.#callbackFunction();     // invoke the callback function
 

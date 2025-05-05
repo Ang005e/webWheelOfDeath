@@ -24,11 +24,19 @@
 }
 
 <!--
-Date: 2020-23
-Author: Ramin Majidi
-Purpose: This and all other code elements of this project (unless otherwise commented) are the work of the
-author and may be used for TAFE Assessment purposes only.
+    Date: 2020-23
+    Author: Ramin Majidi
+    Purpose: This and all other code elements of this project (unless otherwise commented) are the work of the
+    author and may be used for TAFE Assessment purposes only.
+
+    Date: 2024-25
+    Co-Author: Angus Blake
+	Purpose: The HTML, CSS and JavaScript components of this application were written laregly by the author. However,
+    the Co-Author migrated this application from a static website to a significantly more complex SPA (single-page application) 
+    capable of storing and retreving information from a central server.
+    Framework: Razor MVC (.NET Core). AJAX/Fetch are used in combination with Partial Views to load content dynamically without reloading the entire page.
 -->
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -41,6 +49,9 @@ author and may be used for TAFE Assessment purposes only.
     <link rel="stylesheet" href="/css/animations.css" />
     <link rel="stylesheet" href="/css/statusPanel.css" />
     <link rel="stylesheet" href="/css/theme.css" />
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
 </head>
 
 <body class="shadow-text">
@@ -98,23 +109,10 @@ author and may be used for TAFE Assessment purposes only.
         <h2 id="scorePanel">&nbsp;</h2>
 
         <div id="statusPanel" class="hidden stopped">&nbsp;</div>
-    </main>
 
-    <footer>
-        Copyright &copy; 2020-24 SRT - Author: Ramin Majidi
-    </footer>
-
-    <!-- The following div elements act as a modal canvas for pop-up messages -->
-    <div id="modal-message-id" class="modal-canvas hidden">
-        <div class="main-panel modal-error">
-            <span class="close-popup">&#10006;</span>
-            <p class="message-display">&nbsp;</p>
-        </div>
-    </div>
-
-
-    <!-- create a form tag (could just use HTML, but this helps keep things in sync, i.e. when refactoring) -->
-    @*@using (Html.BeginForm())
+    
+        @* create a form tag (could just use HTML, but this helps keep things in sync, i.e. when refactoring) *@
+        @*@using (Html.BeginForm())
         {
         <p>
             Html.TextAreaFor(x => x.Body)
@@ -122,183 +120,48 @@ author and may be used for TAFE Assessment purposes only.
         }*@
 
 
-    <!--
-    TROUBLESHOOTING STEPS:
-    0. debug using browser breakpoints.
-    0.5 debug using serverside breakpoints.
-    1. clear browser cashe.
-    2. delete project .vs hidden file.
-    3. use ClearModelState is server side code.
-    4. Check that AJAX is correctly intercepting the form submission and preventing the default action.
-    6. Check that the form is not submitting (it's the button, fix the submit button and event.preventDefault).
-    7. check that the form IS submitting (remove event.preventDefault)
-    8. make sure that the events are being attached properly to server side
-    HTML
+        @*
+        TROUBLESHOOTING STEPS:
+        0. debug using browser breakpoints.
+        0.5 debug using serverside breakpoints.
+        1. clear browser cashe.
+        2. delete project .vs hidden file.
+        3. use ClearModelState is server side code.
+        4. Check that AJAX is correctly intercepting the form submission and preventing the default action.
+        6. Check that the form is not submitting (it's the button, fix the submit button and event.preventDefault).
+        7. check that the form IS submitting (remove event.preventDefault)
+        8. make sure that the events are being attached properly to newly-loaded elements
+        *@
 
-    -->
-     
-        @{
-        string? loggedUserId = Context.Session.GetString("user-id");
-        }
-        @if ( ! string.IsNullOrWhiteSpace(loggedUserId))
-        {
+        <div id="page-content">
+            @*
+				This is where the main page content will be loaded.
+            *@
+        </div>
 
-			// ToDo: Convert other pages to partial views too.
-			// NOTE: Minimise server traffic. But keep in mind that the server also sends the HTML anyway, so not too much difference lol!
-
-            <div id="modal-game-selection-id" class="modal-canvas hidden">
-                <div class="main-panel modal-player">
-                    <span class="close-popup">&#10006;</span>
-                    <form>
-                        <fieldset>
-                            <fieldset>
-                                <label for="cboGameSelect">Select Game Mode</label>
-                                <select name="cboGameSelect" id="cboGameSelect">
-                                    @{
-                                        string sql = @"
-                            select
-                            G.[Id], G.[Game], G.[FkDifficultyId], D.[Difficulty], D.[Id]
-                            from
-                            tblGame G inner join
-                            tblDifficulty D on D.[Id] = G.[FkDifficultyId]
-                            where
-                            (1=1)
-                            order by
-                            D.[Id],
-                            G.[Game]
-                            ";
-                                        DataTable table = sql.Fetch<DataTable>();
-                                        DataRow row = table.Rows[0];
-                                        int counter = 0;
-
-                                        while (counter < table.Rows.Count)
-                                        {
-                                            string? difficultyName = row.Field<string>("Difficulty") ?? "";
-
-                                            long difficultyId = row.Field<long>("FkDifficultyId"); ;
-                                            long lastDifficultyId = difficultyId;
-
-                                            if (difficultyName == "") break;
-
-                                            <optgroup label="@difficultyName">
-                                                @{
-                                                    while ((difficultyId == lastDifficultyId) && (counter < table.Rows.Count))
-                                                    {
-                                                        row = table.Rows[counter];
-                                                        difficultyId = row.Field<long>("FkDifficultyId");
-                                                        string? gameName = row.Field<string>("Game") ?? "";
-
-                                                        if (gameName == "") break;
-
-                                                        <option>@gameName</option>
-
-                                                        difficultyId = row.Field<long>("FkDifficultyId");
-
-                                                        counter++;
-                                                    }
-                                                    lastDifficultyId = difficultyId;
-                                                }
-                                            </optgroup>
-                                        }
-                                    }
-
-                                </select>
-                            </fieldset>
-                        </fieldset>
-                        <button type="button" name="btnConfirm" id="btnBeginGame" class="ornate">Confirm</button>
-                    </form>
-                </div>
-            </div>
-
-            <div id="modal-winner-id" class="modal-canvas hidden">
-                <div class="main-panel modal-winner">
-                    <span class="close-popup">&#10006;</span>
-                    <form>
-                        <fieldset>
-                            <legend>Congratulations - You Won!</legend>
-
-                            <label for="numElapsedTime">Your Time (sec):</label>
-                            <output name="numElapsedTime" id="numElapsedTime"></output>
-
-                            <label for="numHits">Hits:</label>
-                            <output name="numHits" id="numHits"></output>
-
-                            <label for="numMisses">Misses:</label>
-                            <output name="numMisses" id="numMisses"></output>
-
-                            <output name="txtMiscMessage"></output>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
-
-            <script type="module" defer="defer">
-            'use strict';
-
-            let _game;
-
-            try {
-
-                // get duration, throws, min and max balloons from session variable set in controller.
-                _game = new CWheelGame('@Context.Session.GetString("user-name")', 10000, 2, 10, 20);
-
-                    document.addEventListener('game-over', event => {
-                        console.log(`Status: ${event.detail.gameStatus} Elapsed: ${event.detail.elapsed}`);
-                    });
-
-            } catch (e) {
-                    new CMessageModal('#modal-message-id').display(e.message, false, 7000);
-                }
-            </script>
-            
-        }
-        else
-        {
-            <div id="modal-login-id" class="modal-canvas"> <!-- hidden"> -->
-                @await Html.PartialAsync("_LoginPartial", new CGameUser())
-            </div>
-
-            <div id="modal-register-id" class="modal-canvas hidden">
-                @await Html.PartialAsync("_Register", new CGameUser())
-            </div>
-        }
-    <script type="module" defer="defer">
-        import { CAccountPopups } from "/js/CAccountPopups.js"
-
-		let popups = new CAccountPopups();
-
-                $(document).ready(function () {
-            // delegate the event to the document so that the
-            // handler is not lost when the element it targets is reloaded
-            $(document).on("submit", "#modal-register-id form", function (event) {
-                event.preventDefault(); // Prevent the default form submission
-
-                // ToDo: replace with Javascript fetch
-                $.ajax({
-                    url: '/Login',  // URL to the Login action
-                    type: 'POST',
-                    data: $(this).serialize(),  // Serialize the form data
-                    success: function (result) {
-                        // Update the modal content with the returned partial view HTML
-                        $("#modal-login-id").html(result);
-                        document.dispatchEvent(new CustomEvent("partial-refresh", {
-                            bubbles: true,
-                            detail:
-                            {
-                                form: "login-form"
-                            }
-                        }));
-                    },
-                    error: function () {
-                        alert("There was an error processing your request.");
-                    }
-                });
-            });
-            $(document).on("submit", "#modal-login-id form", function (event) {
-                event.preventDefault();
-
-    </script>
     
+        @*On page load, bring down the login modal.*@
+        <script type="module">
+		    import { partialLoader } from "/js/partialLoader.js";
+            $(document).ready( () => {
+                // ToDo: change name of "form" property in customevent detail (in partialLoader) to "element" 
+                partialLoader("/Login", "#page-content", "login-redirection");
+            });
+        </script>
+
+        <!-- The following div elements act as a modal canvas for pop-up messages -->
+        <div id="modal-message-id" class="modal-canvas hidden">
+            <div class="main-panel modal-error">
+                <span class="close-popup">&#10006;</span>
+                <p class="message-display">&nbsp;</p>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        Copyright &copy; 2020-24 SRT - Author: Ramin Majidi
+    </footer>
 </body>
 
 </html>
