@@ -72,7 +72,7 @@ namespace webWheelOfDeath.Controllers
 
                 HttpContext.Session.SetString("previous-login-failed", "false");
 
-                viewName = "_Game";  // User login success - return the Game!
+                viewName = "_GameSelection";  // User login success - return the _GameSelection partial!
             }
             else
             {
@@ -91,8 +91,12 @@ namespace webWheelOfDeath.Controllers
         [Route("Register")]
         public IActionResult Register(CGameUser player)
         {
-            throw new NotImplementedException("Register action has not been implemented");
-            // return PartialView("_LoginPartial"); // return user to the login page (if regitration succeeds)
+
+            // register actions
+            player.Register();
+
+            // extract the Credentials base from the player object and return the user to the login page.
+            return PartialView("_LoginPartial", (CCredentials)player);
         }
 
         [HttpPost]
@@ -100,6 +104,17 @@ namespace webWheelOfDeath.Controllers
         public IActionResult UserEntry()
         {
             return PartialView("_LoginAndRegister");
+        }
+
+        [HttpPost]
+        [Route("Game")]
+        public IActionResult Game(long gameId)
+        {
+            // Create a gameDifficulty (performs backend DB search)
+            var game = new CWebGame(gameId);
+
+            // Return the _Game partial populated with data from a "gameDifficulty" model
+            return PartialView("_Game", game);
         }
 
 

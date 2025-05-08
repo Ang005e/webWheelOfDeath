@@ -12,11 +12,11 @@ export class CWheelGame extends CTimer {
     #status = new CGameStatus();
     #gameBalloonCount = 0;
     #missCounter = 0;
-    #softHitCounter = 0;
+    #victimHits = 0;
     #knifeGallery = document.getElementById('knife-gallery');
     #wheelFrame = document.querySelector('.wheel-inner-frame');
     #victim = document.getElementById('victim');
-    #killer_knife = this.#victim.querySelector('.big-knife');
+    #killerKnife = this.#victim.querySelector('.big-knife');
     #unfair = document.getElementById('below-the-belt');
     #scorePanel = document.getElementById('scorePanel');
     #countdownPanel = document.getElementById('time-panel-1');
@@ -51,15 +51,14 @@ export class CWheelGame extends CTimer {
         this.#countdownGauge.value = '0';
         this.#maxCountdownSeconds.innerText = this.#maxSeconds; // Must come AFTER this.duration is set.
         this.#countdownRemaining.innerText = this.#maxSeconds; // Must come AFTER this.duration
-        this.#showPopups = showPopups;
 
 
         // Create the game difficulty selection modal
-        this.#gameSelectionModal = new CGameSelectModal('#modal-game-selection-id', true, 'game-selection-modal-hide')
-        this.#gameSelectionModal.callbackFunction = () => {
-            this.#gameSelectionModal.hide();
-            this.start()
-        };
+        // this.#gameSelectionModal = new CGameSelectModal('#modal-game-selection-id', true, 'game-selection-modal-hide')
+        // this.#gameSelectionModal.callbackFunction = () => {
+            // this.#gameSelectionModal.hide();
+            // this.start()
+        // };
 
         this.#countdownGauge.max = this.duration.toString();
         this.#maxCountdownSeconds.innerText = this.#maxSeconds;
@@ -109,7 +108,7 @@ export class CWheelGame extends CTimer {
         // [redundant]
         //document.addEventListener('login-complete', event => {
         //    event.stopPropagation();
-        //    this.#gameSelectionModal.display();
+        //    // this.#gameSelectionModal.display();
         //})
         
     }
@@ -120,7 +119,7 @@ export class CWheelGame extends CTimer {
 
     start() {
         this.#countdownRemaining.innerText = this.#maxSeconds; // Must come AFTER this.duration is set
-        Util.hide(this.#killer_knife);
+        Util.hide(this.#killerKnife);
         this.#randomBalloons();
         return super.start();
     }
@@ -128,7 +127,7 @@ export class CWheelGame extends CTimer {
     started() {
         this.#status.gameStatus = EnumGameStatus.Running;
         this.#missCounter = 0;
-        this.#softHitCounter = 0;
+        this.#victimHits = 0;
         this.#btnStartStop.innerText = 'Stop';
 
         this.#resetGallery();
@@ -188,15 +187,20 @@ export class CWheelGame extends CTimer {
         }
     }
 
-    #throwsUsedUp() {
-        if (this.throwsMade === this.maxThrows) {
-            this.#gameOver(EnumGameStatus.Exceeded_Throws);
+    get throwsExceeded() {
+        if (this.currentThrows === this.maxThrows) {
             return true;
         }
         return false;
     }
 
-    get throwsMade() {
+    #checkGameOver() {
+        if (this.throwsExceeded) {
+            this.#gameOver(EnumGameStatus.Exceeded_Throws);
+        }
+    }
+
+    get currentThrows() {
         return this.#missCounter + this.poppedCount;
     }
 
@@ -205,12 +209,14 @@ export class CWheelGame extends CTimer {
         this.#useKnife();
         this.#missCounter++;
         this.#updateScore();
-        this.#throwsUsedUp();
+        docuemnt.dispatchEvent(new CustomEvent("throw"));
+        this.#checkGameOver();
+        // understand how throws are detected
     }
 
     #kill() {
         Util.playSoundFile('/audio/Sad_Death_Cropped.mp3');
-        Util.show(this.#killer_knife);
+        Util.show(this.#killerKnife);
         this.#useKnife();
         this.#missCounter++;
         this.#gameOver(EnumGameStatus.Killed);
@@ -219,9 +225,9 @@ export class CWheelGame extends CTimer {
     #maim() {
         let soundFile;
 
-        this.#softHitCounter++;
+        this.#victimHits++;
 
-        switch (this.#softHitCounter) {
+        switch (this.#victimHits) {
             case 1:
                 soundFile = '/audio/tender_hit_1.mp3';
                 break;
@@ -242,7 +248,7 @@ export class CWheelGame extends CTimer {
         this.#useKnife();
         this.#missCounter++;
         this.#updateScore();
-        this.#throwsUsedUp();
+        this.#checkGameOver();
     }
 
     #hit(balloon) {
@@ -259,13 +265,25 @@ export class CWheelGame extends CTimer {
             if (this.#allBalloonsPopped()) {
                 // Check this first in case the last balloon was popped
                 // on the final throw.
-            } else if (this.#throwsUsedUp()) {
+            } else if (this.#checkGameOver()) {
                 // If no win, then check for all throws being used up.
             } else {
                 //
             }
         }
     }
+
+    // called by ANY throw (game-registered click event). balloon should be passed as null if it's a miss scenario.
+    //#impact(balloon) {
+
+    //    if ((typeof(balloon) === null) || (balloon.popped)) {
+    //        this.#miss();
+    //    }
+    //    else {
+    //        this.#hit(balloon);
+    //    }
+    //    this.#checkGameOver();
+    //}
 
     get poppedCount() {
         let count = 0;
@@ -371,7 +389,7 @@ export class CWheelGame extends CTimer {
     #resetGallery() {
         this.#knifeGallery.innerHTML = '';
 
-        for (let i = 1; i <= (this.maxThrows - this.throwsMade) ; i++) {
+        for (let i = 1; i <= (this.maxThrows - this.currentThrows) ; i++) {
             const node = document.createElement('img');
 
             const srcAttrib = document.createAttribute(`src`);

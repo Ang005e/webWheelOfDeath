@@ -8,7 +8,7 @@
     (remove webWheelOfDeath reference and code, move to model)
 *@
 
-@model webWheelOfDeath.Models.CGameUser;
+@* @model webWheelOfDeath.Models.CCredentials; *@
 
 
 @*
@@ -145,7 +145,7 @@
 		    import { partialLoader } from "/js/partialLoader.js";
             $(document).ready( () => {
                 // ToDo: change name of "form" property in customevent detail (in partialLoader) to "element" 
-                partialLoader("/Login", "#page-content", "login-redirection");
+                partialLoader(null, "/Login", "#page-content", "login-form");
             });
         </script>
 

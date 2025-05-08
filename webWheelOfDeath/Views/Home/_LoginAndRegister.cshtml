@@ -35,34 +35,16 @@
         // handler is not lost when the element it targets is reloaded
         $(document).on("submit", "#modal-register-id form", function (event) {
             event.preventDefault(); // Prevent the default form submission
-        partialLoader("/Register", "#modal-login-id", "login-form");
+            var formData = $(this).serialize()
+        partialLoader(formData, "/Register", "#modal-login-id", "login-form");
         });
 
         $(document).on("submit", "#modal-login-id form", function (event) {
            event.preventDefault();
+           var formData = $(this).serialize()
            // set the HTML of the #page-content div to contain the partial returned by the /Authenticate Action.
-           partialLoader("/Authenticate", "#page-content");
+           partialLoader(formData, "/Authenticate", "#page-content", "game-form");
         })
     });
 
 </script>
-
-        """
-# Role
-Take the role of an expert OpenAI prompt engineer.
-
-# Instructions:
-Create a developer message for the o3 and o3-mini OpenAI reasoning models.
-Reference OpenAI prompt engineering best practices for reasoning models (i.e. https://platform.openai.com/docs/guides/reasoning-best-practices#how-to-prompt-reasoning-models-effectively). For any further research, only use RELEVANT and REPUTABLE sources.
-In the instance that you cannot complete your task to my standards, you need to tell me a: where, and b: why.
-
-# Context
-### The student (me):
-I'm a student who wants to use o3 and o3-mini to help me learn programming. I have linked them to a vector database containing my
-As a high-level/fuzzy overview, the student wants to:
-- Learn the programming languages specified in the developer message (C# and SQL).
-- Have assistance interpreting code patterns and architectures.
-- Be presented with the AI's response in a way they can understand and absorb it.
-- Find an AI tool that won't promote tunnel vision.
-I'd like the AI to respond accurately and take advantage of relevant contextual information - without allowing irrelevant information to cloud its reasoning.
-"""
