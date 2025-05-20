@@ -11,7 +11,7 @@ namespace webWheelOfDeath.Models
     {
         // ToDo: On login, initialise, and do Authenticate automatically -- set txtLoginSuccess property.
         public string txtPlayerUsername { get; set; } = string.Empty;
-        public string txtPlayerPassword { internal get; set; } = string.Empty;
+        public string txtPlayerPassword { get; set; } = string.Empty;
         public bool loginAttemptFailed { get; set; } = false;
 
         public void Authenticate()

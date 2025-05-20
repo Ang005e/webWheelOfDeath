@@ -28,17 +28,18 @@ export class CWheelGame extends CTimer {
     #animationClass;
 
     #gameSelectionModal;
-    constructor(playerUsername, duration = 30000, minBalloons = 10, maxBalloons = 16,
-        maxThrows = 0) {
+    constructor(playerUsername, duration, minBalloons, maxBalloons,
+        maxThrows) {
         // show popups can be set to false, to prevent default popups being shown... but things will not work
 
-        if (minBalloons < 1) {
-            throw new Error('Must have at least one balloon.\r\n\r\nChange Settings and Try again.');
-        } else if (minBalloons > maxBalloons) {
-            throw new Error('minBalloons may not exceed maxBalloons.\r\n\r\nChange Settings and Try again.');
-        } else if (maxBalloons > maxThrows) {
-            throw new Error('maxBalloons may not exceed maxThrows.\r\n\r\nChange Settings and Try again.');
-        }
+        // **moved to DDL**
+        //if (minBalloons < 1) {
+        //    throw new Error('Must have at least one balloon.\r\n\r\nChange Settings and Try again.');
+        //} else if (minBalloons > maxBalloons) {
+        //    throw new Error('minBalloons may not exceed maxBalloons.\r\n\r\nChange Settings and Try again.');
+        //} else if (maxBalloons > maxThrows) {
+        //    throw new Error('maxBalloons may not exceed maxThrows.\r\n\r\nChange Settings and Try again.');
+        //}
 
         super(duration, 100);
 
@@ -51,14 +52,6 @@ export class CWheelGame extends CTimer {
         this.#countdownGauge.value = '0';
         this.#maxCountdownSeconds.innerText = this.#maxSeconds; // Must come AFTER this.duration is set.
         this.#countdownRemaining.innerText = this.#maxSeconds; // Must come AFTER this.duration
-
-
-        // Create the game difficulty selection modal
-        // this.#gameSelectionModal = new CGameSelectModal('#modal-game-selection-id', true, 'game-selection-modal-hide')
-        // this.#gameSelectionModal.callbackFunction = () => {
-            // this.#gameSelectionModal.hide();
-            // this.start()
-        // };
 
         this.#countdownGauge.max = this.duration.toString();
         this.#maxCountdownSeconds.innerText = this.#maxSeconds;

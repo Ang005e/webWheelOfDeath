@@ -31,20 +31,19 @@
     let popups = new CAccountPopups();
 
     $(document).ready( () => {
-        // delegate the event to the document so that the
-        // handler is not lost when the element it targets is reloaded
+        /* delegate the event to the document so that the
+        handler is not lost when the element it targets is reloaded */
         $(document).on("submit", "#modal-register-id form", function (event) {
-            event.preventDefault(); // Prevent the default form submission
-            var formData = $(this).serialize()
+            event.preventDefault(); /* Prevent the default form submission */
+            var formData = $(this).serialize();
         partialLoader(formData, "/Register", "#modal-login-id", "login-form");
         });
 
         $(document).on("submit", "#modal-login-id form", function (event) {
            event.preventDefault();
-           var formData = $(this).serialize()
-           // set the HTML of the #page-content div to contain the partial returned by the /Authenticate Action.
+           var formData = $(this).serialize();
+           /* set the HTML of the #page-content div to contain the partial returned by the /Authenticate Action. */
            partialLoader(formData, "/Authenticate", "#page-content", "game-form");
         })
     });
-
 </script>

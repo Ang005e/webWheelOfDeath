@@ -134,7 +134,7 @@ export class CRegisterModal extends CModal {
             this.#form.txtPlayerFirstName.value = this.#form.txtPlayerFirstName.value.trim();
             this.#form.txtPlayerLastName.value = this.#form.txtPlayerLastName.value.trim();
             this.#form.txtPlayerUsername.value = this.#form.txtPlayerUsername.value.trim();
-            this.#form.txtPlayerPassword.value = this.#form.txtPlayerLastName.value.trim();
+            this.#form.txtPlayerPassword.value = this.#form.txtPlayerPassword.value.trim();
 
 
             // if the user has not entered a value, focus the field

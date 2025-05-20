@@ -69,7 +69,7 @@ namespace webWheelOfDeath.Controllers
                 //ToDo: SET USING ID, NOT USERNAME
                 HttpContext.Session.SetString("user-id", playerLogin.txtPlayerUsername);
                 HttpContext.Session.SetString("user-name", playerLogin.txtPlayerUsername);
-
+                
                 HttpContext.Session.SetString("previous-login-failed", "false");
 
                 viewName = "_GameSelection";  // User login success - return the _GameSelection partial!
