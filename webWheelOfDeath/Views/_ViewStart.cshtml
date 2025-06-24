@@ -1,12 +1,9 @@
-﻿@using LibEntity
-
-
+﻿
 @{
 
-    Global.Initialise("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=dbWheelOfDeath;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
+    if (@ViewData["Title"] as String == "Admin")
+    {
+        Layout = "_AdminLayout";
+    }
 
-    // if (@ViewData["Title"] as String == "Admin")
-    // {
-    //     Layout = "_Layout1";
-    // }
 }

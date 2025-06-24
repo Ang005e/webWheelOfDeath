@@ -1,0 +1,126 @@
+﻿* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    height: 100vh;
+    width: 100%;
+    background-image: linear-gradient(to bottom right, black, red);
+    color: black;
+    text-rendering: optimizeLegibility;
+    text-align: center;
+    font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    overflow-y: hidden;
+}
+
+    body > * {
+        width: 100%;
+        display: block;
+        margin: auto;
+
+    }
+
+    body > header {
+        height: 20vh;
+        border: none;
+        overflow-y: hidden;
+    }
+
+    body > main {
+        height: 75vh;
+        border: none;
+        overflow-y: auto;
+
+    }
+
+    body > footer {
+        height: 5vh;
+        line-height: 5vh;
+        border: none;
+        overflow-y: hidden;
+    }
+
+h1 {
+    font-size: 48px;
+    text-align: center;
+    /*text-transform: uppercase;*/
+    font-variant: small-caps;
+    letter-spacing: 3px;
+    color: black;
+}
+
+.invalid {
+    border: 2px solid red !important;
+    background: #fff5f5;
+}
+
+.error-label {
+    color: red;
+    font-size: 0.95em;
+}
+
+.shadow-text {
+    text-shadow: 3px 2px 2px red;
+}
+
+div {
+    margin: 0;
+    padding: 0;
+}
+
+
+.hidden {
+    visibility: hidden;
+}
+
+
+output[name="txtMiscMessage"] {
+    display: block;
+    margin-top: 15px;
+    color: yellow;
+}
+
+button {
+    cursor: pointer;
+}
+
+button[disabled] {
+    cursor: not-allowed;
+}
+
+.borderless {
+    border-style: none;
+}
+
+::selection {
+    color: darkblue;
+    background-color: lightblue;
+}
+
+@media screen and (max-width: 500px) {
+    /*
+    .knife_thrower {
+        display: none;
+    }
+
+    #wheel {
+        width: 90vw;
+    }
+
+    #statusPanel {
+        min-width: 250px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    #statusPanel.running {
+        top: 100px;
+    }
+
+    #knife-gallery img {
+        width: 1.5vw;
+    }
+    */
+}

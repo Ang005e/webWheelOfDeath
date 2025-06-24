@@ -7,7 +7,7 @@ namespace webWheelOfDeath.Models
     /// Exposes appropriate API functions required by the web controller
     /// 
     /// </summary>
-    public class CCredentials
+    public class CPlayerCredentials
     {
         // ToDo: On login, initialise, and do Authenticate automatically -- set txtLoginSuccess property.
         public string txtPlayerUsername { get; set; } = string.Empty;
@@ -24,8 +24,8 @@ namespace webWheelOfDeath.Models
 
             CPlayer player = new CPlayer()
             {
-                Username = txtPlayerUsername,
-                Password = txtPlayerPassword,
+                Username = this.txtPlayerUsername,
+                Password = this.txtPlayerPassword,
             };
             loginAttemptFailed = !player.Authenticate();
         }

@@ -6,11 +6,11 @@
  * @param {string} refreshElementId  – jQuery selector for the element to replace
  * @param {string} formName          – identifier passed in the CustomEvent detail
  */
-export function partialLoader(formData, actionUrl, refreshElementId, formName) {
+export function partialLoader(formData, actionUrl, refreshElementId, formName, isPost = false) {
     // ToDo: replace with Javascript fetch
     $.ajax({
         url: actionUrl,  // URL to the Login action
-        type: 'POST',
+        type: isPost ? 'POST' : 'GET',
         data: formData,
         success: function (partial) {
             // Update the modal content with the returned partial view HTML

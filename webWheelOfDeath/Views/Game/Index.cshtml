@@ -11,16 +11,12 @@
 @* @model webWheelOfDeath.Models.CCredentials; *@
 
 
-@*
-    TODO:
-    convert to partial views:
-        ~~Login~~
-        ~~Game~~
-    Check which one to load based on session variable with user ID stored in it
-*@
-
 @{
     ViewData["Title"] = "Home Page";
+
+    // Accessed from other shared partials (i.e. _LoginAndRegister) 
+    // for the sake of knowing which controller to hand over to.
+    ViewData["Controller"] = "Game";
 }
 
 <!--
@@ -145,7 +141,7 @@
 		    import { partialLoader } from "/js/partialLoader.js";
             $(document).ready( () => {
                 // ToDo: change name of "form" property in customevent detail (in partialLoader) to "element" 
-                partialLoader(null, "/Login", "#page-content", "login-form");
+                partialLoader(null, "/Game/Login", "#page-content", "login-form");
             });
         </script>
 
@@ -160,8 +156,10 @@
     </main>
 
     <footer>
-        Copyright &copy; 2020-24 SRT - Author: Ramin Majidi
+        Copyright &copy; 2020-24 SRT - Author: Ramin Majidi. 
+        Extended by Angus Blake for educational purposes.
     </footer>
 </body>
 
 </html>
+

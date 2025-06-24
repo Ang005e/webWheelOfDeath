@@ -1,4 +1,5 @@
 ﻿using LibWheelOfDeath;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 
 namespace webWheelOfDeath.Models
 {
@@ -22,6 +23,18 @@ namespace webWheelOfDeath.Models
             DurationMilliseconds = game.DurationMilliseconds;
             MinBalloons = game.MinBalloons;
             MaxBalloons = game.MaxBalloons;
+        }
+
+        public void Create()
+        {
+            var game = new CGame();
+            game.Game = Game;
+            game.Attempts = Attempts;
+            game.Misses = Misses;   
+            game.DurationMilliseconds = DurationMilliseconds;
+            game.MinBalloons = MinBalloons;
+            game.MaxBalloons = MaxBalloons;
+            game.Create();
         }
     }
 }

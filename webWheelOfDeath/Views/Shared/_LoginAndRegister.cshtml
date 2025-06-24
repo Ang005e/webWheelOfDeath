@@ -2,11 +2,11 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-@model webWheelOfDeath.Models.CGameUser;
+@using webWheelOfDeath.Models.ViewModels
 
 <div id="modal-login-id" class="modal-canvas">
 
-    @await Html.PartialAsync("_LoginPartial", new CGameUser())
+    @await Html.PartialAsync("_LoginPartial", new CredentialsViewModel())
 
     @{
         string? previousLoginFailed = Context.Session.GetString("previous-login-failed");
@@ -21,7 +21,7 @@
 </div>
 
 <div id="modal-register-id" class="modal-canvas hidden">
-    @await Html.PartialAsync("_Register", new CGameUser())
+    @await Html.PartialAsync("_Register", new AccountViewModel())
 </div>
 
 <script type="module" defer="defer">
@@ -36,14 +36,14 @@
         $(document).on("submit", "#modal-register-id form", function (event) {
             event.preventDefault(); /* Prevent the default form submission */
             var formData = $(this).serialize();
-        partialLoader(formData, "/Register", "#modal-login-id", "login-form");
+        partialLoader(formData, "/@ViewData["Controller"]/Register", "#modal-login-id", "login-form", true);
         });
 
         $(document).on("submit", "#modal-login-id form", function (event) {
            event.preventDefault();
            var formData = $(this).serialize();
            /* set the HTML of the #page-content div to contain the partial returned by the /Authenticate Action. */
-           partialLoader(formData, "/Authenticate", "#page-content", "game-form");
+           partialLoader(formData, "/@ViewData["Controller"]/Authenticate", "#page-content", "game-form", true);
         })
     });
 </script>

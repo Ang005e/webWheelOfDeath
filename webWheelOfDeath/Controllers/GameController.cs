@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using webWheelOfDeath.Models;
+using webWheelOfDeath.Models.ViewModels;
 
 namespace webWheelOfDeath.Controllers
 {
@@ -10,17 +11,18 @@ namespace webWheelOfDeath.Controllers
     // controller doesn't HAVE to inherit from Controller.
 
     // temporary, doesnt survive round trips
-    public class HomeController : Controller
-    {
-        private readonly ILogger<HomeController> _logger;
 
+    public class GameController : Controller
+    {
+        #region comments
+        // private readonly ILogger<GameController> _logger;
 
         // ##################### GENERAL ACTIONS ##################### \\
         // every controller action returns a result (ContentResult)
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+        //public GameController(ILogger<GameController> logger)
+        //{
+        //    _logger = logger;
+        //}
 
         // how to pass data to controller actions: use parameters
 
@@ -28,47 +30,59 @@ namespace webWheelOfDeath.Controllers
         // when the user enters a url named [controller]/post/[value], [value] will be returned as a contentresult
         // so, when navigating to any controller in a url, actions within that controller can
         // be navigated to within that... and they will be run!!
-        public IActionResult Post(string id)
-        {
-            // contentResult:
-            // the expected return value from an action
-            return new ContentResult { Content = id };
-        }
+        //public IActionResult Post(string id)
+        //{
+        //    // contentResult:
+        //    // the expected return value from an action
+        //    return new ContentResult { Content = id };
+        //}
 
-        public IActionResult Index()
-        {
-            // define all controller logic when it's time to process requests
-            return View();
-        }
+        #endregion
 
-        // ##################### LOGIN ACTIONS ##################### \\
-        [HttpPost]
-        [Route("Login")]
+        // ##################### GET ACTIONS ##################### \\
+
+        [HttpGet]
+        //[Route("Login")]
         public IActionResult Login()
         {
             return PartialView("_LoginAndRegister");
         }
+        [HttpGet]
+        // [Route("Index")]
+        public IActionResult Index()
+        {
+            // define all controller logic when it's time to process requests
+            return View("Index");
+        }
+
+        // ##################### ACCOUNT ACTIONS ##################### \\
 
         [HttpPost]
-        [Route("Authenticate")]
-        public IActionResult Authenticate(CCredentials playerLogin)
+        //[Route("Authenticate")]
+        public IActionResult Authenticate(CredentialsViewModel vm)
         {
             // Request.Form[""];
+             
+            CPlayerCredentials creds = new CPlayerCredentials 
+            { 
+                txtPlayerUsername = vm.Username,
+                txtPlayerPassword = vm.Password
+            };
 
             // attempt authentication.
-            playerLogin.Authenticate();
+            creds.Authenticate();
 
             string viewName = "";
 
-            if (!playerLogin.loginAttemptFailed)
+            if (!creds.loginAttemptFailed)
             {
 
                 // Set the "user-id" session variable to the player id (DB field)
                 //      Meaning, I'll need to get the ID from the CRUDS classes and pass through the model.
 
                 //ToDo: SET USING ID, NOT USERNAME
-                HttpContext.Session.SetString("user-id", playerLogin.txtPlayerUsername);
-                HttpContext.Session.SetString("user-name", playerLogin.txtPlayerUsername);
+                HttpContext.Session.SetString("user-id", creds.txtPlayerUsername);
+                HttpContext.Session.SetString("user-name", creds.txtPlayerUsername);
                 
                 HttpContext.Session.SetString("previous-login-failed", "false");
 
@@ -83,12 +97,12 @@ namespace webWheelOfDeath.Controllers
 
             // CLEAR THE MODELSTATE ARRGGGGGGGGHHH
             ModelState.Clear();
-
             return PartialView(viewName);
         }
 
+
         [HttpPost]
-        [Route("Register")]
+        // [Route("Register")]
         public IActionResult Register(CGameUser player)
         {
 
@@ -96,18 +110,14 @@ namespace webWheelOfDeath.Controllers
             player.Register();
 
             // extract the Credentials base from the player object and return the user to the login page.
-            return PartialView("_LoginPartial", (CCredentials)player);
+            return PartialView("_LoginPartial", (CPlayerCredentials)player);
         }
 
-        [HttpPost]
-        [Route("UserEntry")]
-        public IActionResult UserEntry()
-        {
-            return PartialView("_LoginAndRegister");
-        }
 
+
+
+        // ##################### GAME ACTIONS ##################### \\
         [HttpPost]
-        [Route("Game")]
         public IActionResult Game(long gameId)
         {
             // Create a gameDifficulty (performs backend DB search)
@@ -119,7 +129,7 @@ namespace webWheelOfDeath.Controllers
 
 
 
-        // ##################### OTHER ACTIONS ##################### \\
+        // ##################### MISC ACTIONS ##################### \\
         public IActionResult Privacy()
         {
             return View();
@@ -128,7 +138,8 @@ namespace webWheelOfDeath.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(
+                new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

@@ -1,0 +1,44 @@
+﻿@model webWheelOfDeath.Models.CAdminUser
+
+<h4>CAdminUser</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="_EditAdminAccount">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="txtAdminFirstName" class="control-label"></label>
+                <input asp-for="txtAdminFirstName" class="form-control" />
+                <span asp-validation-for="txtAdminFirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="txtAdminLastName" class="control-label"></label>
+                <input asp-for="txtAdminLastName" class="form-control" />
+                <span asp-validation-for="txtAdminLastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="txtAdminUsername" class="control-label"></label>
+                <input asp-for="txtAdminUsername" class="form-control" />
+                <span asp-validation-for="txtAdminUsername" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="txtAdminPassword" class="control-label"></label>
+                <input asp-for="txtAdminPassword" class="form-control" />
+                <span asp-validation-for="txtAdminPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="adminTypeId" /> @Html.DisplayNameFor(model => model.adminTypeId)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

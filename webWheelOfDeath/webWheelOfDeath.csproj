@@ -4,12 +4,28 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>78d40e87-78eb-46ce-ac68-96558a9f1ea2</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\css\admintheme.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\audio\Arrow_on_wood.mp3" />
+    <None Include="wwwroot\audio\Arrow_on_wood.wav" />
+    <None Include="wwwroot\audio\balloon-burst.mp3" />
+    <None Include="wwwroot\audio\balloon-burst.wav" />
+    <None Include="wwwroot\audio\Sad_Death_Cropped.mp3" />
+    <None Include="wwwroot\audio\Sad_Death_Cropped.wav" />
+    <None Include="wwwroot\audio\tender_hit_1.mp3" />
+    <None Include="wwwroot\audio\tender_hit_2.mp3" />
+    <None Include="wwwroot\audio\tender_hit_3.mp3" />
+    <None Include="wwwroot\audio\timeout.mp3" />
     <None Include="wwwroot\css\animations.css" />
     <None Include="wwwroot\css\lib\modal.css" />
     <None Include="wwwroot\css\statusPanel.css" />
+    <None Include="wwwroot\css\admintheme.css" />
     <None Include="wwwroot\css\theme.css" />
     <None Include="wwwroot\js\CAppModals.js" />
     <None Include="wwwroot\js\CBalloon.js" />
@@ -64,7 +80,12 @@
     <PackageReference Include="jQuery" Version="3.7.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
   <ItemGroup>

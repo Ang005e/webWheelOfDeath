@@ -1,0 +1,62 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model CWebGame;
+
+
+<div id="modal-winner-id" class="modal-canvas hidden">
+    <div class="main-panel modal-winner">
+        <span class="close-popup">&#10006;</span>
+        <form>
+            <fieldset>
+                <legend>Congratulations - You Won!</legend>
+
+                <label for="numElapsedTime">Your Time (sec):</label>
+                <output name="numElapsedTime" id="numElapsedTime"></output>
+
+                <label for="numHits">Hits:</label>
+                <output name="numHits" id="numHits"></output>
+
+                <label for="numMisses">Misses:</label>
+                <output name="numMisses" id="numMisses"></output>
+
+                <output name="txtMiscMessage"></output>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script type="module" defer="defer">
+        'use strict';
+        import { CWheelGame } from "/js/CWheelGame.js";
+        import { CMessageModal } from "/js/CAppModals.js";
+
+        let _game;
+
+        var debugMode = true
+
+        if( ! debugMode) {
+            try {
+                createGame()
+            } catch (e) {
+                new CMessageModal('#modal-message-id').display(e.message, false, 7000);
+            }
+        }else {
+            createGame()
+        }
+
+
+        function createGame() {
+            // get duration, throws, min and max balloons from session variable set in controller.
+            // Or, perform a model bind.
+
+            _game = new CWheelGame('@Context.Session.GetString("user-name")', "@Model.DurationMilliseconds", "@Model.MinBalloons", "@Model.MaxBalloons", "@Model.Attempts");
+
+            document.addEventListener('game-over', event => {
+                console.log(`Status: ${event.detail.gameStatus} Elapsed: ${event.detail.elapsed}`);
+            });
+        }
+    </script>
+}

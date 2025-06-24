@@ -1,4 +1,13 @@
+using LibEntity;
+
+
 var builder = WebApplication.CreateBuilder(args);
+
+
+// Initialise the database connection
+string connectionString = builder.Configuration.GetConnectionString("DevTestDatabase")
+    ?? throw new Exception($"No connection string found");
+Global.Initialise(connectionString);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -35,7 +44,11 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Game}/{action=Index}");
+
+app.MapControllerRoute(
+    name: "admin",
+    pattern: "{controller=Admin}/{action=Index}");
 
 // route that only maps to IDs that are strings
 //app.MapControllerRoute(

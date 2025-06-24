@@ -7,9 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webWheelOfDeath", "webWheel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibWheelOfDeath", "..\LibWheelOfDeathEntity\LibWheelOfDeath.csproj", "{886F4CC3-BB54-4FED-9152-C272FC39B08E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTester", "..\ConsoleTester\ConsoleTester.csproj", "{5D15F6E8-13CA-40B8-B2C9-7F9942A31E32}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleUnitTests", "..\ConsoleTester\ConsoleUnitTests.csproj", "{5D15F6E8-13CA-40B8-B2C9-7F9942A31E32}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibEntity.NetCore", "..\..\..\Shared\LibEntity\LibEntity.NetCore\LibEntity.NetCore.csproj", "{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "DbUnitTests", "Database1\DbUnitTests.sqlproj", "{D7FF8F3F-680C-43AE-A3BF-192339D4571D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{D228DA53-4CE0-41D5-A1C1-E0AE4DF97D4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,8 +37,21 @@ Global
 		{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7FF8F3F-680C-43AE-A3BF-192339D4571D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7FF8F3F-680C-43AE-A3BF-192339D4571D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7FF8F3F-680C-43AE-A3BF-192339D4571D}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{D7FF8F3F-680C-43AE-A3BF-192339D4571D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7FF8F3F-680C-43AE-A3BF-192339D4571D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7FF8F3F-680C-43AE-A3BF-192339D4571D}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{D228DA53-4CE0-41D5-A1C1-E0AE4DF97D4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D228DA53-4CE0-41D5-A1C1-E0AE4DF97D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D228DA53-4CE0-41D5-A1C1-E0AE4DF97D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D228DA53-4CE0-41D5-A1C1-E0AE4DF97D4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6E60ACC5-1C4C-44CD-B2E5-59B394E72577}
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,35 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<fieldset>
+    <button asp-action="Admin/_CreateGame" id="btnCreateGame">Create a Gamemode</button>
+    @* 
+        <button asp-action="Admin/_ManageGames">Activate/Deactivate Gamemodes</button> 
+    *@
+</fieldset>
+
+
+@* @await Html.PartialAsync("_GameManagement")      *@
+@* @await Html.PartialAsync("_Reports")             *@
+@* @await Html.PartialAsync("_AccountManagement")   *@
+
+<script type="module">
+    import { partialLoader } from "/js/partialLoader.js";
+    $(document).ready(() => {
+        document.addEventListener('btnCreateGame', () => {
+            partialLoader(null, "/Admin/CreateGame", "#page-content", "");
+        });
+    })
+</script>
+
+@*
+<script type="module">
+    import { partialLoader } from "/js/partialLoader.js";
+    document.addEventListener('btnManageGames', () => {
+        partialLoader(null, "/Admin/ManageGames", "#page-content", "");
+    });
+</script>
+*@
