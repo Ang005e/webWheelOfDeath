@@ -2,7 +2,9 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-@using webWheelOfDeath.Models.ViewModels
+@using webWheelOfDeath.Models.ViewModels;
+
+
 
 <div id="modal-login-id" class="modal-canvas">
 
@@ -20,9 +22,15 @@
     }
 </div>
 
+
+
+
 <div id="modal-register-id" class="modal-canvas hidden">
     @await Html.PartialAsync("_Register", new AccountViewModel())
 </div>
+
+
+
 
 <script type="module" defer="defer">
     import { CAccountPopups } from "/js/CAccountPopups.js"
@@ -30,20 +38,23 @@
 
     let popups = new CAccountPopups();
 
+    const registerUrl = '@Url.Action("Register", (string)(ViewData["Controller"] ?? ""))'
+    const authenticateUrl = '@Url.Action("Authenticate", (string)(ViewData["Controller"] ?? ""))'
+
     $(document).ready( () => {
         /* delegate the event to the document so that the
         handler is not lost when the element it targets is reloaded */
         $(document).on("submit", "#modal-register-id form", function (event) {
             event.preventDefault(); /* Prevent the default form submission */
             var formData = $(this).serialize();
-        partialLoader(formData, "/@ViewData["Controller"]/Register", "#modal-login-id", "login-form", true);
+        partialLoader(formData, registerUrl, "#modal-login-id", "login-form", true);
         });
 
         $(document).on("submit", "#modal-login-id form", function (event) {
            event.preventDefault();
            var formData = $(this).serialize();
            /* set the HTML of the #page-content div to contain the partial returned by the /Authenticate Action. */
-           partialLoader(formData, "/@ViewData["Controller"]/Authenticate", "#page-content", "game-form", true);
+           partialLoader(formData, authenticateUrl, "#page-content", "game-form", true);
         })
     });
 </script>

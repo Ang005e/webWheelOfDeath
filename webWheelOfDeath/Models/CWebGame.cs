@@ -12,6 +12,17 @@ namespace webWheelOfDeath.Models
         public short MinBalloons { get; set; }
         public short MaxBalloons { get; set; }
 
+        public CWebGame()
+        {
+            // Default constructor for creating a new game
+            Game = string.Empty;
+            Attempts = 0;
+            Misses = 0;
+            DurationMilliseconds = 0;
+            MinBalloons = 0;
+            MaxBalloons = 0;
+        }
+
         public CWebGame(long Id)
         {
             CGame game = new CGame(Id);
@@ -34,6 +45,7 @@ namespace webWheelOfDeath.Models
             game.DurationMilliseconds = DurationMilliseconds;
             game.MinBalloons = MinBalloons;
             game.MaxBalloons = MaxBalloons;
+
             game.Create();
         }
     }

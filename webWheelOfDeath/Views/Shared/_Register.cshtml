@@ -4,43 +4,43 @@
 @{
 }
 
-@model webWheelOfDeath.Models.CGameUser;
+@model webWheelOfDeath.Models.ViewModels.AccountViewModel;
 
 <div class="main-panel modal-player">
     <span class="close-popup">&#10006;</span>
-    <form method="post" asp-action="Register">
+    <form method="post" asp-controller="@ViewData["Controller"]" asp-action="Register">
         <fieldset>
             <legend>Do You Have What It Takes?</legend>
 
             <fieldset class="borderless">
-                <label for="txtPlayerFirstName">First Name:</label>
+                <label for="FirstName">First Name:</label>
                 <input type="text"
-                       asp-for="txtPlayerFirstName"
+                       asp-for="FirstName"
                        placeholder="[Enter First Name]"
                        required="required" />
             </fieldset>
 
 
             <fieldset class="borderless">
-                <label for="txtPlayerLastName">Last Name:</label>
+                <label for="LastName">Last Name:</label>
                 <input type="text"
-                       asp-for="txtPlayerLastName"
+                       asp-for="LastName"
                        placeholder="[Enter Last Name]"
                        required="required" />
             </fieldset>
 
             <fieldset class="borderless">
-                <label for="txtPlayerUsername">Username:</label>
+                <label for="Username">Username:</label>
                 <input type="text"
-                       asp-for="txtPlayerUsername"
+                       asp-for="Username"
                        placeholder="[Enter Username]"
                        required="required" />
             </fieldset>
 
             <fieldset class="borderless">
-                <label for="txtPlayerPassword">Password:</label>
+                <label for="Password">Password:</label>
                 <input type="text"
-                       asp-for="txtPlayerPassword"
+                       asp-for="Password"
                        placeholder="[Enter Password]"
                        required="required" />
             </fieldset>

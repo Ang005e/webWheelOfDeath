@@ -15,6 +15,7 @@ export function partialLoader(formData, actionUrl, refreshElementId, formName, i
         success: function (partial) {
             // Update the modal content with the returned partial view HTML
             $(refreshElementId).html(partial);
+
             document.dispatchEvent(new CustomEvent("partial-refresh", {
                 bubbles: true,
                 detail:

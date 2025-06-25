@@ -1,20 +1,34 @@
 ﻿namespace webWheelOfDeath.Models;
 using LibWheelOfDeath;
-
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 
 public class CGameUser : CPlayerCredentials
 {
-    public string txtPlayerFirstName { get; set; } = string.Empty;
-    public string txtPlayerLastName { get; set; } = string.Empty;
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
 
     public void Register()
     {
+        CPlayer newPlayer = BuildPlayer();
 
-        CPlayer newPlayer = new(
-            txtPlayerFirstName,
-            txtPlayerLastName,
-            txtPlayerUsername,
-            txtPlayerPassword
+        newPlayer.Validate();
+
+        newPlayer.Create();
+    }
+
+    public bool UsernameExists()
+    {
+        CPlayer newPlayer = BuildPlayer();
+        return newPlayer.UsernameExists();
+    }
+
+    public CPlayer BuildPlayer()
+    {
+        return new CPlayer(
+            FirstName,
+            LastName,
+            Username,
+            Password
         );
     }
 }

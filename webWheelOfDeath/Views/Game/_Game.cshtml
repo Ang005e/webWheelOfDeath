@@ -27,36 +27,27 @@
 </div>
 
 
-@section Scripts {
-    <script type="module" defer="defer">
-        'use strict';
-        import { CWheelGame } from "/js/CWheelGame.js";
-        import { CMessageModal } from "/js/CAppModals.js";
+<script type="module" defer="defer">
+    'use strict';
+    import { CWheelGame } from "/js/CWheelGame.js";
+    import { CMessageModal } from "/js/CAppModals.js";
 
-        let _game;
+    let _game;
 
-        var debugMode = true
+    try {
+        createGame()
+    } catch (e) {
+        new CMessageModal('#modal-message-id').display(e.message, false, 7000);
+    }
 
-        if( ! debugMode) {
-            try {
-                createGame()
-            } catch (e) {
-                new CMessageModal('#modal-message-id').display(e.message, false, 7000);
-            }
-        }else {
-            createGame()
-        }
+    function createGame() {
+        // get duration, throws, min and max balloons from session variable set in controller.
+        // Or, perform a model bind.
 
+        _game = new CWheelGame('@Context.Session.GetString("user-name")', "@Model.DurationMilliseconds", "@Model.MinBalloons", "@Model.MaxBalloons", "@Model.Attempts");
 
-        function createGame() {
-            // get duration, throws, min and max balloons from session variable set in controller.
-            // Or, perform a model bind.
-
-            _game = new CWheelGame('@Context.Session.GetString("user-name")', "@Model.DurationMilliseconds", "@Model.MinBalloons", "@Model.MaxBalloons", "@Model.Attempts");
-
-            document.addEventListener('game-over', event => {
-                console.log(`Status: ${event.detail.gameStatus} Elapsed: ${event.detail.elapsed}`);
-            });
-        }
-    </script>
-}
+        document.addEventListener('game-over', event => {
+            console.log(`Status: ${event.detail.gameStatus} Elapsed: ${event.detail.elapsed}`);
+        });
+    }
+</script>

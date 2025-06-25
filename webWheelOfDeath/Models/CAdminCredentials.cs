@@ -5,15 +5,16 @@ namespace webWheelOfDeath.Models
     public class CAdminCredentials
     {
         // ToDo: On login, initialise, and do Authenticate automatically -- set txtLoginSuccess property.
-        public string txtAdminUsername { get; set; } = string.Empty;
-        public string txtAdminPassword { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
         public bool loginAttemptFailed { get; set; } = false;
-        // ToDo: public string errorMessage = string.Empty; // could just throw an error too...
+        public long Id { get; set; } = 0L; 
+
 
         public void Authenticate()
         {
             // ToDo: put check into js/html form instead
-            if (string.IsNullOrWhiteSpace(txtAdminUsername) || string.IsNullOrWhiteSpace(txtAdminPassword))
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
             {
                 loginAttemptFailed = true;
                 return;
@@ -21,10 +22,11 @@ namespace webWheelOfDeath.Models
 
             CAdmin admin = new CAdmin()
             {
-                Username = txtAdminUsername,
-                Password = txtAdminPassword,
+                Username = Username,
+                Password = Password,
             };
             loginAttemptFailed = !admin.Authenticate();
+            Id = admin.Id;
         }
     }
 }

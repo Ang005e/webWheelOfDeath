@@ -3,11 +3,16 @@
 *@
 @{
     ViewData["Title"] = "Admin";
-
-    // Accessed from other shared partials (i.e. _LoginAndRegister)
-    // for the sake of knowing which controller to hand over to.
-    ViewData["Controller"] = "Admin";
 }
+
+
+@*
+
+    ToDo: Index should be the Layout, _AdminCentre should be Index(?).
+    nvm im stupid
+    (i think?)
+
+*@
 
 
 <!doctype html>
@@ -34,18 +39,22 @@
 
         </main>
 
-
-
-        <script type="module">
-            import { partialLoader } from "/js/partialLoader.js";
-            $(document).ready( () => {
-            partialLoader(null, "/@ViewData["Controller"]/Login", "#page-content", "login-form");
-            });
-        </script>
-
         <footer>
             Copyright &copy; 2020-24 SRT - Author: Ramin Majidi
         </footer>
+
+
+        <script type="module" defer>
+            import { partialLoader } from "/js/partialLoader.js";
+
+            // initial page load
+            const first = '@Url.Action(ViewBag.IsLoggedIn ? "AdminCentre" : "Login", "Admin")';
+            $(document).ready(() => partialLoader(null, first, "#page-content", "login-form", false));
+        </script>
+
+
+
+
     </body>
 
 </html>

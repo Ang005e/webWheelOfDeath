@@ -4,11 +4,22 @@
 @{
 }
 
+@* User Feedback from last user administration action. Hidden if there's no feedback to be given.*@
+<div class=".alert @(string.IsNullOrEmpty(ViewBag.LastUserAction) ? "hidden" : ".alert.show") 
+    @(ViewBag.LastUserActionSuccess == true ? ".alert.success" : ".alert.fail")">
+
+	<p>@ViewBag.LastUserAction</p>
+
+</div>
+
 <fieldset>
-    <button asp-action="Admin/_CreateGame" id="btnCreateGame">Create a Gamemode</button>
-    @* 
-        <button asp-action="Admin/_ManageGames">Activate/Deactivate Gamemodes</button> 
-    *@
+
+    <button type="button" id="btnCreateAccount">Create an Admin Account</button>
+
+    <button type="button" id="btnCreateGame">Create a Gamemode</button>
+    
+    <button type="button" id="btnManageGames">Activate/Deactivate Gamemodes</button>
+
 </fieldset>
 
 
@@ -16,20 +27,22 @@
 @* @await Html.PartialAsync("_Reports")             *@
 @* @await Html.PartialAsync("_AccountManagement")   *@
 
-<script type="module">
+
+<script type="module" defer="defer">
     import { partialLoader } from "/js/partialLoader.js";
     $(document).ready(() => {
-        document.addEventListener('btnCreateGame', () => {
-            partialLoader(null, "/Admin/CreateGame", "#page-content", "");
+
+        document.getElementById("btnCreateAccount").addEventListener('click', () => {
+            partialLoader(null, "/Admin/CreateAdminAccount", "#page-content", "", false);
         });
+
+        document.getElementById("btnCreateGame").addEventListener('click', () => {
+            partialLoader(null, "/Admin/CreateGame", "#page-content", "", false);
+        });
+
+        document.getElementById("btnManageGames").addEventListener('click', () => {
+            partialLoader(null, "/Admin/ManageGames", "#page-content", "", false);
+        });
+
     })
 </script>
-
-@*
-<script type="module">
-    import { partialLoader } from "/js/partialLoader.js";
-    document.addEventListener('btnManageGames', () => {
-        partialLoader(null, "/Admin/ManageGames", "#page-content", "");
-    });
-</script>
-*@

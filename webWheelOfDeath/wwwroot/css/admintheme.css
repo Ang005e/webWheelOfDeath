@@ -50,6 +50,37 @@ h1 {
     color: black;
 }
 
+/* base box */
+.alert {
+    padding: .75rem 1.25rem;
+    border-radius: .25rem;
+    color: #fff;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(-.5rem);
+    pointer-events: none; /* ignore clicks while hidden */
+    transition: opacity .35s ease, transform .35s ease;
+}
+
+    /* toggle this class to fade in */
+    .alert.show {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    /*  colour variants  */
+
+    /* green */
+    .alert.success {
+        background: #2ecc71;
+    }
+    /* red  */
+    .alert.fail {
+        background: #e74c3c;
+    }
+
+
 .invalid {
     border: 2px solid red !important;
     background: #fff5f5;

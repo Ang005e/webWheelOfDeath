@@ -89,9 +89,10 @@ div {
     border-style: none;
     border-radius: 50%;
     box-shadow: black 5px 5px 10px;
+    user-select: none;
 }
 
-.wheel-inner-frame{
+.wheel-inner-frame {
     /* Inner frame rotates via animation */
     position: relative;
     display: inline-block;
@@ -101,6 +102,7 @@ div {
     overflow-y: hidden;
     border-style: none;
     border-radius: 50%;
+    user-select: none;
 }
 
 #wheel {
@@ -111,9 +113,10 @@ div {
     width: 24vw;
     height: auto;
     border-radius: 50%;
+    user-select: none;
 }
 
-#victim{
+#victim {
     position: absolute;
     height: 10%;
     width: 10%;
@@ -121,6 +124,7 @@ div {
     top: 30%;
     left: 45%;
     cursor: crosshair;
+    user-select: none;
 }
 
 
@@ -143,17 +147,19 @@ div {
     cursor: crosshair;
 }
 
-.knife_thrower{
+.knife_thrower {
     display: inline-block;
     width: 15%;
     height: auto;
+    user-select: none;
 }
 
-.balloon{
+.balloon {
     position: absolute;
     width: 8%;
     height: auto;
     z-index: 2; /* Set higher than knife-gallery images so balloons aren't obscured */
+    user-select: none;
 }
 
 

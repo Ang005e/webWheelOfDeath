@@ -13,10 +13,6 @@
 
 @{
     ViewData["Title"] = "Home Page";
-
-    // Accessed from other shared partials (i.e. _LoginAndRegister) 
-    // for the sake of knowing which controller to hand over to.
-    ViewData["Controller"] = "Game";
 }
 
 <!--
@@ -135,15 +131,7 @@
             *@
         </div>
 
-    
-        @*On page load, bring down the login modal.*@
-        <script type="module">
-		    import { partialLoader } from "/js/partialLoader.js";
-            $(document).ready( () => {
-                // ToDo: change name of "form" property in customevent detail (in partialLoader) to "element" 
-                partialLoader(null, "/Game/Login", "#page-content", "login-form");
-            });
-        </script>
+
 
         <!-- The following div elements act as a modal canvas for pop-up messages -->
         <div id="modal-message-id" class="modal-canvas hidden">
@@ -152,6 +140,23 @@
                 <p class="message-display">&nbsp;</p>
             </div>
         </div>
+
+
+
+        @*On page load, bring down the _Login partial, OR the _GameSelection partial, depending on login status.*@
+        <script type="module" defer="defer">
+            import { partialLoader } from "/js/partialLoader.js";
+
+
+            const loginUrl = '@Url.Action(ViewBag.IsLoggedIn ? "GameSelection" : "Login", "Game")';
+            @* If the user is logged in, load game selection, otherwise load the login form. *@
+
+
+            $(document).ready( () => {
+                // ToDo: change name of "form" property in customevent detail (in partialLoader) to "element"
+                partialLoader(null, loginUrl, "#page-content", "login-form", false);
+            });
+        </script>
 
     </main>
 

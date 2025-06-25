@@ -21,7 +21,8 @@ namespace webWheelOfDeath.Models.ViewModels
 
         public bool IsActive { get; set; } = true;
 
-        public bool loginAttemptFailed {  get; set; } = false;
 
+        // Server side use only (not linked to the models):
+        public string? LastRegisterFailed { get; set; }
     }
 }

@@ -10,13 +10,14 @@ namespace webWheelOfDeath.Models
     public class CPlayerCredentials
     {
         // ToDo: On login, initialise, and do Authenticate automatically -- set txtLoginSuccess property.
-        public string txtPlayerUsername { get; set; } = string.Empty;
-        public string txtPlayerPassword { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
         public bool loginAttemptFailed { get; set; } = false;
+        public long Id { get; set; } = 0L;
 
         public void Authenticate()
         {
-            if (string.IsNullOrWhiteSpace(txtPlayerUsername) || string.IsNullOrWhiteSpace(txtPlayerPassword))
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
             {
                 loginAttemptFailed = true;
                 return;
@@ -24,10 +25,11 @@ namespace webWheelOfDeath.Models
 
             CPlayer player = new CPlayer()
             {
-                Username = this.txtPlayerUsername,
-                Password = this.txtPlayerPassword,
+                Username = this.Username,
+                Password = this.Password,
             };
             loginAttemptFailed = !player.Authenticate();
+            Id = player.Id;
         }
     }
 }

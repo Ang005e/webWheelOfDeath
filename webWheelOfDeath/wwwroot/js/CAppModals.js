@@ -57,21 +57,21 @@ export class CLoginModal extends CModal {
             // event.preventDefault();     // As the button type is submit, this prevents postback to the server
             event.stopPropagation();    // prevent event bubbling up to parent(s)
 
-            //this.#form.txtPlayerUsername.value = this.#form.txtPlayerUsername.value.trim();
-            //this.#form.txtPlayerPassword.value = this.#form.txtPlayerPassword.value.trim();
+            //this.#form.Username.value = this.#form.Username.value.trim();
+            //this.#form.Password.value = this.#form.Password.value.trim();
 
-            if (!this.#form.txtPlayerUsername.value) {
-                this.#form.txtPlayerUsername.focus();
+            if (!this.#form.Username.value) {
+                this.#form.Username.focus();
                 return;
             }
 
-            if (!this.#form.txtPlayerPassword.value) {
-                this.#form.txtPlayerPassword.focus();
+            if (!this.#form.Password.value) {
+                this.#form.Password.focus();
                 return;
             }
 
-            this.playerUsername = this.#form.txtPlayerUsername.value;
-            this.playerPassword = this.#form.txtPlayerPassword.value;
+            this.playerUsername = this.#form.Username.value;
+            this.playerPassword = this.#form.Password.value;
             // this.hide();
 
             //document.dispatchEvent(new CustomEvent("login-complete", {
@@ -93,11 +93,11 @@ export class CLoginModal extends CModal {
 
 
     display(timeout = 0) {
-        this.#form.txtPlayerUsername.value = this.playerUsername;
-        this.#form.txtPlayerPassword.value = this.playerPassword;
+        this.#form.Username.value = this.playerUsername;
+        this.#form.Password.value = this.playerPassword;
         super.show(timeout);
-        this.#form.txtPlayerUsername.select();
-        this.#form.txtPlayerUsername.focus();
+        this.#form.Username.select();
+        this.#form.Username.focus();
     }
 }
 
@@ -131,34 +131,34 @@ export class CRegisterModal extends CModal {
             event.stopPropagation();    // prevent event bubbling up to parent(s)
 
 
-            this.#form.txtPlayerFirstName.value = this.#form.txtPlayerFirstName.value.trim();
-            this.#form.txtPlayerLastName.value = this.#form.txtPlayerLastName.value.trim();
-            this.#form.txtPlayerUsername.value = this.#form.txtPlayerUsername.value.trim();
-            this.#form.txtPlayerPassword.value = this.#form.txtPlayerPassword.value.trim();
+            this.#form.FirstName.value = this.#form.FirstName.value.trim();
+            this.#form.LastName.value = this.#form.LastName.value.trim();
+            this.#form.Username.value = this.#form.Username.value.trim();
+            this.#form.Password.value = this.#form.Password.value.trim();
 
 
             // if the user has not entered a value, focus the field
-            if (!this.#form.txtPlayerFirstName.value) {
-                this.#form.txtPlayerFirstName.focus();
+            if (!this.#form.FirstName.value) {
+                this.#form.FirstName.focus();
                 return;
             }
-            if (!this.#form.txtPlayerLastName.value) {
-                this.#form.txtPlayerLastName.focus();
+            if (!this.#form.LastName.value) {
+                this.#form.LastName.focus();
                 return;
             }
-            if (!this.#form.txtPlayerUsername.value) {
-                this.#form.txtPlayerUsername.focus();
+            if (!this.#form.Username.value) {
+                this.#form.Username.focus();
                 return;
             }
-            if (!this.#form.txtPlayerPassword.value) {
-                this.#form.txtPlayerPassword.focus();
+            if (!this.#form.Password.value) {
+                this.#form.Password.focus();
                 return;
             }
 
-            this.playerFirstName = this.#form.txtPlayerFirstName.value;
-            this.playerLastName = this.#form.txtPlayerLastName.value;
-            this.playerUsername = this.#form.txtPlayerUsername.value;
-            this.playerPassword = this.#form.txtPlayerPassword.value;
+            this.playerFirstName = this.#form.FirstName.value;
+            this.playerLastName = this.#form.LastName.value;
+            this.playerUsername = this.#form.Username.value;
+            this.playerPassword = this.#form.Password.value;
             this.hide();
 
             callbackFunction();     // invoke the callback function
@@ -167,13 +167,13 @@ export class CRegisterModal extends CModal {
 
     // make the form display corrected values
     display(timeout = 0) {
-        this.#form.txtPlayerFirstName.value = this.playerFirstName;
-        this.#form.txtPlayerLastName.value = this.playerLastName;
-        this.#form.txtPlayerUsername.value = this.playerUsername;
-        this.#form.txtPlayerPassword.value = this.playerPassword;
+        this.#form.FirstName.value = this.playerFirstName;
+        this.#form.LastName.value = this.playerLastName;
+        this.#form.Username.value = this.playerUsername;
+        this.#form.Password.value = this.playerPassword;
         super.show(timeout);
-        this.#form.txtPlayerUsername.select();
-        this.#form.txtPlayerUsername.focus();
+        this.#form.Username.select();
+        this.#form.Username.focus();
     }
 }
 

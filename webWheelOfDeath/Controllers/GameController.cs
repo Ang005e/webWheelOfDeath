@@ -39,78 +39,97 @@ namespace webWheelOfDeath.Controllers
 
         #endregion
 
+
+
+
+
         // ##################### GET ACTIONS ##################### \\
 
-        [HttpGet]
-        //[Route("Login")]
-        public IActionResult Login()
-        {
-            return PartialView("_LoginAndRegister");
-        }
-        [HttpGet]
-        // [Route("Index")]
         public IActionResult Index()
         {
-            // define all controller logic when it's time to process requests
+            // Communicate to the view whether the user is logged in or not -- so it knows which content to show
+            ViewBag.IsLoggedIn = HttpContext.Session.GetString("user-id") != null;
             return View("Index");
         }
+        public IActionResult GameSelection()
+        {
+            return PartialView("_GameSelection");
+        }
+
+
+
+
 
         // ##################### ACCOUNT ACTIONS ##################### \\
 
-        [HttpPost]
-        //[Route("Authenticate")]
-        public IActionResult Authenticate(CredentialsViewModel vm)
+        public IActionResult Login()
         {
-            // Request.Form[""];
-             
+            // Accessed from other shared partials (i.e. _LoginAndRegister)
+            // for the sake of knowing which controller to hand over to.
+            ViewData["Controller"] = "Game";
+
+            return PartialView("_LoginAndRegister", new AccountViewModel());
+        }
+
+        [HttpPost]
+        public IActionResult Authenticate(CredentialsViewModel vm) // take in the shared ViewModel
+        {
+            // Transfer data from shared ViewModel --> the specific account type Model
             CPlayerCredentials creds = new CPlayerCredentials 
             { 
-                txtPlayerUsername = vm.Username,
-                txtPlayerPassword = vm.Password
+                Username = vm.Username,
+                Password = vm.Password
             };
 
-            // attempt authentication.
+            // Attempt authentication using the Model.
             creds.Authenticate();
-
-            string viewName = "";
 
             if (!creds.loginAttemptFailed)
             {
 
                 // Set the "user-id" session variable to the player id (DB field)
-                //      Meaning, I'll need to get the ID from the CRUDS classes and pass through the model.
+                HttpContext.Session.SetString("user-id", creds.Id.ToString());
+                HttpContext.Session.SetString("user-name", creds.Username);
 
-                //ToDo: SET USING ID, NOT USERNAME
-                HttpContext.Session.SetString("user-id", creds.txtPlayerUsername);
-                HttpContext.Session.SetString("user-name", creds.txtPlayerUsername);
-                
-                HttpContext.Session.SetString("previous-login-failed", "false");
+                // CLEAR THE MODELSTATE ARRGGGGGGGGHHH
+                ModelState.Clear();
 
-                viewName = "_GameSelection";  // User login success - return the _GameSelection partial!
+                // User login success - return the _GameSelection partial!
+                return RedirectToAction("GameSelection", "Game");
             }
             else
             {
-                HttpContext.Session.SetString("previous-login-failed", "true");
-
-                viewName = "_LoginAndRegister";
+                ModelState.Clear();
+                vm.LastLoginFailed = "Login failed";
+                return PartialView("_LoginAndRegister", vm);
             }
-
-            // CLEAR THE MODELSTATE ARRGGGGGGGGHHH
-            ModelState.Clear();
-            return PartialView(viewName);
+            
         }
 
 
         [HttpPost]
-        // [Route("Register")]
-        public IActionResult Register(CGameUser player)
+        public IActionResult Register(AccountViewModel vm)
         {
+            CGameUser player = new CGameUser
+            {
+                FirstName = vm.FirstName,
+                LastName = vm.LastName,
+                Username = vm.Username,
+                Password = vm.Password
+            };
+
+            if (player.UsernameExists())
+            {
+                ModelState.Clear();
+                vm.LastRegisterFailed = "Username is already taken";
+                return PartialView("_LoginAndRegister", vm);
+            }
 
             // register actions
             player.Register();
 
             // extract the Credentials base from the player object and return the user to the login page.
-            return PartialView("_LoginPartial", (CPlayerCredentials)player);
+            return PartialView("_LoginPartial");
         }
 
 
