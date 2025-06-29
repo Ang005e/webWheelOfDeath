@@ -24,6 +24,7 @@
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
         <link rel="stylesheet" href="/css/admintheme.css"/>
         <script src="~/lib/jquery/dist/jquery.min.js" defer="defer"></script>
+
         <title>Wheel of Death Admin</title>
 
     </head>
@@ -49,7 +50,7 @@
 
             // initial page load
             const first = '@Url.Action(ViewBag.IsLoggedIn ? "AdminCentre" : "Login", "Admin")';
-            $(document).ready(() => partialLoader(null, first, "#page-content", "login-form", false));
+            $(document).ready(() => partialLoader(null, first, "#page-content", "", false));
         </script>
 
 

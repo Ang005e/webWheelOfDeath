@@ -18,44 +18,35 @@
 <!-- <div id="modal-login-id" class="modal-canvas hidden"> this section should be OUTSIDE the partial -->
 <div class="main-panel modal-player">
     <span class="close-popup">&#10006;</span>
-    <form method="post" asp-controller="@ViewData["Controller"]" asp-action="Login">
+    <form method="post" asp-controller="@ViewData["Controller"]" asp-action="Authenticate">
         <fieldset>
             <legend>Do You Have What It Takes?</legend>
 
             <fieldset class="borderless">
                 <label asp-for="Username">Username:</label>
                 <input type="text"
-                        asp-for="Username"
-                       id="LoginUsername"
-                        placeholder="[Enter Username]"
-                        required="required" />
+                asp-for="Username"
+                id="LoginUsername"
+                placeholder="[Enter Username]"
+                required="required" />
             </fieldset>
 
 
             <fieldset class="borderless">
                 <label asp-for="Password">Password:</label>
                 <input type="text"
-                        asp-for="Password"
-                       id="LoginPassword"
-                        placeholder="[Enter Password]"
-                        required="required" />
+                asp-for="Password"
+                id="LoginPassword"
+                placeholder="[Enter Password]"
+                required="required" />
             </fieldset>
 
-            <button type="button" name="btnCreateAccount" class="ornate">Create Account</button>
+            @* If the Index page calling this partial is not Game, it's Admin -- and admins cannot create accounts from their login page*@
+            @if(((string?)ViewData["Controller"] ?? "") != "Admin")
+            {
+                <button type="button" name="btnCreateAccount" class="ornate">Create Account</button>
+            }
             <button type="submit" name="btnLogin" class="ornate">Log In</button>
         </fieldset>
     </form>
 </div>
-<!-- </div> -->
-
-
-
-
-
-
-
-
-
-
-
-

@@ -81,14 +81,21 @@ export class CLoginModal extends CModal {
             this.#callbackFunction();     // invoke the callback function
 
         });
-        this.#form.btnCreateAccount.addEventListener('click', event => {
 
-            // dispatch a new event
-            document.dispatchEvent(new CustomEvent("create-account", {
-                bubbles: true //,
-                // detail: no need for a detail here
-            }))
-        })
+        try {
+            this.#form.btnCreateAccount.addEventListener('click', event => {
+
+                // dispatch a new event
+                document.dispatchEvent(new CustomEvent("create-account", {
+                    bubbles: true //,
+                    // detail: no need for a detail here
+                }))
+            })
+        }
+        catch (e) {
+            console.info("Didn't attach an event listener to register button -- it didn't exist. This should be an admin page.")
+        }
+
     }
 
 

@@ -16,17 +16,17 @@
 }
 
 <!--
-    Date: 2020-23
-    Author: Ramin Majidi
-    Purpose: This and all other code elements of this project (unless otherwise commented) are the work of the
-    author and may be used for TAFE Assessment purposes only.
+Date: 2020-23
+Author: Ramin Majidi
+Purpose: This and all other code elements of this project (unless otherwise commented) are the work of the
+author and may be used for TAFE Assessment purposes only.
 
-    Date: 2024-25
-    Co-Author: Angus Blake
-	Purpose: The HTML, CSS and JavaScript components of this application were written laregly by the author. However,
-    the Co-Author migrated this application from a static website to a significantly more complex SPA (single-page application) 
-    capable of storing and retreving information from a central server.
-    Framework: Razor MVC (.NET Core). AJAX/Fetch are used in combination with Partial Views to load content dynamically without reloading the entire page.
+Date: 2024-25
+Co-Author: Angus Blake
+Purpose: The HTML, CSS and JavaScript components of this application were written laregly by the author. However,
+the Co-Author migrated this application from a static website to a significantly more complex SPA (single-page application) 
+capable of storing and retreving information from a central server.
+Framework: Razor MVC (.NET Core). AJAX/Fetch are used in combination with Partial Views to load content dynamically without reloading the entire page.
 -->
 
 <!doctype html>
@@ -41,6 +41,7 @@
     <link rel="stylesheet" href="/css/animations.css" />
     <link rel="stylesheet" href="/css/statusPanel.css" />
     <link rel="stylesheet" href="/css/theme.css" />
+    <link rel="stylesheet" href="/css/reporttheme.css" />
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
@@ -89,6 +90,7 @@
         </div>
 
         <button id="btnStartStop" name="btnStartStop" type="button" class="ornate rounded">Start</button>
+        <button id="btnHallOfFame" name="btnHallOfFame" type="button" class="ornate rounded">View Hall Of Fame</button>
 
         <div class="time-panel" id="time-panel-1">
 
@@ -102,7 +104,7 @@
 
         <div id="statusPanel" class="hidden stopped">&nbsp;</div>
 
-    
+
         @* create a form tag (could just use HTML, but this helps keep things in sync, i.e. when refactoring) *@
         @*@using (Html.BeginForm())
         {
@@ -142,22 +144,50 @@
         </div>
 
 
+        @*  ##################################################################  *@
+        @*  ################  Welcome... to hell (partially)  ################  *@
+        @*  ##################################################################  *@
 
         @*On page load, bring down the _Login partial, OR the _GameSelection partial, depending on login status.*@
         <script type="module" defer="defer">
             import { partialLoader } from "/js/partialLoader.js";
 
 
-            const loginUrl = '@Url.Action(ViewBag.IsLoggedIn ? "GameSelection" : "Login", "Game")';
+            const loginUrl = '@Url.Action(ViewBag.IsLoggedIn ? "GameSelection" : "Login", "GameAjax")';
             @* If the user is logged in, load game selection, otherwise load the login form. *@
 
 
             $(document).ready( () => {
-                // ToDo: change name of "form" property in customevent detail (in partialLoader) to "element"
-                partialLoader(null, loginUrl, "#page-content", "login-form", false);
+            // ToDo: change name of "form" property in customevent detail (in partialLoader) to "element"
+
+            @* Load the login form if the user is NOT logged in, and the game selection partial if they are. *@
+            partialLoader(null, loginUrl, '#page-content', 'login-form', false);
+
+            $(document).on("click", "#btnHallOfFame", function (event) {
+
+                event.preventDefault();
+                var formData = $(this).serialize()
+
+                partialLoader(formData, "/GameAjax/HallOfFameHigh", "#page-content", "login-form", true);
+                });
             });
         </script>
+        
+        <script type="module" defer="defer">
+            /* ##### INDEX ##### */
+            import { partialLoader } from "/js/partialLoader.js";
 
+            $(document).ready(() => {
+                $(document).on("click", "#btnStartStop", function (event) {
+                    if ( !@(ViewBag.IsLoggedIn ? "true" : "false") ) {
+                        event.preventDefault();
+                        var formData = $(this).serialize()
+                        partialLoader(formData, "/GameAjax/Login", "#page-content", "login-form", true);
+                    }
+                });
+            });
+        </script>
+        
     </main>
 
     <footer>
@@ -167,4 +197,3 @@
 </body>
 
 </html>
-

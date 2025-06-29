@@ -1,14 +1,16 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+
 @{
+    string lastUserAction = (string?)TempData["LastUserAction"] ?? "";
+	bool lastActionSuccess = (bool?)TempData["LastActionSuccess"] ?? false;
 }
-
 @* User Feedback from last user administration action. Hidden if there's no feedback to be given.*@
-<div class=".alert @(string.IsNullOrEmpty(ViewBag.LastUserAction) ? "hidden" : ".alert.show") 
-    @(ViewBag.LastUserActionSuccess == true ? ".alert.success" : ".alert.fail")">
-
-	<p>@ViewBag.LastUserAction</p>
+<div class=".alert @(string.IsNullOrEmpty(lastUserAction) ? "hidden" : ".alert.show")
+    @(lastActionSuccess == true ? ".alert.success" : ".alert.fail")">
+    
+	<p>@lastUserAction</p>  
 
 </div>
 
@@ -22,13 +24,7 @@
 
 </fieldset>
 
-
-@* @await Html.PartialAsync("_GameManagement")      *@
-@* @await Html.PartialAsync("_Reports")             *@
-@* @await Html.PartialAsync("_AccountManagement")   *@
-
-
-<script type="module" defer="defer">
+<script defer="defer" type="module">
     import { partialLoader } from "/js/partialLoader.js";
     $(document).ready(() => {
 
@@ -37,12 +33,18 @@
         });
 
         document.getElementById("btnCreateGame").addEventListener('click', () => {
-            partialLoader(null, "/Admin/CreateGame", "#page-content", "", false);
+        partialLoader(null, "/Admin/CreateGame", "#page-content", "", false);
         });
 
         document.getElementById("btnManageGames").addEventListener('click', () => {
-            partialLoader(null, "/Admin/ManageGames", "#page-content", "", false);
+        partialLoader(null, "/Admin/ManageGames", "#page-content", "", false);
         });
 
     })
 </script>
+
+
+@* @await Html.PartialAsync("_GameManagement")      *@
+@* @await Html.PartialAsync("_Reports")             *@
+@* @await Html.PartialAsync("_AccountManagement")   *@
+

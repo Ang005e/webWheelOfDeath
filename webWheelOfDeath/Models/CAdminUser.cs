@@ -6,7 +6,7 @@ namespace webWheelOfDeath.Models
     {
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
-        public long adminTypeId { get; set; }
+        public long AdminTypeId { get; set; }
         public bool isActive { get; set; } = true;
 
         public void Edit(long Id)
@@ -17,7 +17,7 @@ namespace webWheelOfDeath.Models
             newAdmin.Username = Username;
             newAdmin.Password = Password;
             newAdmin.IsActiveFlag = isActive;
-            newAdmin.FkAdminTypeId = adminTypeId;
+            newAdmin.FkAdminTypeId = AdminTypeId;
 
             newAdmin.Validate();
 
@@ -46,7 +46,7 @@ namespace webWheelOfDeath.Models
                 Password
             );
             admin.IsActiveFlag = isActive;
-            admin.FkAdminTypeId = adminTypeId;
+            admin.FkAdminTypeId = AdminTypeId;
 
             return admin;
         }

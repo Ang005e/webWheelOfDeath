@@ -1,24 +1,24 @@
 ﻿@model webWheelOfDeath.Models.CWebGame
 
 @section Scripts {
-    <script type="module" defer="defer">
-        'use strict';
-        import FormValidator from '/js/CValidator.js'
+<script type="module" defer="defer">
+    'use strict';
+    import FormValidator from '/js/CValidator.js'
 
-        const fv = new FormValidator('frmCreateGame', 'Game', 'Attempts', 'Misses', 'DurationMilliseconds', 'MinBalloons', 'MaxBalloons')
+    const fv = new FormValidator('frmCreateGame', 'Game', 'Attempts', 'Misses', 'DurationMilliseconds', 'MinBalloons', 'MaxBalloons')
 
-        fv.addRule('Game',        required())
-          .addRule('Game',        maxLength(255));
+    fv.addRule('Game',        required())
+    .addRule('Game',        maxLength(255));
 
-        fv.addRule('Attempts',    numeric())
-          .addRule('Attempts',    minValue(1));
+    fv.addRule('Attempts',    numeric())
+    .addRule('Attempts',    minValue(1));
 
-        fv.addRule('Misses',      minValue(0))
-          .addRule('MaxBalloons', greaterThanField('MinBalloons','Miss Count must not exceed Throw Count'));
+    fv.addRule('Misses',      minValue(0))
+    .addRule('MaxBalloons', greaterThanField('MinBalloons','Miss Count must not exceed Throw Count'));
 
-        fv.addRule('MaxBalloons', greaterThanField('MinBalloons','Max Balloons must exceed Min Balloons'));
+    fv.addRule('MaxBalloons', greaterThanField('MinBalloons','Max Balloons must exceed Min Balloons'));
 
-    </script>
+</script>
 }
 
 <h4>CWebGame</h4>
@@ -31,6 +31,16 @@
                 <label asp-for="Game" class="control-label"></label>
                 <input asp-for="Game" class="form-control" />
                 <span asp-validation-for="Game" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FkDifficultyId" class="control-label"></label>
+                <select asp-for="FkDifficultyId" class="form-control"> 
+                    <option value="">Select Difficulty</option>
+                    @foreach (var difficulty in (IEnumerable<CWebGameDifficulty>)ViewBag.Difficulties)
+                    {
+                        <option value="@difficulty.Id">@difficulty.Difficulty</option>
+                    }
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="Attempts" class="control-label"></label>
@@ -57,6 +67,7 @@
                 <input asp-for="MaxBalloons" class="form-control" />
                 <span asp-validation-for="MaxBalloons" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

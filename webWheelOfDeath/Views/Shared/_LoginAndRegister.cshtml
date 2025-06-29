@@ -23,13 +23,9 @@
 </div>
 
 
-
-
 <div id="modal-register-id" class="modal-canvas hidden">
     @await Html.PartialAsync("_Register", new AccountViewModel())
 </div>
-
-
 
 
 <script type="module" defer="defer">
@@ -37,24 +33,38 @@
     import { partialLoader } from "/js/partialLoader.js"
 
     let popups = new CAccountPopups();
-
-    const registerUrl = '@Url.Action("Register", (string)(ViewData["Controller"] ?? ""))'
-    const authenticateUrl = '@Url.Action("Authenticate", (string)(ViewData["Controller"] ?? ""))'
+    @{
+        string controller = (ViewData["Controller"] ?? "").ToString() ?? "";
+    }
 
     $(document).ready( () => {
-        /* delegate the event to the document so that the
+        const authenticateUrl = '@Url.Action("Authenticate", controller)'
+        /* delegate the events to the document so that the
         handler is not lost when the element it targets is reloaded */
-        $(document).on("submit", "#modal-register-id form", function (event) {
-            event.preventDefault(); /* Prevent the default form submission */
+        $(document).off("submit", "#modal-login-id form").on("submit", "#modal-login-id form", function (event) {
+            event.preventDefault();
             var formData = $(this).serialize();
-        partialLoader(formData, registerUrl, "#modal-login-id", "login-form", true);
-        });
-
-        $(document).on("submit", "#modal-login-id form", function (event) {
-           event.preventDefault();
-           var formData = $(this).serialize();
-           /* set the HTML of the #page-content div to contain the partial returned by the /Authenticate Action. */
-           partialLoader(formData, authenticateUrl, "#page-content", "game-form", true);
+            /* set the HTML of the #page-content div to contain the partial returned by the /Authenticate Action. */
+            partialLoader(formData, authenticateUrl, "#page-content", "game-form", true);
         })
     });
 </script>
+
+@* Register script will not be exposed if it's an admin page *@
+@if(controller != "Admin")
+{
+    <script type="module" defer="defer">
+        import { CAccountPopups } from "/js/CAccountPopups.js"
+        import { partialLoader } from "/js/partialLoader.js"
+
+        $(document).ready( () => {
+            const registerUrl = '@(Url.Action("Register", controller))'
+                // Unbind any existing listeners, then try bind, to prevent "authentication request doomsday"
+                $(document).off("submit", "#modal-register-id form").on("submit", "#modal-register-id form", function (event) {
+                event.preventDefault(); /* Prevent the default form submission */
+                var formData = $(this).serialize();
+                partialLoader(formData, registerUrl, "#modal-login-id", "login-form", true);
+            });
+        });
+    </script>
+}

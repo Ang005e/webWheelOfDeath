@@ -1,4 +1,4 @@
-﻿using LibWheelOfDeath;
+﻿using LibWheelOfDeath.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using webWheelOfDeath.Models;
 using webWheelOfDeath.Models.ViewModels;
@@ -12,8 +12,9 @@ namespace webWheelOfDeath.Controllers
         #region GET ACTIONS
         public IActionResult Index()
         {
-            // Communicate to the view whether the user is logged in or not -- so it knows which content to show
-            ViewBag.IsLoggedIn = HttpContext.Session.GetString("user-id") != null;
+            // Communicate to the view whether the user is logged in or not -- so it knows which content to show.
+            ViewBag.IsLoggedIn = HttpContext.Session.GetString("admin-user-id") != null;
+
             return View("Index");
         }
 
@@ -52,9 +53,9 @@ namespace webWheelOfDeath.Controllers
             if (!creds.loginAttemptFailed)
             {
 
-                // Set the "user-id" session variable to the player id (DB field)
-                HttpContext.Session.SetString("user-id", creds.Id.ToString());
-                HttpContext.Session.SetString("user-name", creds.Username);
+                // Set the "player-user-id" session variable to the player id (DB field)
+                HttpContext.Session.SetString("admin-user-id", creds.Id.ToString());
+                HttpContext.Session.SetString("admin-user-name", creds.Username);
 
                 // CLEAR THE MODELSTATE ARRGGGGGGGGHHH
                 ModelState.Clear();
@@ -103,11 +104,13 @@ namespace webWheelOfDeath.Controllers
 
 
 
-        #region GAME MANAGEMENT ACTIONS
+        #region MANAGEMENT ACTIONS
 
         [HttpGet]
         public IActionResult CreateGame()
         {
+            var diffs = CWebGameDifficulty.GetDifficulties();
+            ViewBag.Difficulties = diffs.Count() > 0 ? diffs : new List<CWebGameDifficulty>();
             return PartialView("_CreateGame", new CWebGame());
         }
 
@@ -117,13 +120,13 @@ namespace webWheelOfDeath.Controllers
             try
             {
                 gm.Create();
-                ViewBag.LastUserActionSuccess = true;
-                ViewBag.LastUserAction = "new Gamemode Created!";
+                TempData["LastUserActionSuccess"] = true;
+                TempData["LastUserAction"] = "New gamemode created!";
             }
             catch (CWheelOfDeathException E)
             {
-                ViewBag.LastUserActionSuccess = false;
-                ViewBag.LastUserAction = "Error creating gamemode: " + E.Message;
+                TempData["LastUserActionSuccess"] = false;
+                TempData["LastUserAction"] = "Error creating gamemode: " + E.Message;
             }
 
             return RedirectToAction("Index");
@@ -141,13 +144,13 @@ namespace webWheelOfDeath.Controllers
             try
             {
                 admin.Register();
-                ViewBag.LastUserActionSuccess = true;
-                ViewBag.LastUserAction = "New Admin Created!";
+                TempData["LastUserActionSuccess"] = true;
+                TempData["LastUserAction"] = "New admin registered!";
             }
             catch (CWheelOfDeathException E)
             {
-                ViewBag.LastUserActionSuccess = false;
-                ViewBag.LastUserAction = "Error creating admin account: " + E.Message;
+                TempData["LastUserActionSuccess"] = false;
+                TempData["LastUserAction"] = "Error registering admin: " + E.Message;
             }
             return RedirectToAction("Index");
         }

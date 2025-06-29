@@ -21,6 +21,10 @@ html, body {
 
     }
 
+    body > script {
+        display: none !important;
+    }
+
     body > header {
         height: 20vh;
         border: none;

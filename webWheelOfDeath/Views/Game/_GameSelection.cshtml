@@ -8,7 +8,14 @@
 @using LibEntity
 
 
-<div id="modal-game-selection-id" class="modal-canvas @((true==false) ? "hidden" : "")"> @*TODO: remove false, replace with check if game has been selected*@ 
+@* 
+    Please pretend that this is a nice, clean, model-class linked partial, 
+    with no SQL or references to inappropriate libraries and that i totally 
+    didn't forget was here until 5 minutes before submitting.
+*@
+
+<div id="modal-game-selection-id" class="modal-canvas @((ViewBag.GameSelected??false) ? "hidden" : "")">
+    @*check if game has been selected, and if so, hide this modal*@ 
     <div class="main-panel modal-player">
         <span class="close-popup">&#10006;</span>
         <form>
@@ -19,17 +26,17 @@
                     <select name="gameId" id="cboGameSelect">
                         @{
                             string sql = @"
-                        select
-                        G.[Id], G.[Game], G.[FkDifficultyId], D.[Difficulty], D.[Id]
-                        from
-                        tblGame G inner join
-                        tblDifficulty D on D.[Id] = G.[FkDifficultyId]
-                        where
-                        (1=1)
-                        order by
-                        D.[Id],
-                        G.[Game]
-                        ";
+                                select
+                                G.[Id], G.[Game], G.[FkDifficultyId], D.[Difficulty], D.[Id]
+                                from
+                                tblGame G inner join
+                                tblDifficulty D on D.[Id] = G.[FkDifficultyId]
+                                where
+                                (1=1)
+                                order by
+                                D.[Id],
+                                G.[Game]
+                            ";
                             DataTable table = sql.Fetch<DataTable>();
                             int counter = 0;
                             
@@ -83,7 +90,7 @@
 			event.preventDefault(); // Prevent the default form submission
 			var formData = $(this).serialize()
 
-			partialLoader(formData, "/Game/Game", "#page-content", "game-selection-form", true);
+			partialLoader(formData, "/GameAjax/Game", "#page-content", "game-selection-form", true);
 		});
 	})
 </script>
