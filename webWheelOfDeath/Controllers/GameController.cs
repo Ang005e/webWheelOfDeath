@@ -163,7 +163,9 @@ namespace webWheelOfDeath.Controllers
                 return PartialView("_LoginAndRegister", new AccountViewModel());
 
             ViewBag.GameSelected = false;
-            return PartialView("_GameSelection");
+
+            var model = new CWebGamesByDifficulty();
+            return PartialView("_GameSelection", model);
         }
 
         [HttpPost]

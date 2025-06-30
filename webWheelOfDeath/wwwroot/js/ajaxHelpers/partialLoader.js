@@ -1,4 +1,6 @@
 ﻿
+import { CMessageModal } from '/js/CAppModals.js';
+
 /**
  * Send form data via AJAX, update a target element, and dispatch a refresh event.
  *

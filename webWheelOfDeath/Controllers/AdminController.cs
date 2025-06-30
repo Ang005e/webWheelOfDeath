@@ -1,4 +1,5 @@
 ﻿using LibWheelOfDeath.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using webWheelOfDeath.Models;
 using webWheelOfDeath.Models.ViewModels;
@@ -101,7 +102,6 @@ namespace webWheelOfDeath.Controllers
         }
 
         #endregion
-
 
 
         #region MANAGEMENT ACTIONS

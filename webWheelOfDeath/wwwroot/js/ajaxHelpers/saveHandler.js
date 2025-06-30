@@ -1,4 +1,12 @@
 ﻿
+import { CMessageModal } from '/js/CAppModals.js';
+/**
+ * Handles saving form data via AJAX and displays a message modal upon success/fail.
+ *
+ * @param {string} saveButtonName - ID of the save button
+ * @param {string} controller - Controller name for the AJAX request
+ * @param {string} saveAction - Action name for the AJAX request
+ */
 export function saveHandler(saveButtonName, controller, saveAction) {
 
     // add a new message model for user info
