@@ -1,6 +1,6 @@
 ﻿
 
-import { partialLoader } from '../Utils/partialLoader.js';
+import { partialLoader } from '/js/ajaxHelpers/partialLoader.js';
 import $ from 'jquery';
 
 // navigationManager.js

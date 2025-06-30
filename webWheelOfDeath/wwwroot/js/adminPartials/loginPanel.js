@@ -1,4 +1,4 @@
-﻿import { partialLoader } from "/js/partialLoader.js";
+﻿import { partialLoader } from "/js/ajaxHelpers/partialLoader.js";
 
 import $ from "jquery";
 /** start the login/admin panel */

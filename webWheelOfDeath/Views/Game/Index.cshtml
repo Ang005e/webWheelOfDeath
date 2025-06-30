@@ -150,7 +150,7 @@ Framework: Razor MVC (.NET Core). AJAX/Fetch are used in combination with Partia
 
         @*On page load, bring down the _Login partial, OR the _GameSelection partial, depending on login status.*@
         <script type="module" defer="defer">
-            import { partialLoader } from "/js/partialLoader.js";
+            import { partialLoader } from "/js/ajaxHelpers/partialLoader.js";
 
 
             const loginUrl = '@Url.Action(ViewBag.IsLoggedIn ? "GameSelection" : "Login", "Game")';

@@ -45,8 +45,13 @@ namespace webWheelOfDeath.Controllers
 
         public IActionResult Index()
         {
+            // Accessed from other shared partials (i.e. _LoginAndRegister)
+            // for the sake of knowing which controller to hand over to.
+            ViewData["Controller"] = "Game";
+
             // Communicate to the view whether the user is logged in or not -- so it knows which content to show
             ViewBag.IsLoggedIn = HttpContext.Session.GetString("player-user-id") != null;
+
             return View("Index");
         }
 
@@ -57,10 +62,6 @@ namespace webWheelOfDeath.Controllers
 
         public IActionResult Login()
         {
-            // Accessed from other shared partials (i.e. _LoginAndRegister)
-            // for the sake of knowing which controller to hand over to.
-            ViewData["Controller"] = "Game";
-
             return PartialView("_LoginAndRegister", new AccountViewModel());
         }
 
@@ -168,12 +169,15 @@ namespace webWheelOfDeath.Controllers
         [HttpPost]
         public IActionResult SaveGameRecord(CWebGameRecord gameRecord)
         {
-            // this should not fail, but it won't return a 500 because it's not a protocol problem, it's a me problem.
-            try { gameRecord.Create(); }
-            
-            catch (Exception E) { return Content($"Error saving game. Please inform an administrator: {E.Message} - Inner: {E.InnerException?.Message}"); }
-            
-            return PartialView("_GameSelection");
+            try
+            {
+                gameRecord.Create();
+                return Json(new { success = true });
+            }
+            catch (Exception E)
+            {
+                return Json(new { success = false, message = E.Message });
+            }
         }
 
         #endregion

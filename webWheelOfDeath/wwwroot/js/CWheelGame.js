@@ -202,7 +202,7 @@ export class CWheelGame extends CTimer {
         this.#useKnife();
         this.#missCounter++;
         this.#updateScore();
-        docuemnt.dispatchEvent(new CustomEvent("throw"));
+        document.dispatchEvent(new CustomEvent("throw"));
         this.#checkGameOver();
         // understand how throws are detected
     }

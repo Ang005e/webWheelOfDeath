@@ -23,11 +23,19 @@
                 <output name="txtMiscMessage"></output>
             </fieldset>
             <fieldset>
-                <button id="btnSaveResults" asp-action="SaveGameRecord">Save Game Results</button>
+                <button id="btnSaveResults" class="ornate" type="button">Save Game Results</button>
             </fieldset>
         </form>
     </div>
 </div>
+
+@* Save the game record *@
+<script type="module" defer="defer">
+    import { saveHandler } from "/js/ajaxHelpers/saveHandler.js"
+
+    saveHandler("btnSaveGame", '@ViewData["Controller"]', "SaveGameRecord");
+
+</script>
 
 
 <script type="module" defer="defer">

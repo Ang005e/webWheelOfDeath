@@ -30,7 +30,7 @@
 
 <script type="module" defer="defer">
     import { CAccountPopups } from "/js/CAccountPopups.js"
-    import { partialLoader } from "/js/partialLoader.js"
+    import { partialLoader } from "/js/ajaxHelpers/partialLoader.js"
 
     let popups = new CAccountPopups();
     @{
@@ -55,7 +55,7 @@
 {
     <script type="module" defer="defer">
         import { CAccountPopups } from "/js/CAccountPopups.js"
-        import { partialLoader } from "/js/partialLoader.js"
+        import { partialLoader } from "/js/ajaxHelpers/partialLoader.js"
 
         $(document).ready( () => {
             const registerUrl = '@(Url.Action("Register", controller))'
