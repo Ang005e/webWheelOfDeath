@@ -30,7 +30,6 @@ export class AjaxNavigator {
             this.handleSave($(e.currentTarget));
         });
 
-        // Handle the game record saving
         $(document).on('click', '[data-ajax-save][data-action="SaveGameRecord"]', function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -44,6 +43,8 @@ export class AjaxNavigator {
                 url: '/Game/SaveGameRecord',
                 type: 'POST',
                 data: window.lastGameResult,
+                contentType: 'application/x-www-form-urlencoded', // Explicitly set content type
+                dataType: 'json',
                 success: function (response) {
                     if (response.success) {
                         $(e.target).prop('disabled', true);
@@ -52,8 +53,9 @@ export class AjaxNavigator {
                         new window.CMessageModal('#modal-message-id').display("Save failed: " + response.message, false, 5000);
                     }
                 },
-                error: function () {
-                    new window.CMessageModal('#modal-message-id').display("Save failed", false, 5000);
+                error: function (xhr, status, error) {
+                    console.error('Save error:', error);
+                    new window.CMessageModal('#modal-message-id').display("Save failed: " + error, false, 5000);
                 }
             });
         });

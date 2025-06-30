@@ -8,7 +8,7 @@
 
 <div class="main-panel modal-player">
     <span class="close-popup">&#10006;</span>
-    <form method="post" asp-controller="@Context.Session.GetString("controller")" asp-action="Register">
+    <form method="post" data-ajax-form data-target="#modal-login-id" asp-action="Register">
         <fieldset>
             <legend>Do You Have What It Takes?</legend>
 

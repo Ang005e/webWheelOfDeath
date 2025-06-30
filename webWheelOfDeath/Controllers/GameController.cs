@@ -174,6 +174,7 @@ namespace webWheelOfDeath.Controllers
         {
             try
             {
+                gameRecord.FkPlayerId = long.Parse(HttpContext.Session.GetString("player-user-id") ??"0");
                 gameRecord.Create();
                 return Json(new { success = true });
             }

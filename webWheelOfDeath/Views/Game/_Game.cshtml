@@ -22,6 +22,19 @@
 
                 <output name="txtMiscMessage"></output>
 
+                <output name=""
+
+
+
+                FkGameId: @Model.Id,
+                FkPlayerId: @(Context.Session.GetString("player-user-id") ?? "0"),
+                FkResultId: event.detail.gameStatus,
+                ElapsedTime: event.detail.elapsed,
+                BalloonsPopped: event.detail.balloonsPopped,
+                Misses: event.detail.misses
+
+
+
             </fieldset>
             <fieldset>
                 <button 
@@ -66,16 +79,6 @@
 
         document.addEventListener('game-over', event => {
             console.log('Game over event:', event.detail);
-
-            // Store the game data (for when save gets s clicked)
-            window.lastGameResult = {
-                FkGameId: @Model.Id,
-                FkPlayerId: @(Context.Session.GetString("player-user-id") ?? "0"),
-                Result: event.detail.gameStatus,
-                ElapsedTime: event.detail.elapsed,
-                BalloonsPopped: event.detail.balloonsPopped,
-                Misses: event.detail.misses
-            };
         });
     }
 </script>

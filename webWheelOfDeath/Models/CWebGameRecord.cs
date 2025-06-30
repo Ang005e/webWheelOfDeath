@@ -7,8 +7,7 @@ namespace webWheelOfDeath.Models
         public int Id { get; set; }
         public long FkGameId { get; set; }
         public long FkPlayerId { get; set; }
-        private long _fkResultId { get; set; } // frontened never needs to know
-        public EnumResultType Result { get; set; }
+        public long FkResultId { get; set; } 
         public bool IsWin { get;set; }
         public DateTime Date { get; set; }
         public long ElapsedTime { get; set; }
@@ -23,31 +22,14 @@ namespace webWheelOfDeath.Models
             gameRec.Create();
         }
 
-        private void GetResultType()
-        {
-            CResult result = new(_fkResultId);
-            IsWin = result.IsWin??false;
-            Result = result.ResultType;
-        }
-
-        private void PopulateResultId(EnumResultType resultType)
-        {
-            CResult result = new();
-            result.GetWithResultType(resultType);
-            _fkResultId = result.Id;
-        }
-
         private CGameRecord Build()
         {
-
-            // get result type id
-            PopulateResultId(Result);
 
             return new CGameRecord
             {
                 FkGameId = FkGameId,
                 FkPlayerId = FkPlayerId,
-                FkResultId = _fkResultId,
+                FkResultId = FkResultId,
                 Date = DateTime.UtcNow,
                 ElapsedTime = ElapsedTime,
                 BalloonsPopped = BalloonsPopped,
