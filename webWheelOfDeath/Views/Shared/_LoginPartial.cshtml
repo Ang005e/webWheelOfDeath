@@ -1,7 +1,4 @@
-﻿@*@{
-        Layout = null;
-    }*@
-
+﻿
 @model webWheelOfDeath.Models.ViewModels.CredentialsViewModel;
 
 
@@ -10,15 +7,16 @@
     It is included in the main view (Index.cshtml) using the following syntax:
     @Html.Partial("_LoginPartial", Model)
     The model passed to this partial view should be of type CCredentials.
-
-    ToDo:
-    inside the _Login partial view, check if the user just failed a login (Request.Form["txtLoginUsername"].ToString()). If so, 
 *@ 
 
 <!-- <div id="modal-login-id" class="modal-canvas hidden"> this section should be OUTSIDE the partial -->
 <div class="main-panel modal-player">
     <span class="close-popup">&#10006;</span>
-    <form method="post" asp-controller="@Context.Session.GetString("controller")" asp-action="Authenticate">
+    <form 
+        data-ajax-form 
+        method="post" 
+        asp-action="Authenticate">
+
         <fieldset>
             <legend>Do You Have What It Takes?</legend>
 
@@ -42,11 +40,21 @@
             </fieldset>
 
             @* If the Index page calling this partial is not Game, it's Admin -- and admins cannot create accounts from their login page*@
-            @if(((string?)Context.Session.GetString("controller") ?? "") != "Admin")
+            @* ...so best we stop the cheeky buggers in their tracks. *@
+            @if(((string?)Context.Session.GetString("Controller") ?? "") != "Admin")
             {
-                <button type="button" name="btnCreateAccount" class="ornate">Create Account</button>
+                <button 
+                    @* No data attributes--this is handled by CAccountPopups, as it's a modal, not a partial*@
+                    type="button"
+                    name="btnCreateAccount"
+                    id="btnCreateAccount"
+                    class="ornate">Create Account</button>
             }
-            <button type="submit" name="btnLogin" class="ornate">Log In</button>
+            <button 
+                @* Note: no data attributes, this is a submit. the form contains the attributes*@
+                type="submit"
+                name="btnLogin"
+                class="ornate">Log In</button>
         </fieldset>
     </form>
 </div>

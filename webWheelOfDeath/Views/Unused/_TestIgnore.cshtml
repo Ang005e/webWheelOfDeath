@@ -1,0 +1,80 @@
+﻿<!-- Example 1: Simple navigation links -->
+<a data-ajax-nav
+   data-action="HallOfFameLow"
+   href="#">Slowest Times</a>
+
+<a data-ajax-nav
+   data-action="HallOfFameHigh"
+   href="#">Fastest Times</a>
+
+<!-- Example 2: Links with explicit URLs -->
+<a data-ajax-nav
+   data-url="/Game/GameSelection"
+   href="#">Select Game</a>
+
+<!-- Example 3: Links with IDs for detail/edit pages -->
+@*<a data-ajax-nav
+   data-action="Details"
+   data-id="@item.Id"
+   href="#">View Details</a>
+
+<a data-ajax-nav
+   data-action="Edit"
+   data-id="@item.Id"
+   data-method="GET"
+   href="#">Edit</a>
+
+<!-- Example 4: proposed convention -->
+<a data-ajax-nav
+   data-model="Game"
+   data-action="Create"
+   href="#">Create New Game</a>
+*@
+<!-- Example 5: Custom target and refresh event -->
+<a data-ajax-nav
+   data-action="LoadPartial"
+   data-target="#sidebar-content"
+   data-refresh-event="sidebar-updated"
+   href="#">Load Sidebar</a>
+
+<!-- Example 6: Form with AJAX submission -->
+<form data-ajax-form
+      data-target="#page-content"
+      asp-action="CreateGame"
+      method="post">
+    <!-- form fields -->
+    <button type="submit">Save</button>
+</form>
+
+<!-- Example 7: In a table/list view -->
+<table>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Name</td>
+            <td>
+                <a data-ajax-nav data-action="Edit" data-id="@item.Id">Edit</a> |
+                <a data-ajax-nav data-action="Details" data-id="@item.Id">Details</a> |
+                <a data-ajax-nav data-action="Delete" data-id="@item.Id" data-method="POST">Delete</a>
+            </td>
+        </tr>
+    }
+</table>
+
+<!-- current controller for the JavaScript -->
+<script>
+    window.currentController = '@Context.Session.GetString("Controller")';
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+

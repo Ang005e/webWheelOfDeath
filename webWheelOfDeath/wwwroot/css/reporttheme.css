@@ -28,10 +28,6 @@
         top: 0;
     }
 
-    .report a {
-        color:blue !important;
-    }
-
 /* Dark overlay behind the table */
 .report-overlay {
     position: fixed;
@@ -50,17 +46,10 @@
     z-index: 9999;
     text-shadow: none;
 }
-.report-link-container a:hover {
+.report-link-container a[data-ajax-nav], .report-link-container a {
+    color: #0077cc !important;
+    cursor: pointer;
+}
+.report-link-container a[data-ajax-nav]:hover, .report-link-container a:hover {
     color: floralwhite !important;
 }
-
-
-
-
-
-
-
-
-
-
-

@@ -1,9 +1,16 @@
-﻿@if (Context.Session.GetString("Controller") == "Admin")
-{
-	// ToDo: change to an admin layout later
-	Layout = "Shared/_Layout.cshtml";
-}
-else
-{
-	Layout = "Shared/_Layout.cshtml";
+﻿@{
+	// try to "safely" get the controller from the route value.
+	string controller = (string?)ViewContext.RouteData.Values["controller"] ?? (string?)ViewContext.RouteData.Values["Controller"] ?? "CONTROLLER_UNSET_IN_VIEWSTART";
+	Context.Session.SetString("Controller", controller);
+
+	if (controller == "Admin")
+	{
+	
+		// ToDo: change to an admin layout later
+		Layout = "Shared/_Layout.cshtml";
+	}
+	else
+	{
+		Layout = "Shared/_Layout.cshtml";
+	}
 }

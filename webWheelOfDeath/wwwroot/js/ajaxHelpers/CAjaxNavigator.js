@@ -79,8 +79,7 @@ export class AjaxNavigator {
             url: data.url || $element.data('url'),
             method: data.method || $element.data('method') || 'GET',
             includeForm: data.includeForm === 'true' || $element.data('include-form'),
-            refreshEvent: data.refreshEvent || $element.data('refresh-event'),
-            ...data
+            refreshEvent: data.refreshEvent || $element.data('refresh-event')
         };
     }
 

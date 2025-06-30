@@ -6,6 +6,16 @@
 
 ### Application information
 
+#### Innovation: Tag attributes & CAjaxNavigator
+Throughout the app, you'll see \<a> links, \<button>s, and \<form>s with (custom) data attributes, including:
+- data-ajax-nav
+- data-ajax-form
+- data-action
+- data-target
+- data-url
+...and so on.
+These are custom attributes that I added, alongside a JS class (CAjaxNavigator) which, in tandem, remove 85% of the tedium in setting up AJAX. No more countless \<script> tags... just a single, smart JS object attached to the window.
+
 #### Integral setup
 - ViewBag.IsLoggedIn must be set to `true` when a user successfully authenticates.
 	- It is used by ajax to know when to display/hide content.

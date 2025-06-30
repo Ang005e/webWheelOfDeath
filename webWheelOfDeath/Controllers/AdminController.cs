@@ -15,7 +15,7 @@ namespace webWheelOfDeath.Controllers
         {
             // Accessed from other shared partials (i.e. _LoginAndRegister)
             // for the sake of knowing which controller to hand over to.
-            HttpContext.Session.SetString("controller", "Admin");
+            // HttpContext.Session.SetString("Controller", "Admin"); setting in ViewStart now
 
             // Communicate to the view whether the user is logged in or not -- so it knows which content to show.
             ViewBag.IsLoggedIn = HttpContext.Session.GetString("admin-user-id") != null;

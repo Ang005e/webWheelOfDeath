@@ -1,25 +1,25 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-
+﻿
 @using webWheelOfDeath.Models.ViewModels;
 
 
 
 <div id="modal-login-id" class="modal-canvas">
-
     @await Html.PartialAsync("_LoginPartial", new CredentialsViewModel())
+    @*
+        The below script is no longer needed after centralising error modals inside PartialLoader.js
+        (I left it here to show off)
+    *@
 
-    @{
-        string? previousLoginFailed = Context.Session.GetString("previous-login-failed");
-    }
-    @if (previousLoginFailed == "true")
-    {
-        <script type="module">
-            import { CMessageModal } from "/js/CAppModals.js";
-            new CMessageModal('#modal-message-id').display("Username or password are incorrect", false, 7000)
-        </script>
-    }
+    @* @{ *@
+    @*     string? previousLoginFailed = Context.Session.GetString("previous-login-failed"); *@
+    @* } *@
+    @* @if (previousLoginFailed == "true") *@
+    @* { *@
+    @*     <script type="module"> *@
+    @*         import { CMessageModal } from "/js/CAppModals.js"; *@
+    @*         new CMessageModal('#modal-message-id').display("Username or password are incorrect", false, 7000) *@
+    @*     </script> *@
+    @* } *@
 </div>
 
 
@@ -27,44 +27,49 @@
     @await Html.PartialAsync("_Register", new AccountViewModel())
 </div>
 
+@* 
+    ####### The below scripts are No Longer Needed after switching to CAjaxNavigator.js and tag attributes for navigation.
+    (I left them here to show off)
+*@
 
-<script type="module" defer="defer">
-    import { CAccountPopups } from "/js/CAccountPopups.js"
-    import { partialLoader } from "/js/ajaxHelpers/partialLoader.js"
+@* <script type="module" defer="defer"> *@
+@*     import { CAccountPopups } from "/js/CAccountPopups.js" *@
+@*     import { partialLoader } from "/js/ajaxHelpers/partialLoader.js" *@
 
-    let popups = new CAccountPopups();
-    @{
-        string controller = (Context.Session.GetString("controller") ?? "").ToString() ?? "";
-    }
+@*     let popups = new CAccountPopups(); *@
+@*     @{ *@
+@*         string controller = (Context.Session.GetString("controller") ?? "").ToString() ?? ""; *@
+@*     } *@
 
-    $(document).ready( () => {
-        const authenticateUrl = '@Url.Action("Authenticate", controller)'
-        /* delegate the events to the document so that the
-        handler is not lost when the element it targets is reloaded */
-        $(document).off("submit", "#modal-login-id form").on("submit", "#modal-login-id form", function (event) {
-            event.preventDefault();
-            var formData = $(this).serialize();
-            /* set the HTML of the #page-content div to contain the partial returned by the /Authenticate Action. */
-            partialLoader(formData, authenticateUrl, "#page-content", "game-form", true);
-        })
-    });
-</script>
+@*     $(document).ready( () => { *@
+@*         const authenticateUrl = '@Url.Action("Authenticate", controller)' *@
+@*         /* delegate the events to the document so that the *@
+@*         handler is not lost when the element it targets is reloaded */ *@
+@*         $(document).off("submit", "#modal-login-id form").on("submit", "#modal-login-id form", function (event) { *@
+@*             event.preventDefault(); *@
+@*             var formData = $(this).serialize(); *@
+@*             /* set the HTML of the #page-content div to contain the partial returned by the /Authenticate Action. */ *@
+@*             partialLoader(formData, authenticateUrl, "#page-content", "game-form", true); *@
+@*         }) *@
+@*     }); *@
+@* </script> *@
 
-@* Register script will not be exposed if it's an admin page *@
-@if(controller != "Admin")
-{
-    <script type="module" defer="defer">
-        import { CAccountPopups } from "/js/CAccountPopups.js"
-        import { partialLoader } from "/js/ajaxHelpers/partialLoader.js"
+@* Register script will not be exposed if it's an admin page
+*@
+@* @if(controller != "Admin") *@
+@* { *@
+@*     <script type="module" defer="defer"> *@
+@*         import { CAccountPopups } from "/js/CAccountPopups.js" *@
+@*         import { partialLoader } from "/js/ajaxHelpers/partialLoader.js" *@
 
-        $(document).ready( () => {
-            const registerUrl = '@(Url.Action("Register", controller))'
-                // Unbind any existing listeners, then try bind, to prevent "authentication request doomsday"
-                $(document).off("submit", "#modal-register-id form").on("submit", "#modal-register-id form", function (event) {
-                event.preventDefault(); /* Prevent the default form submission */
-                var formData = $(this).serialize();
-                partialLoader(formData, registerUrl, "#modal-login-id", "login-form", true);
-            });
-        });
-    </script>
-}
+@*         $(document).ready( () => { *@
+@*             const registerUrl = '@(Url.Action("Register", controller))' *@
+@*                 // Unbind any existing listeners, then try bind, to prevent "authentication request doomsday" *@
+@*                 $(document).off("submit", "#modal-register-id form").on("submit", "#modal-register-id form", function (event) { *@
+@*                 event.preventDefault(); /* Prevent the default form submission */ *@
+@*                 var formData = $(this).serialize(); *@
+@*                 partialLoader(formData, registerUrl, "#modal-login-id", "login-form", true); *@
+@*             }); *@
+@*         }); *@
+@*     </script> *@
+@* } *@
