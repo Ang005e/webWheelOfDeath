@@ -17,14 +17,42 @@ namespace webWheelOfDeath.Models
 
         public void Create()
         {
-            CGameUser game = new();
+            // convert to abstract class + interface + generics -- generic entity, can automate this function
+            // by enforcing the addition of a Build() function.
+            CGameRecord gameRec = Build();
+            gameRec.Create();
         }
 
-        private void GetResult()
+        private void GetResultType()
         {
             CResult result = new(_fkResultId);
             IsWin = result.IsWin??false;
             Result = result.ResultType;
+        }
+
+        private void PopulateResultId(EnumResultType resultType)
+        {
+            CResult result = new();
+            result.GetWithResultType(resultType);
+            _fkResultId = result.Id;
+        }
+
+        private CGameRecord Build()
+        {
+
+            // get result type id
+            PopulateResultId(Result);
+
+            return new CGameRecord
+            {
+                FkGameId = FkGameId,
+                FkPlayerId = FkPlayerId,
+                FkResultId = _fkResultId,
+                Date = DateTime.UtcNow,
+                ElapsedTime = ElapsedTime,
+                BalloonsPopped = BalloonsPopped,
+                Misses = Misses
+            };
         }
     }
 }

@@ -25,7 +25,7 @@ export function partialLoader(formData, actionUrl, refreshElementId, formName, i
             }));
         },
         error: function () {
-            alert("There was an error processing your request.");
+            new CMessageModal('#modal-message-id').display("There was an error processing your request.", false, 5000);
         }
     });
 }

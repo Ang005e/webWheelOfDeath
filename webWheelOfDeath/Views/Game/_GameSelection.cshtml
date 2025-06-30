@@ -2,10 +2,10 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-@using LibWheelOfDeath
 @using System.Data
 @using Microsoft.Data.SqlClient
-@using LibEntity
+
+@model webWheelOfDeath.Models.CWebGamesByDifficulty
 
 
 @* 
@@ -25,19 +25,8 @@
                     @* fkDifficultyId is a model parameter for Game, passing the value of the selected element to the controller. *@
                     <select name="gameId" id="cboGameSelect">
                         @{
-                            string sql = @"
-                                select
-                                G.[Id], G.[Game], G.[FkDifficultyId], D.[Difficulty], D.[Id]
-                                from
-                                tblGame G inner join
-                                tblDifficulty D on D.[Id] = G.[FkDifficultyId]
-                                where
-                                (1=1)
-                                order by
-                                D.[Id],
-                                G.[Game]
-                            ";
-                            DataTable table = sql.Fetch<DataTable>();
+							// Model.GamesAndIds is a DataTable with columns "Difficulty", "FkDifficultyId", "Game", and "Id".
+                            DataTable table = Model.GamesAndIds;
                             int counter = 0;
                             
                             while (counter < table.Rows.Count)

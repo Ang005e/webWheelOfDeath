@@ -1,4 +1,5 @@
-﻿using LibEntity.NetCore.Exceptions;
+﻿using System.Data;
+using LibEntity.NetCore.Exceptions;
 using LibWheelOfDeath;
 using LibWheelOfDeath.Exceptions;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
@@ -68,11 +69,6 @@ namespace webWheelOfDeath.Models
             { 
                 throw new CWheelOfDeathException("Error creating game: " + E.Message);
             }
-        }
-
-        public List<CGame> GetGamesByDifficulty()
-        {
-            return CGame.GetGamesByDifficulty();
         }
     }
 }

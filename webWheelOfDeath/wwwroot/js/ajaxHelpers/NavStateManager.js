@@ -1,9 +1,7 @@
 ﻿
 
 import { partialLoader } from '/js/ajaxHelpers/partialLoader.js';
-import $ from 'jquery';
 
-// navigationManager.js
 export class NavigationManager {
     constructor() {
         this.currentView = null;

@@ -1,19 +1,27 @@
 ﻿
-import $ from 'jquery';
+export function saveHandler(saveButtonName, controller, saveAction) {
 
-export function addSaveHandler(saveButtonName, controller, saveAction) {
+    // add a new message model for user info
+    const modal = new CMessageModal('#modal-message-id')
+
     document.getElementById(saveButtonName).addEventListener('click', () => {
         const formData = $(this).closest('form').serialize();
+
+        modal.display("Saving...", false);
 
         $.ajax({
             url: `/${controller}/${saveAction}`,
             type: 'POST',
             data: formData,
             success: function (response) {
-                new CMessageModal('#modal-message-id').display("Saved!", false, 3000);
+                // disable the save button to prevent duplicates
+                document.getElementById(saveButtonName).disabled = true;
+
+                // clear the "saving" message modal
+                modal.display("Saved!", false, 2000);
             },
             error: function () {
-                new CMessageModal('#modal-message-id').display("Save failed. Please try again.", false, 5000);
+                modal.display("Save failed. Please try again.", false, 5000);
             }
         });
     });

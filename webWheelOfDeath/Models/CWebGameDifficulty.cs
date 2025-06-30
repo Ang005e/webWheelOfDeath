@@ -28,8 +28,8 @@ namespace webWheelOfDeath.Models
                 // you can use yield return to create an iterator
                 // this allows you to return a sequence of items one at a time
                 // without loading the entire collection into memory at once
-                // this is useful for large collections or when you want to process items lazily
             }
         }
+
     }
 }

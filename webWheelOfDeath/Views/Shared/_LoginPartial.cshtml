@@ -18,7 +18,7 @@
 <!-- <div id="modal-login-id" class="modal-canvas hidden"> this section should be OUTSIDE the partial -->
 <div class="main-panel modal-player">
     <span class="close-popup">&#10006;</span>
-    <form method="post" asp-controller="@ViewData["Controller"]" asp-action="Authenticate">
+    <form method="post" asp-controller="@Context.Session.GetString("controller")" asp-action="Authenticate">
         <fieldset>
             <legend>Do You Have What It Takes?</legend>
 
@@ -34,7 +34,7 @@
 
             <fieldset class="borderless">
                 <label asp-for="Password">Password:</label>
-                <input type="text"
+                <input type="password"
                 asp-for="Password"
                 id="LoginPassword"
                 placeholder="[Enter Password]"
@@ -42,7 +42,7 @@
             </fieldset>
 
             @* If the Index page calling this partial is not Game, it's Admin -- and admins cannot create accounts from their login page*@
-            @if(((string?)ViewData["Controller"] ?? "") != "Admin")
+            @if(((string?)Context.Session.GetString("controller") ?? "") != "Admin")
             {
                 <button type="button" name="btnCreateAccount" class="ornate">Create Account</button>
             }

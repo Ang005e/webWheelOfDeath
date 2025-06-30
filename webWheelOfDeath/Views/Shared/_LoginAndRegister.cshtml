@@ -34,7 +34,7 @@
 
     let popups = new CAccountPopups();
     @{
-        string controller = (ViewData["Controller"] ?? "").ToString() ?? "";
+        string controller = (Context.Session.GetString("controller") ?? "").ToString() ?? "";
     }
 
     $(document).ready( () => {

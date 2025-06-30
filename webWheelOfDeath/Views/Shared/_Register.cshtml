@@ -8,7 +8,7 @@
 
 <div class="main-panel modal-player">
     <span class="close-popup">&#10006;</span>
-    <form method="post" asp-controller="@ViewData["Controller"]" asp-action="Register">
+    <form method="post" asp-controller="@Context.Session.GetString("controller")" asp-action="Register">
         <fieldset>
             <legend>Do You Have What It Takes?</legend>
 
@@ -39,7 +39,7 @@
 
             <fieldset class="borderless">
                 <label for="Password">Password:</label>
-                <input type="text"
+                <input type="password"
                        asp-for="Password"
                        placeholder="[Enter Password]"
                        required="required" />

@@ -1,7 +1,4 @@
 ﻿
-import $ from 'jquery';
-
-
 $(document).ready(() => {
     $(document).on('click', '[data-nav]', async function (e) {
         e.preventDefault();

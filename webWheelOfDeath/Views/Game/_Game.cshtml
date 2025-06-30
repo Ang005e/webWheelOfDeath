@@ -33,7 +33,7 @@
 <script type="module" defer="defer">
     import { saveHandler } from "/js/ajaxHelpers/saveHandler.js"
 
-    saveHandler("btnSaveGame", '@ViewData["Controller"]', "SaveGameRecord");
+    saveHandler("btnSaveResults", '@Context.Session.GetString("controller")', "SaveGameRecord");
 
 </script>
 
