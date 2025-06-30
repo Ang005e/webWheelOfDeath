@@ -10,7 +10,7 @@ import { CMessageModal } from '/js/CAppModals.js';
 export function saveHandler(saveButtonName, controller, saveAction) {
 
     // add a new message model for user info
-    const modal = new CMessageModal('#modal-message-id')
+    const modal = new window.CMessageModal('#modal-message-id')
 
     document.getElementById(saveButtonName).addEventListener('click', () => {
         const formData = $(this).closest('form').serialize();

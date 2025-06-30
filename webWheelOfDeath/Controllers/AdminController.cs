@@ -36,7 +36,7 @@ namespace webWheelOfDeath.Controllers
 
 
 
-        #region ACCOUNT ACTIONS
+        #region ACCOUNT/AUTH ACTIONS
 
         [HttpPost]
         public IActionResult Authenticate(CredentialsViewModel vm)
@@ -101,6 +101,28 @@ namespace webWheelOfDeath.Controllers
             return PartialView("_LoginPartial");
         }
 
+        public bool IsAnyAdmin()
+        {
+            return HttpContext.Session.GetString("admin-user-id") != null;
+        }
+
+        public bool IsSuperAdmin()
+        {
+            long adminId = long.Parse(HttpContext.Session.GetString("admin-user-id")??"0");
+
+            if (adminId == 0) return false; // Not logged in, so (probably) not a super admin...
+
+            CAdminUser admin = new(adminId);
+            
+            return admin.AdminType == EnumAdminType.SuperAdmin; 
+        }
+        public IActionResult DenyAccess(Models.EnumAdminType denyLevel, string attemptedAction)
+        {
+            TempData["LastUserActionSuccess"] = false;
+            TempData["LastUserAction"] = $"{denyLevel.ToString()}s do not have permission to {attemptedAction}.";
+            return PartialView("_AdminCentre");
+        }
+
         #endregion
 
 
@@ -109,6 +131,8 @@ namespace webWheelOfDeath.Controllers
         [HttpGet]
         public IActionResult CreateGame()
         {
+            if (!IsSuperAdmin()) return DenyAccess(EnumAdminType.Admin, "create new game modes");
+
             var diffs = CWebGameDifficulty.GetDifficulties();
             ViewBag.Difficulties = diffs.Count() > 0 ? diffs : new List<CWebGameDifficulty>();
             return PartialView("_CreateGame", new CWebGame());
@@ -117,6 +141,8 @@ namespace webWheelOfDeath.Controllers
         [HttpPost]
         public IActionResult CreateGame(CWebGame gm)
         {
+            // removed--they'll never get here anyway
+            // if (!IsSuperAdmin()) return DenyAccess(EnumAdminType.Admin, "create new game modes");
             try
             {
                 gm.Create();
@@ -129,7 +155,7 @@ namespace webWheelOfDeath.Controllers
                 TempData["LastUserAction"] = "Error creating gamemode: " + E.Message;
             }
 
-            return RedirectToAction("Index");
+            return PartialView("_AdminCentre");
         }
 
         [HttpGet]
@@ -141,6 +167,10 @@ namespace webWheelOfDeath.Controllers
         [HttpPost]
         public IActionResult CreateAdminAccount(CAdminUser admin)
         {
+            if (!IsSuperAdmin() && (admin.AdminType == EnumAdminType.SuperAdmin))
+            {
+                return DenyAccess(EnumAdminType.Admin, "create Super Admin accounts");
+            }
             try
             {
                 admin.Register();
@@ -152,7 +182,7 @@ namespace webWheelOfDeath.Controllers
                 TempData["LastUserActionSuccess"] = false;
                 TempData["LastUserAction"] = "Error registering admin: " + E.Message;
             }
-            return RedirectToAction("Index");
+            return PartialView("_AdminCentre");
         }
 
         //[HttpPost]

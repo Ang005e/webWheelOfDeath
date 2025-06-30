@@ -1,4 +1,7 @@
 ﻿
+//import { CMessageModal } from './CAppModals.js';
+
+
 // Centralized AJAX navigation handler for all partial views
 // Please note this class was written with assistance from the Claude.ai tool
 export class AjaxNavigator {
@@ -20,6 +23,12 @@ export class AjaxNavigator {
             e.preventDefault();
             this.handleFormSubmit($(e.currentTarget));
         });
+
+        // Handle save buttons
+        $(document).on('click', '[data-ajax-save]', (e) => {
+            e.preventDefault();
+            this.handleSave($(e.currentTarget));
+        });
     }
 
     handleNavigation($element) {
@@ -31,7 +40,7 @@ export class AjaxNavigator {
         // Get form data if this is within a form context
         const formData = nav.includeForm ? $element.closest('form').serialize() : null;
 
-        // Import and use your existing partialLoader
+        // Import and use partialLoader
         import('./partialLoader.js').then(module => {
             module.partialLoader(
                 formData,
@@ -58,6 +67,30 @@ export class AjaxNavigator {
             );
         });
     }
+
+    handleSave($button) {
+        const modal = new window.CMessageModal('#modal-message-id'); // pure desparation a tthis point
+        const formData = $button.closest('form').serialize();
+        const action = $button.data('action') || 'Save';
+        const controller = $button.data('controller') || window.currentController;
+        const url = `/${controller}/${action}`;
+
+        modal.display("Saving...", false);
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                $button.prop('disabled', true); // disable after save is complete, to stop dupes
+                modal.display("Saved!", false, 2000);
+            },
+            error: function () {
+                modal.display("Save failed. Please try again.", false, 5000);
+            }
+        });
+    }
+
 
     parseNavData($element) {
         // Parse all data-nav-* attributes
@@ -90,10 +123,10 @@ export class AjaxNavigator {
         // Get controller from nav data or session
         const controller = nav.controller || this.getSessionController();
 
-        // Build URL based on your convention
+        // Build URL based on my convention (discarded... lol)
         if (nav.model && nav.action) {
             // Your proposed convention: Controller/Model_Action
-            return `/${controller}/${nav.model}_${nav.action}`;
+            return `/${controller}/${nav.model}${nav.action}`;
         }
 
         // Standard MVC convention with optional ID
@@ -120,13 +153,3 @@ export class AjaxNavigator {
 $(document).ready(() => {
     window.ajaxNav = new AjaxNavigator();
 });
-
-
-
-
-
-
-
-
-
-

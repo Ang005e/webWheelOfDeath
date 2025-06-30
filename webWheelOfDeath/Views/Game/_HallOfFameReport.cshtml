@@ -3,9 +3,9 @@
 <div class="report-overlay">
     <p class="report-link-container">
         <a asp-action="Index">Back</a>
+
         @if (!ViewBag.IsHallOfFameAsc)
         {
-            <a data-ajax-nav="HallOfFameLow">Slowest Times</a>
             @* <script> *@
             @*     $(document).on("click", "#lnkHofLow", function (event) { *@
             @*         event.preventDefault(); *@
@@ -13,10 +13,12 @@
             @*         partialLoader(formData, "/Game/HallOfFameLow", "#page-content", "login-form", true); *@
             @*     }); *@
             @* </script> *@
+
+            @* the above, replaced with... *@
+            <a data-ajax-nav data-action="HallOfFameHigh">Fastest Times</a>
         }
 	    else
 	    {
-            <a data-ajax-nav="HallOfFameHigh">Fastest Times</a>
             @* <script> *@
             @*     $(document).on("click", "#lnkHofHigh", function (event) { *@
             @*         event.preventDefault(); *@
@@ -24,6 +26,9 @@
             @*         partialLoader(formData, "/Game/HallOfFameHigh", "#page-content", "login-form", true); *@
             @*     }); *@
             @* </script> *@
+
+            @* the above, replaced with... *@
+            <a data-ajax-nav data-action="HallOfFameLow">Slowest Times</a>
         }
     </p> 
     <table class="table report main-panel">

@@ -57,9 +57,12 @@ Framework: Razor MVC (.NET Core). AJAX/Fetch are used in combination with Partia
 
 
 
-    @* SETTING CONTROLLER FOR CAjaxNavigator.js*@
-    <script>
+    @* SETTING CONTROLLER FOR CAjaxNavigator.js, setting global cmessagemodal for temp fix*@
+    <script type="module">
         window.currentController = '@Context.Session.GetString("Controller")';
+
+        import { CMessageModal } from '/js/CAppModals.js';
+        window.CMessageModal = CMessageModal;
     </script>
 
 </head>

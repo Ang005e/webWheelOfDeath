@@ -23,19 +23,25 @@
                 <output name="txtMiscMessage"></output>
             </fieldset>
             <fieldset>
-                <button id="btnSaveResults" class="ornate" type="button">Save Game Results</button>
+                <button 
+                    data-ajax-save 
+                    data-action="SaveGameRecord" 
+                    @* id="btnSaveResults"  *@
+                    class="ornate" 
+                    type="button">Save Game Results</button>
             </fieldset>
         </form>
     </div>
 </div>
 
+@* Removed, thanks to AjaxNavigator... *@
 @* Save the game record *@
-<script type="module" defer="defer">
-    import { saveHandler } from "/js/ajaxHelpers/saveHandler.js"
+@* <script type="module" defer="defer"> *@
+@*     import { saveHandler } from "/js/ajaxHelpers/saveHandler.js" *@
 
-    saveHandler("btnSaveResults", '@Context.Session.GetString("controller")', "SaveGameRecord");
+@*     saveHandler("btnSaveResults", '@Context.Session.GetString("controller")', "SaveGameRecord"); *@
 
-</script>
+@* </script> *@
 
 
 <script type="module" defer="defer">
@@ -48,7 +54,7 @@
     try {
         createGame()
     } catch (e) {
-        new CMessageModal('#modal-message-id').display(e.message, false, 7000);
+        new window.CMessageModal('#modal-message-id').display(e.message, false, 7000);
     }
 
     function createGame() {

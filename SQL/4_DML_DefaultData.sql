@@ -22,7 +22,7 @@ insert into tblAccount (FirstName, LastName, Password, IsActiveFlag) values (
 	'admin',
 	'admin',
 	'admin',
-	1
+	2
 );
 
 declare @saId int = SCOPE_IDENTITY();

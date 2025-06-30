@@ -17,7 +17,7 @@
     @* { *@
     @*     <script type="module"> *@
     @*         import { CMessageModal } from "/js/CAppModals.js"; *@
-    @*         new CMessageModal('#modal-message-id').display("Username or password are incorrect", false, 7000) *@
+    @*         new window.CMessageModal('#modal-message-id').display("Username or password are incorrect", false, 7000) *@
     @*     </script> *@
     @* } *@
 </div>
@@ -32,11 +32,12 @@
     (I left them here to show off)
 *@
 
-@* <script type="module" defer="defer"> *@
-@*     import { CAccountPopups } from "/js/CAccountPopups.js" *@
-@*     import { partialLoader } from "/js/ajaxHelpers/partialLoader.js" *@
+ <script type="module" defer="defer">
+@*   import { partialLoader } from "/js/ajaxHelpers/partialLoader.js" *@
 
-@*     let popups = new CAccountPopups(); *@
+     import { CAccountPopups } from "/js/CAccountPopups.js";
+     let popups = new CAccountPopups(); 
+
 @*     @{ *@
 @*         string controller = (Context.Session.GetString("controller") ?? "").ToString() ?? ""; *@
 @*     } *@
@@ -52,7 +53,7 @@
 @*             partialLoader(formData, authenticateUrl, "#page-content", "game-form", true); *@
 @*         }) *@
 @*     }); *@
-@* </script> *@
+ </script> 
 
 @* Register script will not be exposed if it's an admin page
 *@
