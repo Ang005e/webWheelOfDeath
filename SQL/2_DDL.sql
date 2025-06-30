@@ -1,3 +1,6 @@
+use [dbWheelOfDeath];
+go
+
 
 
 drop view if exists vwHallOfFameTop;
@@ -23,6 +26,11 @@ order by
 
 go
 
+
+
+drop view if exists vwHallOfFameBottom;
+go
+
 create view vwHallOfFameBottom as
 
 select top(select top(1) HofRecordCount from [tblGlobalSettings])
@@ -42,6 +50,12 @@ order by
 	R.[ElapsedTime] desc
 
 go
+
+
+use master;
+go
+
+
 
 --drop procedure if exists [uspCreatePerson];
 --go

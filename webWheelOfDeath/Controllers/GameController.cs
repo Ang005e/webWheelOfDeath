@@ -98,9 +98,9 @@ namespace webWheelOfDeath.Controllers
                     {
                         return PartialView("_GameSelection"); // PartialView("_GameSelection");
                     }
-                    catch (Exception ex)
+                    catch (Exception E)
                     {
-                        return Content($"Error loading game selection: {ex.Message} - Inner: {ex.InnerException?.Message}");
+                        return Content($"Error loading game selection: {E.Message} - Inner: {E.InnerException?.Message}");
                     }
                 }
                 else
@@ -110,9 +110,9 @@ namespace webWheelOfDeath.Controllers
                     return PartialView("_LoginAndRegister", vm);
                 }
             }
-            catch (Exception ex)
+            catch (Exception E)
             {
-                return StatusCode(500, $"Authentication error: {ex.Message}");
+                return StatusCode(500, $"Authentication error: {E.Message}");
             }
         }
 
@@ -143,6 +143,7 @@ namespace webWheelOfDeath.Controllers
 
         #endregion
 
+
         #region GAME
 
         [HttpPost]
@@ -164,8 +165,18 @@ namespace webWheelOfDeath.Controllers
             return PartialView("_GameSelection");
         }
 
-        #endregion
+        [HttpPost]
+        public IActionResult SaveGameRecord(CWebGameRecord gameRecord)
+        {
+            // this should not fail, but it won't return a 500 because it's not a protocol problem, it's a me problem.
+            try { gameRecord.Create(); }
+            
+            catch (Exception E) { return Content($"Error saving game. Please inform an administrator: {E.Message} - Inner: {E.InnerException?.Message}"); }
+            
+            return PartialView("_GameSelection");
+        }
 
+        #endregion
 
 
         #region REPORTS
