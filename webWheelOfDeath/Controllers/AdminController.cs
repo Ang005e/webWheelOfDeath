@@ -53,7 +53,9 @@ namespace webWheelOfDeath.Controllers
 
             if (!creds.loginAttemptFailed)
             {
-
+                CAdminUser us = new(creds.Id);
+                ViewBag.AdminType = us.AdminType;
+                ViewBag.AdminTID = us.AdminTypeId;
                 // Set the "player-user-id" session variable to the player id (DB field)
                 HttpContext.Session.SetString("admin-user-id", creds.Id.ToString());
                 HttpContext.Session.SetString("admin-user-name", creds.Username);
