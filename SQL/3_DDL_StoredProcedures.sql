@@ -27,33 +27,27 @@ end;
 go
 
 
-
-use master;
+create procedure uspGamePopularity
+	@pStartDate datetime,
+	@pEndDate datetime
+as
+begin
+    select 
+        G.[Game], G.[Id],
+        D.[Difficulty],
+        count(R.Id) as TotalGamesPlayed
+    from [tblGameRecord] R inner join
+		[tblGame] G on G.Id = R.FkGameId inner join
+		[tblDifficulty] D on D.Id = G.FkDifficultyId
+	where
+		R.[Date] >= @pStartDate and
+		R.[Date] <= @pEndDate
+end
 go
 
 
 
---drop procedure if exists [uspCreatePerson];
---go
---create procedure [uspCreatePerson]
---	@pUsername	nvarchar(40),
---	@pFirstName	nvarchar(40),
---	@pLastName	nvarchar(40),
---	@pId		bigint output
---as
---begin
---	set nocount on; -- suppress reporting of rows affected
 
---	insert into []
---	(
---	)
---	VALUES
---	(
---	);
 
---	-- Immediately following the INSERT statement, we can
---	-- retrieve the unique Id that the system generated...
---	set @pId = cast(scope_identity() as bigint);
-
---end
---go
+use master;
+go

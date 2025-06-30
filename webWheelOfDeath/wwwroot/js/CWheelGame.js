@@ -376,6 +376,17 @@ export class CWheelGame extends CTimer {
            new CWinnerModal('#modal-winner-id', true)
             .display(Util.toSeconds(this.elapsedTime, 1), this.#gameBalloonCount, this.#missCounter, message);
         }
+
+        // Dispatch event with needed data for DB
+        document.dispatchEvent(new CustomEvent("game-over", {
+            bubbles: true,
+            detail: {
+                gameStatus: this.#status.gameStatus,
+                elapsed: this.elapsedTime,
+                balloonsPopped: this.poppedCount,
+                misses: this.#missCounter
+            }
+        }));
     }
 
 

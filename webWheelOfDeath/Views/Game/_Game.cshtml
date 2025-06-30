@@ -21,6 +21,7 @@
                 <output name="numMisses" id="numMisses"></output>
 
                 <output name="txtMiscMessage"></output>
+
             </fieldset>
             <fieldset>
                 <button 
@@ -64,7 +65,17 @@
         _game = new CWheelGame('@Context.Session.GetString("user-name")', "@Model.DurationMilliseconds", "@Model.MinBalloons", "@Model.MaxBalloons", "@Model.Attempts");
 
         document.addEventListener('game-over', event => {
-            console.log(`Status: ${event.detail.gameStatus} Elapsed: ${event.detail.elapsed}`);
+            console.log('Game over event:', event.detail);
+
+            // Store the game data (for when save gets s clicked)
+            window.lastGameResult = {
+                FkGameId: @Model.Id,
+                FkPlayerId: @(Context.Session.GetString("player-user-id") ?? "0"),
+                Result: event.detail.gameStatus,
+                ElapsedTime: event.detail.elapsed,
+                BalloonsPopped: event.detail.balloonsPopped,
+                Misses: event.detail.misses
+            };
         });
     }
 </script>

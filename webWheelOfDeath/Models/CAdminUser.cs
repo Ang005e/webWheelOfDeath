@@ -24,7 +24,8 @@ namespace webWheelOfDeath.Models
         public CAdminUser() { }
         public CAdminUser(long Id)
         {
-            CAdmin admin = new(Id);
+            CAdmin admin = new();
+            admin.Read(Id);
             FirstName = admin.FirstName;
             LastName = admin.LastName;
             Username = admin.Username;

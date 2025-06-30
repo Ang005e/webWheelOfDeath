@@ -1,6 +1,6 @@
 ﻿
 .report {
-    width: 66%;
+    width: 90%; 
     position: fixed;
     top: 50%;
     left: 50%;
@@ -11,22 +11,24 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-collapse: collapse;
     max-height: 80vh;
-    overflow-y: auto;
+    overflow: auto; 
     font-size: large;
 }
 
-    .report th, .report td {
-        padding: 8px 12px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
+.report-container {
+    max-height: 70vh;
+    overflow-x: auto;
+    overflow-y: auto;
+}
 
-    .report th {
-        background-color: #f5f5f5;
-        font-weight: bold;
-        position: sticky;
-        top: 0;
-    }
+.report th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 10; /* headers stay on top */
+}
+
 
 /* Dark overlay behind the table */
 .report-overlay {

@@ -6,88 +6,37 @@
 
         @if (!ViewBag.IsHallOfFameAsc)
         {
-            @* <script> *@
-            @*     $(document).on("click", "#lnkHofLow", function (event) { *@
-            @*         event.preventDefault(); *@
-            @*         var formData = $(this).serialize() *@
-            @*         partialLoader(formData, "/Game/HallOfFameLow", "#page-content", "login-form", true); *@
-            @*     }); *@
-            @* </script> *@
-
-            @* the above, replaced with... *@
-            <a data-ajax-nav data-action="HallOfFameHigh">Fastest Times</a>
+            <a data-ajax-nav data-controller="Game" data-action="HallOfFameHigh">Fastest Times</a>
         }
 	    else
 	    {
-            @* <script> *@
-            @*     $(document).on("click", "#lnkHofHigh", function (event) { *@
-            @*         event.preventDefault(); *@
-            @*         var formData = $(this).serialize() *@
-            @*         partialLoader(formData, "/Game/HallOfFameHigh", "#page-content", "login-form", true); *@
-            @*     }); *@
-            @* </script> *@
-
-            @* the above, replaced with... *@
-            <a data-ajax-nav data-action="HallOfFameLow">Slowest Times</a>
+            <a data-ajax-nav data-controller="Game" data-action="HallOfFameLow">Slowest Times</a>
         }
     </p> 
     <table class="table report main-panel">
         <thead>
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Date)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ElapsedTime)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.BalloonsPopped)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Misses)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.FirstName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.LastName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Game)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Difficulty)
-                </th>
-                <th></th>
+                <th>@Html.DisplayNameFor(model => model.Date)</th>
+                <th>@Html.DisplayNameFor(model => model.ElapsedTime)</th>
+                <th>@Html.DisplayNameFor(model => model.BalloonsPopped)</th>
+                <th>@Html.DisplayNameFor(model => model.Misses)</th>
+                <th>@Html.DisplayNameFor(model => model.FirstName)</th>
+                <th>@Html.DisplayNameFor(model => model.LastName)</th>
+                <th>@Html.DisplayNameFor(model => model.Game)</th>
+                <th>@Html.DisplayNameFor(model => model.Difficulty)</th>
             </tr>
         </thead>
         <tbody>
     @foreach (var item in Model) {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ElapsedTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BalloonsPopped)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Misses)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FirstName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Game)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Difficulty)
-                </td>
+                <td>@Html.DisplayFor(modelItem => item.Date)</td>
+                <td>@Html.DisplayFor(modelItem => item.ElapsedTime)</td>
+                <td>@Html.DisplayFor(modelItem => item.BalloonsPopped)</td>
+                <td>@Html.DisplayFor(modelItem => item.Misses)</td>
+                <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
+                <td>@Html.DisplayFor(modelItem => item.LastName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Game)</td>
+                <td>@Html.DisplayFor(modelItem => item.Difficulty)</td>
             </tr>
     }
         </tbody>
@@ -95,8 +44,10 @@
 
     <script>
         $(document).ready(() => {
-            document.querySelector('body').addEventListener('click', () => {
-                document.querySelector('.report-overlay').classList.add('hidden')
+            document.querySelector('body').addEventListener('click', (e) => {
+                if (e.target.classList.contains('report-overlay')) {
+                    document.querySelector('.report-overlay').classList.add('hidden')
+                }
             })
         })
     </script>

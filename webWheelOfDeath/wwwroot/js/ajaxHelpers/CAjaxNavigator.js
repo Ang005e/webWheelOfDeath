@@ -29,6 +29,34 @@ export class AjaxNavigator {
             e.preventDefault();
             this.handleSave($(e.currentTarget));
         });
+
+        // Handle the game record saving
+        $(document).on('click', '[data-ajax-save][data-action="SaveGameRecord"]', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (!window.lastGameResult) {
+                alert('No game result to save');
+                return;
+            }
+
+            $.ajax({
+                url: '/Game/SaveGameRecord',
+                type: 'POST',
+                data: window.lastGameResult,
+                success: function (response) {
+                    if (response.success) {
+                        $(e.target).prop('disabled', true);
+                        new window.CMessageModal('#modal-message-id').display("Game saved!", false, 3000);
+                    } else {
+                        new window.CMessageModal('#modal-message-id').display("Save failed: " + response.message, false, 5000);
+                    }
+                },
+                error: function () {
+                    new window.CMessageModal('#modal-message-id').display("Save failed", false, 5000);
+                }
+            });
+        });
     }
 
     handleNavigation($element) {
