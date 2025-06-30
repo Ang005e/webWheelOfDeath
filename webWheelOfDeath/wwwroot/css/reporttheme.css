@@ -28,6 +28,10 @@
         top: 0;
     }
 
+    .report a {
+        color:blue !important;
+    }
+
 /* Dark overlay behind the table */
 .report-overlay {
     position: fixed;
@@ -38,3 +42,25 @@
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 9998;
 }
+
+.report-link-container {
+    background-color: rgb(0, 0, 0, 0.82);
+    border-radius: 10px;
+    padding: 20px;
+    z-index: 9999;
+    text-shadow: none;
+}
+.report-link-container a:hover {
+    color: floralwhite !important;
+}
+
+
+
+
+
+
+
+
+
+
+

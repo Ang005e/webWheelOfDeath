@@ -97,7 +97,8 @@ namespace webWheelOfDeath.Controllers
                     ViewBag.GameSelected = false;
                     try
                     {
-                        return PartialView("_GameSelection"); // PartialView("_GameSelection");
+                        var model = new CWebGamesByDifficulty();
+                        return PartialView("_GameSelection", model);
                     }
                     catch (Exception E)
                     {

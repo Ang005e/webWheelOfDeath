@@ -1,0 +1,64 @@
+﻿@model webWheelOfDeath.Models.CWebGame
+
+<h4>CWebGame</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="_ManageGame">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Game" class="control-label"></label>
+                <input asp-for="Game" class="form-control" />
+                <span asp-validation-for="Game" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Difficulty" class="control-label"></label>
+                <input asp-for="Difficulty" class="form-control" />
+                <span asp-validation-for="Difficulty" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FkDifficultyId" class="control-label"></label>
+                <input asp-for="FkDifficultyId" class="form-control" />
+                <span asp-validation-for="FkDifficultyId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Attempts" class="control-label"></label>
+                <input asp-for="Attempts" class="form-control" />
+                <span asp-validation-for="Attempts" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Misses" class="control-label"></label>
+                <input asp-for="Misses" class="form-control" />
+                <span asp-validation-for="Misses" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DurationMilliseconds" class="control-label"></label>
+                <input asp-for="DurationMilliseconds" class="form-control" />
+                <span asp-validation-for="DurationMilliseconds" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MinBalloons" class="control-label"></label>
+                <input asp-for="MinBalloons" class="form-control" />
+                <span asp-validation-for="MinBalloons" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaxBalloons" class="control-label"></label>
+                <input asp-for="MaxBalloons" class="form-control" />
+                <span asp-validation-for="MaxBalloons" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActiveFlag" /> @Html.DisplayNameFor(model => model.IsActiveFlag)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

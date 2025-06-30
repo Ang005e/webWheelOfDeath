@@ -45,15 +45,13 @@
         </footer>
 
 
-        <script type="module" defer>
+        <script type="module" defer="defer">
             import { partialLoader } from "/js/ajaxHelpers/partialLoader.js";
 
             // initial page load
             const first = '@Url.Action(ViewBag.IsLoggedIn ? "AdminCentre" : "Login", "Admin")';
             $(document).ready(() => partialLoader(null, first, "#page-content", "", false));
         </script>
-
-
 
 
     </body>

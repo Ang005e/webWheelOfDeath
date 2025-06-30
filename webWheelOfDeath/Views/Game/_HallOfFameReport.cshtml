@@ -1,102 +1,98 @@
 ﻿@model IEnumerable<webWheelOfDeath.Models.CHallOfFame>
 
-<p>
-    <a asp-action="Index">Back</a>
-    @if (!ViewBag.IsHallOfFameAsc)
-    {
-        <a asp-action="HallOfFameLow" id="lnkHofLow">Slowest Times</a>
-        <script>
-            $(document).on("click", "#lnkHofLow", function (event) {
-                event.preventDefault();
-                var formData = $(this).serialize()
-                partialLoader(formData, "/Game/HallOfFameLow", "#page-content", "login-form", true);
-            });
-        </script>
+<div class="report-overlay">
+    <p class="report-link-container">
+        <a asp-action="Index">Back</a>
+        @if (!ViewBag.IsHallOfFameAsc)
+        {
+            <a data-ajax-nav="HallOfFameLow">Slowest Times</a>
+            @* <script> *@
+            @*     $(document).on("click", "#lnkHofLow", function (event) { *@
+            @*         event.preventDefault(); *@
+            @*         var formData = $(this).serialize() *@
+            @*         partialLoader(formData, "/Game/HallOfFameLow", "#page-content", "login-form", true); *@
+            @*     }); *@
+            @* </script> *@
+        }
+	    else
+	    {
+            <a data-ajax-nav="HallOfFameHigh">Fastest Times</a>
+            @* <script> *@
+            @*     $(document).on("click", "#lnkHofHigh", function (event) { *@
+            @*         event.preventDefault(); *@
+            @*         var formData = $(this).serialize() *@
+            @*         partialLoader(formData, "/Game/HallOfFameHigh", "#page-content", "login-form", true); *@
+            @*     }); *@
+            @* </script> *@
+        }
+    </p> 
+    <table class="table report main-panel">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ElapsedTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BalloonsPopped)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Misses)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Game)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Difficulty)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ElapsedTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BalloonsPopped)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Misses)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Game)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Difficulty)
+                </td>
+            </tr>
     }
-	else
-	{
-        <a asp-action="HallOfFameHigh" id="lnkHofHigh">Fastest Times</a>
-        <script>
-            $(document).on("click", "#lnkHofHigh", function (event) {
-                event.preventDefault();
-                var formData = $(this).serialize()
-                partialLoader(formData, "/Game/HallOfFameHigh", "#page-content", "login-form", true);
-            });
-        </script>
-    }
+        </tbody>
+    </table>
 
-</p> 
-<table class="table report main-panel">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ElapsedTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BalloonsPopped)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Misses)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Game)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Difficulty)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ElapsedTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BalloonsPopped)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Misses)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Game)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Difficulty)
-            </td>
-            <td>
-                @* @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) | *@
-                @* @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) | *@
-                @* @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }) *@
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-
-<script>
-    $(document).ready(() => {
-        document.querySelector('body').addEventListener('click', () => {
-            document.querySelector('.report').classList.add('hidden')
+    <script>
+        $(document).ready(() => {
+            document.querySelector('body').addEventListener('click', () => {
+                document.querySelector('.report-overlay').classList.add('hidden')
+            })
         })
-    })
-</script>
+    </script>
+</div>

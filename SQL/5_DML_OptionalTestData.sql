@@ -1,24 +1,6 @@
 ﻿use [dbWheelOfDeath];
 go
 
--- Check for prerequisite data
-if not exists (select 1 from tblAdminType)
-begin
-    insert into tblAdminType (AdminType) values
-        ('SuperAdmin'),
-        ('StandardAdmin');
-end
-go
-
-if not exists (select 1 from tblResult)
-begin
-    insert into tblResult (IsWin, ResultType) values
-        (1,'Win'),
-        (0,'Lose'),
-        (0,'Timeout');
-end
-go
-
 
 insert into tblDifficulty (Difficulty) values ('Easy'), ('Medium'), ('Hard');
 
@@ -77,32 +59,32 @@ values
 
 
 -- Get the actual IDs from tblResult
-declare @WinResultId bigint = (select Id from tblResult where ResultType = 'Win');
-declare @LoseResultId bigint = (select Id from tblResult where ResultType = 'Lose');
-declare @TimeoutResultId bigint = (select Id from tblResult where ResultType = 'Timeout');
+declare @WinResultId bigint = (select Id from tblResult where ResultType = 'Won');
+declare @KilledResultId bigint = (select Id from tblResult where ResultType = 'Killed');
+declare @TimeoutResultId bigint = (select Id from tblResult where ResultType = 'Timed_Out');
 
 insert into tblGameRecord
     (FkGameId, FkPlayerId, FkResultId, [Date], ElapsedTime, BalloonsPopped, Misses)
 values
     (1, 3, @WinResultId,     '2025-05-20T09:00:00', 95000,  8, 2),
-    (2, 3, @LoseResultId,    '2025-05-20T09:30:00', 180000, 12, 3),
+    (2, 3, @KilledResultId,    '2025-05-20T09:30:00', 180000, 12, 3),
     (3, 3, @TimeoutResultId, '2025-05-20T10:00:00', 90000,  4, 4),
-    (1, 4, @LoseResultId,    '2025-05-20T10:30:00', 110000, 6, 4),
+    (1, 4, @KilledResultId,    '2025-05-20T10:30:00', 110000, 6, 4),
     (4, 5, @WinResultId,     '2025-05-20T11:00:00', 150000, 10, 2),
-    (6, 6, @LoseResultId,    '2025-05-20T11:05:00', 220000, 14, 4),
+    (6, 6, @KilledResultId,    '2025-05-20T11:05:00', 220000, 14, 4),
     (7, 7, @TimeoutResultId, '2025-05-20T11:10:00', 600000, 17, 8),
     (2, 8, @WinResultId,     '2025-05-20T11:15:00', 175000, 15, 3),
-    (1, 9, @LoseResultId,    '2025-05-20T11:20:00', 118000, 7, 4),
+    (1, 9, @KilledResultId,    '2025-05-20T11:20:00', 118000, 7, 4),
     (4, 10,@WinResultId,     '2025-05-20T11:25:00', 165000, 11, 1),
-    (6, 5, @LoseResultId,    '2025-05-20T11:30:00', 235000, 12, 6),
+    (6, 5, @KilledResultId,    '2025-05-20T11:30:00', 235000, 12, 6),
     (1, 6, @WinResultId,     '2025-05-20T11:35:00', 98000,  9, 1),
-    (2, 7, @LoseResultId,    '2025-05-20T11:40:00', 190000, 13, 4),
+    (2, 7, @KilledResultId,    '2025-05-20T11:40:00', 190000, 13, 4),
     (6, 8, @TimeoutResultId, '2025-05-20T11:45:00', 240000, 10, 4),
     (5, 9, @WinResultId,     '2025-05-20T11:50:00', 380000, 23, 3),
-    (2, 10,@LoseResultId,    '2025-05-20T11:55:00', 195000, 14, 5),
+    (2, 10,@KilledResultId,    '2025-05-20T11:55:00', 195000, 14, 5),
     (7, 3, @WinResultId,     '2025-05-20T12:00:00', 520000, 25, 5),
     (5, 4, @TimeoutResultId, '2025-05-20T12:05:00', 420000, 19, 5),
-    (7, 3, @LoseResultId,    '2025-05-20T12:10:00', 580000, 18, 8),
+    (7, 3, @KilledResultId,    '2025-05-20T12:10:00', 580000, 18, 8),
     (5, 4, @WinResultId,     '2025-05-20T12:15:00', 390000, 24, 2);
 go
 

@@ -1,0 +1,80 @@
+﻿@model IEnumerable<webWheelOfDeath.Models.CWebGame>
+
+
+@* Name of the partial, so we can use during nav*@
+@(ViewBag["Partial"] = "_ListGames")
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Game)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Difficulty)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FkDifficultyId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Attempts)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Misses)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DurationMilliseconds)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MinBalloons)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaxBalloons)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsActiveFlag)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Game)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Difficulty)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FkDifficultyId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Attempts)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Misses)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DurationMilliseconds)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MinBalloons)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaxBalloons)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActiveFlag)
+            </td>
+            <td>
+                <a class="ajaxAction viewDetails" data-itemid="@item.Id">Details</a>
+                <button type="button" class="toggleActive" data-itemid="@item.Id">Toggle Active</button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

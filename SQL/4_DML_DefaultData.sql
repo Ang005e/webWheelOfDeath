@@ -10,9 +10,11 @@ insert into tblGlobalSettings default values;
 go
 
 insert into tblResult (IsWin, ResultType) values
-    (1,'Win'),
-    (0,'Lose'),
-    (0,'Timeout');
+    (1,'Won'),
+    (0,'Killed'),
+    (0,'Timed_Out'),
+	(0,'Exceeded_Throws');
+go
 
 
 -- Default super admin
@@ -22,7 +24,9 @@ insert into tblAccount (FirstName, LastName, Password, IsActiveFlag) values (
 	'admin',
 	1
 );
+
 declare @saId int = SCOPE_IDENTITY();
+
 insert into tblAdmin (Id, FkAdminTypeId, Username) values (
 	@saId,
 	2,

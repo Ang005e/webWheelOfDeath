@@ -1,50 +1,91 @@
-﻿<!DOCTYPE html>
+﻿@using System.Data
+@using Microsoft.Data.SqlClient
+@using LibEntity
+
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!--
+Date: 2020-23
+Author: Ramin Majidi
+Purpose: This and all other code elements of this project (unless otherwise commented) are the work of the
+author and may be used for TAFE Assessment purposes only.
+
+Date: 2024-25
+Co-Author: Angus Blake
+Purpose: The HTML, CSS and JavaScript components of this application were written laregly by the author. However,
+the Co-Author migrated this application from a static website to a significantly more complex SPA (single-page application)
+capable of storing and retreving information from a central server.
+Framework: Razor MVC (.NET Core). AJAX/Fetch are used in combination with Partial Views to load content dynamically without reloading the entire page.
+-->
+
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <title>Wheel of Death</title>
+    <link href="pics/Wheel_of_Death.png" rel="icon" />
 
-    <title>@ViewData["Title"] - webWheelOfDeath</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    @* <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /> *@
-    <link rel="stylesheet" href="~/webWheelOfDeath.styles.css" asp-append-version="true" />
+    @* 
+        IMPORTS  ------------
+        Even though some of these scripts are not used directly on this page, they are still imported,
+        As multiple partials use them.
+        The rest are imported by each partial on an as-needed basis.
+    *@
+
+    @* CSS *@
+    <link rel="stylesheet" href="/css/lib/modal.css" />
+    <link rel="stylesheet" href="/css/animations.css" />
+    <link rel="stylesheet" href="/css/statusPanel.css" />
+    <link rel="stylesheet" href="/css/theme.css" />
+    <link rel="stylesheet" href="/css/reporttheme.css" />
+
+    @* JQuery *@
+    <script src="~/lib/jquery/dist/jquery.min.js" defer="defer"></script>
+
+    @* AJAX *@
+    <script src="/js/ajaxHelpers/partialLoader.js" type="module" defer="defer"></script>
+    <script src="/js/ajaxHelpers/saveHandler.js" type="module" defer="defer"></script>
+    <script src="/js/ajaxHelpers/CAjaxNavigator.js" type="module" defer="defer"></script>
+
+    @* Modals *@
+    <script src="/js/CAppModals.js" type="module" defer="defer"></script>
+
+
+
+    @* SETTING CONTROLLER FOR CAjaxNavigator.js*@
+    <script>
+        window.currentController = '@Context.Session.GetString("Controller")';
+    </script>
+
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">webWheelOfDeath</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - webWheelOfDeath - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
+
+<body class="shadow-text">
+
+    <header>
+        <img class="logo"
+             src="pics/Wheel_of_Death_Logo.png"
+             alt="Wheel of Death"
+             height="159"
+             width="667" />
+    </header>
+
+    <main>
+		@RenderBody()
+    </main>
+    
+    <footer class="text-sm-center">
+        Copyright &copy; 2020-24 SRT - Author: Ramin Majidi.
+        Extended by Angus Blake, with consent of the author, for educational purposes.
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    @* <script src="~/js/site.js" asp-append-version="true"></script>  *@
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
+
 </html>

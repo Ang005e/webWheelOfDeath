@@ -8,7 +8,7 @@ namespace webWheelOfDeath.Models
 {
     public class CWebGame
     {
-        private long _id; // just in case
+        public long Id; 
         public string Game { get; set; }
         public string Difficulty { get; set; }
         public long FkDifficultyId { get; set; }
@@ -17,11 +17,12 @@ namespace webWheelOfDeath.Models
         public long DurationMilliseconds { get; set; }
         public short MinBalloons { get; set; }
         public short MaxBalloons { get; set; }
+        public bool IsActiveFlag { get; set; } = true;
 
         public CWebGame()
         {
             // Default constructor for creating a new game
-            _id = 0L;
+            Id = 0L;
             Game = string.Empty;
             Attempts = 0;
             Misses = 0;
@@ -30,12 +31,13 @@ namespace webWheelOfDeath.Models
             MaxBalloons = 0;
             Difficulty = string.Empty;
             FkDifficultyId = 0;
+            IsActiveFlag = true;
         }
 
-        public CWebGame(long Id)
+        public CWebGame(long id)
         {
-            CGame game = new CGame(Id);
-            _id = Id;
+            CGame game = new CGame(id);
+            this.Id = id;
 
             // Map properties from CGame to CWebGame
             Game = game.Game;
@@ -44,6 +46,7 @@ namespace webWheelOfDeath.Models
             DurationMilliseconds = game.DurationMilliseconds;
             MinBalloons = game.MinBalloons;
             MaxBalloons = game.MaxBalloons;
+            IsActiveFlag = game.IsActiveFlag;
 
             // Find the difficulty name
             CDifficulty difficulty = new CDifficulty(game.FkDifficultyId);
@@ -60,6 +63,7 @@ namespace webWheelOfDeath.Models
             game.DurationMilliseconds = DurationMilliseconds;
             game.MinBalloons = MinBalloons;
             game.MaxBalloons = MaxBalloons;
+            game.IsActiveFlag = IsActiveFlag; 
 
             try
             {
@@ -69,6 +73,27 @@ namespace webWheelOfDeath.Models
             { 
                 throw new CWheelOfDeathException("Error creating game: " + E.Message);
             }
+        }
+
+        public void Update()
+        {
+            var game = new CGame(Id);
+            game.Game = Game;
+            game.Attempts = Attempts;
+            game.Misses = Misses;
+            game.FkDifficultyId = FkDifficultyId;
+            game.DurationMilliseconds = DurationMilliseconds;
+            game.MinBalloons = MinBalloons;
+            game.MaxBalloons = MaxBalloons;
+            game.IsActiveFlag = IsActiveFlag;
+            game.Update();
+        }
+
+        public void SetActive(bool active)
+        {
+            var game = new CGame(Id);
+            game.IsActiveFlag = active;
+            game.Update();
         }
     }
 }

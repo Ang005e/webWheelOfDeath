@@ -1,1 +1,9 @@
-﻿
+﻿@if (Context.Session.GetString("Controller") == "Admin")
+{
+	// ToDo: change to an admin layout later
+	Layout = "Shared/_Layout.cshtml";
+}
+else
+{
+	Layout = "Shared/_Layout.cshtml";
+}
