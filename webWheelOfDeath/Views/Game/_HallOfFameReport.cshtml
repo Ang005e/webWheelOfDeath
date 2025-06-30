@@ -9,7 +9,7 @@
             $(document).on("click", "#lnkHofLow", function (event) {
                 event.preventDefault();
                 var formData = $(this).serialize()
-                partialLoader(formData, "/GameAjax/HallOfFameLow", "#page-content", "login-form", true);
+                partialLoader(formData, "/Game/HallOfFameLow", "#page-content", "login-form", true);
             });
         </script>
     }
@@ -20,7 +20,7 @@
             $(document).on("click", "#lnkHofHigh", function (event) {
                 event.preventDefault();
                 var formData = $(this).serialize()
-                partialLoader(formData, "/GameAjax/HallOfFameHigh", "#page-content", "login-form", true);
+                partialLoader(formData, "/Game/HallOfFameHigh", "#page-content", "login-form", true);
             });
         </script>
     }

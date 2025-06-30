@@ -28,6 +28,23 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+else
+{
+    app.UseDeveloperExceptionPage();  // Add this for detailed errors
+}
+
+
+
+//// logging for errors (added)
+//builder.Logging.ClearProviders();
+//builder.Logging.AddConsole();
+//builder.Logging.AddDebug();
+//builder.Logging.SetMinimumLevel(LogLevel.Debug);
+
+
+
+
+
 
 // add your own types
 //public void ConfigureServices(IServiceCollection services)

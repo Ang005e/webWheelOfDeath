@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webWheelOfDeath", "webWheel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibWheelOfDeath", "..\LibWheelOfDeathEntity\LibWheelOfDeath.csproj", "{886F4CC3-BB54-4FED-9152-C272FC39B08E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleUnitTests", "..\ConsoleTester\ConsoleUnitTests.csproj", "{5D15F6E8-13CA-40B8-B2C9-7F9942A31E32}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibEntity.NetCore", "..\..\..\Shared\LibEntity\LibEntity.NetCore\LibEntity.NetCore.csproj", "{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "DbUnitTests", "Database1\DbUnitTests.sqlproj", "{D7FF8F3F-680C-43AE-A3BF-192339D4571D}"
@@ -29,10 +27,6 @@ Global
 		{886F4CC3-BB54-4FED-9152-C272FC39B08E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{886F4CC3-BB54-4FED-9152-C272FC39B08E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{886F4CC3-BB54-4FED-9152-C272FC39B08E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5D15F6E8-13CA-40B8-B2C9-7F9942A31E32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D15F6E8-13CA-40B8-B2C9-7F9942A31E32}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5D15F6E8-13CA-40B8-B2C9-7F9942A31E32}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5D15F6E8-13CA-40B8-B2C9-7F9942A31E32}.Release|Any CPU.Build.0 = Release|Any CPU
 		{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -12,10 +12,10 @@ export class NavigationManager {
 
     async navigate(viewName, data = null) {
         const routes = {
-            'login': { url: '/GameAjax/Login', target: '#page-content' },
-            'gameSelection': { url: '/GameAjax/LoadGameSelection', target: '#page-content' },
-            'game': { url: '/GameAjax/Game', target: '#page-content' },
-            'hallOfFame': { url: '/GameAjax/HallOfFameHigh', target: '#page-content' }
+            'login': { url: '/Game/Login', target: '#page-content' },
+            'gameSelection': { url: '/Game/LoadGameSelection', target: '#page-content' },
+            'game': { url: '/Game/Game', target: '#page-content' },
+            'hallOfFame': { url: '/Game/HallOfFameHigh', target: '#page-content' }
         };
 
         const route = routes[viewName];

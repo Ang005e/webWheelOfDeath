@@ -153,7 +153,7 @@ Framework: Razor MVC (.NET Core). AJAX/Fetch are used in combination with Partia
             import { partialLoader } from "/js/partialLoader.js";
 
 
-            const loginUrl = '@Url.Action(ViewBag.IsLoggedIn ? "GameSelection" : "Login", "GameAjax")';
+            const loginUrl = '@Url.Action(ViewBag.IsLoggedIn ? "GameSelection" : "Login", "Game")';
             @* If the user is logged in, load game selection, otherwise load the login form. *@
 
 
@@ -168,22 +168,7 @@ Framework: Razor MVC (.NET Core). AJAX/Fetch are used in combination with Partia
                 event.preventDefault();
                 var formData = $(this).serialize()
 
-                partialLoader(formData, "/GameAjax/HallOfFameHigh", "#page-content", "login-form", true);
-                });
-            });
-        </script>
-        
-        <script type="module" defer="defer">
-            /* ##### INDEX ##### */
-            import { partialLoader } from "/js/partialLoader.js";
-
-            $(document).ready(() => {
-                $(document).on("click", "#btnStartStop", function (event) {
-                    if ( !@(ViewBag.IsLoggedIn ? "true" : "false") ) {
-                        event.preventDefault();
-                        var formData = $(this).serialize()
-                        partialLoader(formData, "/GameAjax/Login", "#page-content", "login-form", true);
-                    }
+                partialLoader(formData, "/Game/HallOfFameHigh", "#page-content", "login-form", true);
                 });
             });
         </script>
