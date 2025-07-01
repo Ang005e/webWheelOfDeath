@@ -1,4 +1,5 @@
-﻿using LibWheelOfDeath;
+﻿using LibEntity;
+using LibWheelOfDeath;
 using LibWheelOfDeath.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -184,7 +185,7 @@ namespace webWheelOfDeath.Controllers
         }
 
         [HttpGet]
-        public IActionResult ManageGames()
+        public IActionResult ManageGameState()
         {
             if (!IsSuperAdmin()) return DenyAccess(EnumAdminType.Admin, "manage games.");
 
@@ -202,17 +203,41 @@ namespace webWheelOfDeath.Controllers
         }
 
         [HttpGet]
-        public IActionResult GameDetail(long id)
+        public IActionResult ManageGameState(long id)
         {
-            return PartialView("_ManageGame", new CWebGame(id));
+            return PartialView("_ManageGameState", new CWebGame(id));
         }
 
-        [HttpPost] 
-        public IActionResult ToggleGameState(long id)
+        [HttpPost]
+        public IActionResult ToggleGameActive(long id)
         {
-            var g = new CWebGame() { Id = id };
-            g.Create();
-            return PartialView("_ManageGame", g);
+            try
+            {
+                CGame game = new CGame();
+                game.Id = id;
+                game.Search();
+
+                if (game.Id > 0)
+                {
+                    game.IsActiveFlag = !game.IsActiveFlag;
+                    game.Update();
+
+                    return Json(new { success = true, isActive = game.IsActiveFlag, message = $"Game is now {(game.IsActiveFlag ? "active" : "invisible")}." });
+                }
+
+                return Json(new { success = false, message = "Game not found" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult ManageGame(CWebGame g)
+        {
+            g.SetActive(g.IsActiveFlag);
+            return Json(new { success = true, message = $"Game is now {(g.IsActiveFlag ? "active" : "invisible")}." });
         }
         #endregion
 
