@@ -14,7 +14,8 @@ Throughout the app, you'll see \<a> links, \<button>s, and \<form>s with (custom
 - data-target
 - data-url
 ...and many, many, many commented out <script> sections.
-These are custom attributes that I added, alongside a JS class (CAjaxNavigator) which, in tandem, remove 85% of the tedium in setting up AJAX. No more countless \<script> tags... just a single, smart JS object attached to the window.
+These [data-xyz] thingies are custom attributes that I added, alongside a JS class (CAjaxNavigator) which, in tandem, remove 85% of the tedium in setting up AJAX. No more countless \<script> tags... just a single, central, smart JS object attached to the window which collects all events on these elements and reroutes them depending on A: which tags are attached, and B: the data those tags contain (i.e. names of actions).
+I am currently rerouting my save logic through the tag system too--as the logic is different (a progress/confirmation modal is displayed).
 
 #### Integral setup
 - ViewBag.IsLoggedIn must be set to `true` when a user successfully authenticates.

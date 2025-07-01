@@ -4,12 +4,12 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="ToggleGameActive" data-ajax-form>
+        <form data-ajax-form asp-action="ToggleGameActive">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-group disabled">
                 <label asp-for="Game" class="control-label"></label>
-                <input asp-for="Game" class="form-control" />
-                <span asp-validation-for="Game" class="text-danger">@Model.Game</span>
+                <input asp-for="Game" class="form-control disabled" />
+                <span asp-validation-for="Game" class="text-danger disabled">@Model.Game</span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
@@ -24,6 +24,6 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+	<a ajax-action="ManageGameState">Back to List</a>
 </div>
 

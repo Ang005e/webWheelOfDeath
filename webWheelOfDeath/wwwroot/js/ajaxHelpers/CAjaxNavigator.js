@@ -191,17 +191,16 @@ export class AjaxNavigator {
         // Get controller from nav data or session
         const controller = nav.controller || this.getSessionController();
 
-        // Build URL based on my convention (discarded... lol)
-        if (nav.model && nav.action) {
-            // Your proposed convention: Controller/Model_Action
-            return `/${controller}/${nav.model}${nav.action}`;
+        // Build URL based on convention
+        const action = nav.action || 'Index';
+        let url = `/${controller}/${action}`;
+
+        // Add ID as query parameter if present
+        if (nav.id) {
+            url += `?id=${nav.id}`;
         }
 
-        // Standard MVC convention with optional ID
-        const action = nav.action || 'Index';
-        const url = `/${controller}/${action}`;
-
-        return nav.id ? `${url}/${nav.id}` : url;
+        return url;
     }
 
     getSessionController() {

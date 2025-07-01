@@ -24,7 +24,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Shared\LibEntity\LibEntity.NetCore\LibEntity.NetCore.csproj" />
-    <ProjectReference Include="..\..\LibWheelOfDeathEntity\LibWheelOfDeath.csproj" />
     <ProjectReference Include="..\Database1\DbUnitTests.sqlproj" />
   </ItemGroup>
   <ItemGroup>

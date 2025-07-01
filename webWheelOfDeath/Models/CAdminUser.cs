@@ -44,9 +44,19 @@ namespace webWheelOfDeath.Models
             newAdmin.IsActiveFlag = isActive;
             newAdmin.FkAdminTypeId = AdminTypeId;
 
-            newAdmin.Validate();
+            newAdmin.OverrideValidate = true; // we don't want to check for unique usernames when updating an existing admin
+
+            //newAdmin.Validate(); not gonna do much...
 
             newAdmin.Update();
+
+            newAdmin.OverrideValidate = false; // reset the override flag, you never know...
+        }
+
+        public void Delete()
+        {
+            CAdmin newAdmin = new(Id);
+            newAdmin.Delete();
         }
 
         public void Register()
@@ -74,6 +84,26 @@ namespace webWheelOfDeath.Models
             admin.FkAdminTypeId = AdminTypeId;
 
             return admin;
+        }
+
+        public List<CAdminUser> GetAllAdmins()
+        {
+            List<CAdminUser> adminUsers = new();
+            CAdmin admin = new();
+            foreach (CAdmin a in admin.GetAllAdmins())
+            {
+                adminUsers.Add(new CAdminUser
+                {
+                    Id = a.Id,
+                    FirstName = a.FirstName,
+                    LastName = a.LastName,
+                    Username = a.Username,
+                    Password = a.Password,
+                    isActive = a.IsActiveFlag,
+                    AdminTypeId = a.FkAdminTypeId
+                });
+            }
+            return adminUsers;
         }
     }
 }

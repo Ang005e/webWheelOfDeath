@@ -1,26 +1,5 @@
 ﻿@model webWheelOfDeath.Models.CWebGame
 
-@section Scripts {
-<script type="module" defer="defer">
-    'use strict';
-    import FormValidator from '/js/CValidator.js'
-
-    const fv = new FormValidator('frmCreateGame', 'Game', 'Attempts', 'Misses', 'DurationMilliseconds', 'MinBalloons', 'MaxBalloons')
-
-    fv.addRule('Game',        required())
-    .addRule('Game',        maxLength(255));
-
-    fv.addRule('Attempts',    numeric())
-    .addRule('Attempts',    minValue(1));
-
-    fv.addRule('Misses',      minValue(0))
-    .addRule('MaxBalloons', greaterThanField('MinBalloons','Miss Count must not exceed Throw Count'));
-
-    fv.addRule('MaxBalloons', greaterThanField('MinBalloons','Max Balloons must exceed Min Balloons'));
-
-</script>
-}
-
 <h4>CWebGame</h4>
 <hr />
 <div class="row">

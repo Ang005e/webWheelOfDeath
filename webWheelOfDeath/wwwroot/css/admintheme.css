@@ -2,6 +2,15 @@
     box-sizing: border-box;
 }
 
+.no-edit
+{
+    pointer-events: none;
+    user-select: none;
+    background-color: #f3f3f3; /* optional: shows it's disabled */
+    color: #888; /* optional: faded text color */
+}
+
+
 html, body {
     margin: 0;
     height: 100vh;

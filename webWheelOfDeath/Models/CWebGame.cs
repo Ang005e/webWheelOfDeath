@@ -36,30 +36,20 @@ namespace webWheelOfDeath.Models
 
         public CWebGame(long id)
         {
-            CGame game = new CGame();
-            game.Id = id;
-            game.Search(); // Usein search, not Read. to avoid the IsAddMode issue
+            CGame game = new CGame(id);
 
-            if (game.Id > 0) 
-            {
-                this.Id = id;
-                Game = game.Game;
-                Attempts = game.Attempts;
-                Misses = game.Misses;
-                DurationMilliseconds = game.DurationMilliseconds;
-                MinBalloons = game.MinBalloons;
-                MaxBalloons = game.MaxBalloons;
-                FkDifficultyId = game.FkDifficultyId;
-                IsActiveFlag = game.IsActiveFlag;
+            this.Id = game.Id;
+            Game = game.Game;
+            Attempts = game.Attempts;
+            Misses = game.Misses;
+            DurationMilliseconds = game.DurationMilliseconds;
+            MinBalloons = game.MinBalloons;
+            MaxBalloons = game.MaxBalloons;
+            FkDifficultyId = game.FkDifficultyId;
+            IsActiveFlag = game.IsActiveFlag;
 
-                CDifficulty difficulty = new CDifficulty();
-                difficulty.Id = game.FkDifficultyId;
-                difficulty.Search();
-                if (difficulty.Id > 0)
-                {
-                    Difficulty = difficulty.Difficulty;
-                }
-            }
+            CDifficulty difficulty = new CDifficulty(game.FkDifficultyId);
+            Difficulty = difficulty.Difficulty;
         }
 
         public void Create()

@@ -125,7 +125,7 @@ namespace webWheelOfDeath.Controllers
         #endregion
 
 
-        #region MANAGEMENT ACTIONS
+        #region GAME MANAGEMENT ACTIONS
 
         [HttpGet]
         public IActionResult CreateGame()
@@ -158,33 +158,6 @@ namespace webWheelOfDeath.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreateAdminAccount()
-        {
-            return PartialView("_CreateAdminAccount", new CAdminUser());
-        }
-
-        [HttpPost]
-        public IActionResult CreateAdminAccount(CAdminUser admin)
-        {
-            if (!IsSuperAdmin() && (admin.AdminType == EnumAdminType.SuperAdmin))
-            {
-                return DenyAccess(EnumAdminType.Admin, "create Super Admin accounts");
-            }
-            try
-            {
-                admin.Register();
-                TempData["LastUserActionSuccess"] = true;
-                TempData["LastUserAction"] = "New admin registered!";
-            }
-            catch (CWheelOfDeathException E)
-            {
-                TempData["LastUserActionSuccess"] = false;
-                TempData["LastUserAction"] = "Error registering admin: " + E.Message;
-            }
-            return PartialView("_AdminCentre");
-        }
-
-        [HttpGet]
         public IActionResult ManageGameState()
         {
             if (!IsSuperAdmin()) return DenyAccess(EnumAdminType.Admin, "manage games.");
@@ -194,15 +167,10 @@ namespace webWheelOfDeath.Controllers
             // this is not CGame, this is CWebGame. You have been fooled, you are delusional. 
             // I have perfect seperation of concerns and am not lazy in the slightest.
             CGame gameEntity = new CGame();
-<<<<<<< HEAD
+
             List<IEntity> searchResults = gameEntity.Search();
 
             foreach (IEntity entity in searchResults)
-=======
-            var allGames = gameEntity.Search(); 
-
-            foreach (IEntity entity in allGames)
->>>>>>> f8fc906c9eded8afbfc10e0c1237d889612696e3
             {
                 CGame g = (CGame)entity;
                 games.Add(new CWebGame(g.Id));
@@ -222,19 +190,21 @@ namespace webWheelOfDeath.Controllers
         {
             try
             {
-                CGame game = new CGame();
-                game.Id = id;
-                game.Search();
+                CGame game = new CGame(id);
+                game.Read();
+                game.IsActiveFlag = !game.IsActiveFlag;
+                game.Update();
 
-                if (game.Id > 0)
-                {
-                    game.IsActiveFlag = !game.IsActiveFlag;
-                    game.Update();
+                TempData["LastUserActionSuccess"] = true;
+                TempData["LastUserAction"] = $"Game is now {(game.IsActiveFlag ? "active" : "inactive")}";
 
-                    return Json(new { success = true, isActive = game.IsActiveFlag, message = $"Game is now {(game.IsActiveFlag ? "active" : "invisible")}." });
-                }
-
-                return Json(new { success = false, message = "Game not found" });
+                return PartialView("_AdminCentre");
+                //return Json(new
+                //{
+                //    success = true,
+                //    isActive = game.IsActiveFlag,
+                //    message = $"Game is now {(game.IsActiveFlag ? "active" : "inactive")}."
+                //});
             }
             catch (Exception ex)
             {
@@ -246,8 +216,92 @@ namespace webWheelOfDeath.Controllers
         public IActionResult ManageGame(CWebGame g)
         {
             g.SetActive(g.IsActiveFlag);
-            return Json(new { success = true, message = $"Game is now {(g.IsActiveFlag ? "active" : "invisible")}." });
+
+            TempData["LastUserActionSuccess"] = true;
+            TempData["LastUserAction"] = $"Game is now {(g.IsActiveFlag ? "active" : "inactive")}";
+
+            return PartialView("_AdminCentre");
+            //return Json(new { success = true, message = $"Game is now {(g.IsActiveFlag ? "active" : "invisible")}." });
         }
+
+        #endregion
+
+
+        #region ADMIN MANAGEMENT ACTIONS
+
+        [HttpGet]
+        public IActionResult ListAdminAccounts()
+        {
+            List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
+            return PartialView("_ListAdminAccounts", admins);
+        }
+
+        [HttpGet]
+        public IActionResult CreateAdminAccount()
+        {
+            return PartialView("_CreateAdminAccount", new CAdminUser());
+        }
+
+        [HttpPost]
+        public IActionResult CreateAdminAccount(CAdminUser admin)
+        {
+            if (!IsSuperAdmin() && (admin.AdminType == EnumAdminType.SuperAdmin))
+            {
+                return DenyAccess(EnumAdminType.Admin, "manage or create accounts");
+            }
+            try
+            {
+                admin.Register();
+                TempData["LastUserActionSuccess"] = true;
+                TempData["LastUserAction"] = "New admin registered!";
+            }
+            catch (CWheelOfDeathException E)
+            {
+                TempData["LastUserActionSuccess"] = false;
+                TempData["LastUserAction"] = "Error registering admin: " + E.Message;
+            }
+            List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
+            return PartialView("_ListAdminAccounts", admins);
+        }
+
+        [HttpPost]
+        public IActionResult ToggleAdminActive(long id)
+        {
+            CAdminUser user = new CAdminUser(id);
+            user.isActive = !user.isActive;
+            user.Edit(id);
+            TempData["LastUserActionSuccess"] = true;
+            TempData["LastUserAction"] = $"Admin account {(user.isActive ? "Activated" : "Deactivated")}";
+
+            List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
+            return PartialView("_ListAdminAccounts", admins);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteAdminAccount(long id)
+        {
+            if (!IsSuperAdmin())
+            {
+                return DenyAccess(EnumAdminType.Admin, "manage or create accounts");
+            }
+
+            List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
+
+            if (id == long.Parse(HttpContext.Session.GetString("admin-user-id") ?? "0"))
+            {
+                TempData["LastUserActionSuccess"] = false;
+                TempData["LastUserAction"] = "You cannot delete your own account!";
+                return PartialView("_ListAdminAccounts", admins);
+            }
+
+            CAdminUser user = new CAdminUser(id);
+            user.Delete();
+            TempData["LastUserActionSuccess"] = true;
+            TempData["LastUserAction"] = $"Admin account deleted";
+
+            return PartialView("_ListAdminAccounts", admins);
+        }
+
 
         #endregion
 

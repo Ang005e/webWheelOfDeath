@@ -1,9 +1,10 @@
 ﻿@model IEnumerable<webWheelOfDeath.Models.CWebGame>
 
 
-@* <p> *@
-@*     <a asp-action="CreateGame" data-ajax-form >Create New</a> *@
-@* </p> *@
+ <p>
+    <a ajax-action="CreateGame">Create New</a>
+    <a ajax-action="AdminCentre">Back to Index</a>
+ </p> 
 <table class="table">
     <thead>
         <tr>
@@ -67,11 +68,10 @@
             <td>
                 @Html.DisplayFor(modelItem => item.IsActiveFlag)
             </td>
-            <td>
-                    <a ajax-action="GameDetail" ajax-id="@item.Id">Details</a>
-                    <button ajax-action="ManageGameState" ajax-post="true">Toggle</button>
-                    
-            </td>
+                <td>
+                    <a ajax-action="GameDetail" ajax-id="@item.Id">Details</a> |
+                    <button ajax-action="ToggleGameActive" ajax-id="@item.Id" ajax-post="true">Toggle Active</button>
+                </td>
         </tr>
 }
     </tbody>

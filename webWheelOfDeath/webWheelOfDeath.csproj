@@ -90,7 +90,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Shared\LibEntity\LibEntity.NetCore\LibEntity.NetCore.csproj" />
-    <ProjectReference Include="..\..\LibWheelOfDeathEntity\LibWheelOfDeath.csproj" />
   </ItemGroup>
 
 </Project>

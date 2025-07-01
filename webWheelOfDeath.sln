@@ -5,13 +5,13 @@ VisualStudioVersion = 17.12.35514.174
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webWheelOfDeath", "webWheelOfDeath\webWheelOfDeath.csproj", "{906033B7-6204-4522-9FBB-1D6421F1D72D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibWheelOfDeath", "..\LibWheelOfDeathEntity\LibWheelOfDeath.csproj", "{886F4CC3-BB54-4FED-9152-C272FC39B08E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibEntity.NetCore", "..\..\..\Shared\LibEntity\LibEntity.NetCore\LibEntity.NetCore.csproj", "{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "DbUnitTests", "Database1\DbUnitTests.sqlproj", "{D7FF8F3F-680C-43AE-A3BF-192339D4571D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{D228DA53-4CE0-41D5-A1C1-E0AE4DF97D4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibWheelOfDeath", "..\LibWheelOfDeathEntity\LibWheelOfDeath.csproj", "{C455141D-B0B5-DCC0-609B-B01BED98897A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		{906033B7-6204-4522-9FBB-1D6421F1D72D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{906033B7-6204-4522-9FBB-1D6421F1D72D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{906033B7-6204-4522-9FBB-1D6421F1D72D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{886F4CC3-BB54-4FED-9152-C272FC39B08E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{886F4CC3-BB54-4FED-9152-C272FC39B08E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{886F4CC3-BB54-4FED-9152-C272FC39B08E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{886F4CC3-BB54-4FED-9152-C272FC39B08E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33DDD2EC-CCB0-3FF7-50EE-B94B4F6E5BF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -41,6 +37,10 @@ Global
 		{D228DA53-4CE0-41D5-A1C1-E0AE4DF97D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D228DA53-4CE0-41D5-A1C1-E0AE4DF97D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D228DA53-4CE0-41D5-A1C1-E0AE4DF97D4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C455141D-B0B5-DCC0-609B-B01BED98897A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C455141D-B0B5-DCC0-609B-B01BED98897A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C455141D-B0B5-DCC0-609B-B01BED98897A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C455141D-B0B5-DCC0-609B-B01BED98897A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
