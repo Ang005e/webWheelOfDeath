@@ -23,8 +23,9 @@
     <PackageReference Include="MSTest" Version="3.6.4" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Shared\LibEntity\LibEntity.NetCore\LibEntity.NetCore.csproj" />
     <ProjectReference Include="..\Database1\DbUnitTests.sqlproj" />
+    <ProjectReference Include="..\LibEntity\LibEntity.NetCore\LibEntity.NetCore.csproj" />
+    <ProjectReference Include="..\LibWheelOfDeathEntity\LibWheelOfDeath.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />

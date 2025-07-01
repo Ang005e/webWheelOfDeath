@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibEntity.NetCore", "LibEntity.NetCore\LibEntity.NetCore.csproj", "{8F9073AA-EE7C-4244-8D78-E5734F167703}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8F9073AA-EE7C-4244-8D78-E5734F167703}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F9073AA-EE7C-4244-8D78-E5734F167703}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F9073AA-EE7C-4244-8D78-E5734F167703}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F9073AA-EE7C-4244-8D78-E5734F167703}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EF3936B6-81FB-4071-BB07-D41CCC1048CE}
+	EndGlobalSection
+EndGlobal
