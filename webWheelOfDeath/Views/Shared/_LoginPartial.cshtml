@@ -9,7 +9,15 @@
     The model passed to this partial view should be of type CCredentials.
 *@ 
 
-<!-- <div id="modal-login-id" class="modal-canvas hidden"> this section should be OUTSIDE the partial -->
+
+@if ((Model.LastLoginFailed??"").Length > 0)
+{
+    <script type="module">
+        new window.CMessageModal('#modal-message-id').display('@Model.LastLoginFailed', false, 5000);
+    </script>
+}
+
+
 <div class="main-panel modal-player">
     <span class="close-popup">&#10006;</span>
     <form 

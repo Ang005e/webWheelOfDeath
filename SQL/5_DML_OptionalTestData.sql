@@ -25,14 +25,10 @@ insert into tblAccount (FirstName, LastName, Password, IsActiveFlag) values
     ('Nora',   'Brown',    'JJjj00))KKkk', 1);
 
 
--- Get the actual IDs from tblAdminType
-declare @pSuperAdminTypeId bigint = (select Id from tblAdminType where AdminType = 'SuperAdmin');
-declare @pStandardAdminTypeId bigint = (select Id from tblAdminType where AdminType = 'StandardAdmin');
-
 -- Admins
 insert into tblAdmin (Id, FkAdminTypeId, Username) values
-    (@pSuperAdminId, @pSuperAdminTypeId, 'john_super'),
-    (@pStandardAdminId, @pStandardAdminTypeId, 'sarah_admin');
+    (@pSuperAdminId, 2, 'john_super'),
+    (@pStandardAdminId, 1, 'sarah_admin');
 
 -- Players
 insert into tblPlayer (Id, Username) values

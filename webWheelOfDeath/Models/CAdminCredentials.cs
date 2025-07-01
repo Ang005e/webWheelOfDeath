@@ -6,6 +6,7 @@ namespace webWheelOfDeath.Models
     {
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public long AdminTypeId { get; set; } = 0L;
         public bool loginAttemptFailed { get; set; } = false;
         public long Id { get; set; } = 0L;
 
@@ -33,6 +34,7 @@ namespace webWheelOfDeath.Models
                 if (admin.Id > 0)
                 {
                     Id = admin.Id;
+                    AdminTypeId = admin.FkAdminTypeId;
                 }
                 else
                 {
