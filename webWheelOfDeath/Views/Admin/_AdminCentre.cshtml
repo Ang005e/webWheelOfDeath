@@ -16,32 +16,32 @@
 
 <fieldset>
 
-    <button type="button" id="btnCreateAccount">Create an Admin Account</button>
+    <button data-ajax-nav data-action="CreateAdminAccount" type="button" id="btnCreateAccount">Create an Admin Account</button>
 
-    <button type="button" id="btnCreateGame">Create a Gamemode</button>
+    <button data-ajax-nav data-action="CreateGame" type="button" id="btnCreateGame">Create a Gamemode</button>
     
-    <button type="button" id="btnManageGames">Activate/Deactivate Gamemodes</button>
+    <button data-ajax-nav data-action="ManageGames" type="button" id="btnManageGames">Activate/Deactivate Gamemodes</button>
 
 </fieldset>
 
-<script defer="defer" type="module">
-    import { partialLoader } from "/js/ajaxHelpers/partialLoader.js";
-    $(document).ready(() => {
+@* <script defer="defer" type="module"> *@
+@*     import { partialLoader } from "/js/ajaxHelpers/partialLoader.js"; *@
+@*     $(document).ready(() => { *@
 
-        document.getElementById("btnCreateAccount").addEventListener('click', () => {
-            partialLoader(null, "/Admin/CreateAdminAccount", "#page-content", "", false);
-        });
+@*         document.getElementById("btnCreateAccount").addEventListener('click', () => { *@
+@*             partialLoader(null, "/Admin/CreateAdminAccount", "#page-content", "", false); *@
+@*         }); *@
 
-        document.getElementById("btnCreateGame").addEventListener('click', () => {
-        partialLoader(null, "/Admin/CreateGame", "#page-content", "", false);
-        });
+@*         document.getElementById("btnCreateGame").addEventListener('click', () => { *@
+@*         partialLoader(null, "/Admin/CreateGame", "#page-content", "", false); *@
+@*         }); *@
 
-        document.getElementById("btnManageGames").addEventListener('click', () => {
-        partialLoader(null, "/Admin/ManageGames", "#page-content", "", false);
-        });
+@*         document.getElementById("btnManageGames").addEventListener('click', () => { *@
+@*         partialLoader(null, "/Admin/ManageGames", "#page-content", "", false); *@
+@*         }); *@
 
-    })
-</script>
+@*     }) *@
+@* </script> *@
 
 
 @* @await Html.PartialAsync("_GameManagement")      *@

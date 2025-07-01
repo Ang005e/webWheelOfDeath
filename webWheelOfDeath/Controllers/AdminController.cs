@@ -1,4 +1,5 @@
-﻿using LibWheelOfDeath.Exceptions;
+﻿using LibWheelOfDeath;
+using LibWheelOfDeath.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using webWheelOfDeath.Models;
@@ -182,20 +183,37 @@ namespace webWheelOfDeath.Controllers
             return PartialView("_AdminCentre");
         }
 
+        [HttpGet]
+        public IActionResult ManageGames()
+        {
+            if (!IsSuperAdmin()) return DenyAccess(EnumAdminType.Admin, "manage games.");
 
+            List<CWebGame> games = new List<CWebGame>();
 
-        //[HttpPost]
-        //public void EditAdminAccount(CAdminUser admin)
-        //{
-        //    try
-        //    {
-        //        admin.Edit();
-        //    }
-        //    catch (CWheelOfDeathException E)
-        //    {
-        //    }
-        //}
+            CGame gameEntity = new CGame();
+            var gameRecords = gameEntity.GetAllGames(); 
 
+            foreach (CGame g in gameRecords)
+            {
+                games.Add(new CWebGame(g.Id));
+            }
+
+            return PartialView("_ListGames", games);
+        }
+
+        [HttpGet]
+        public IActionResult GameDetail(long id)
+        {
+            return PartialView("_ManageGame", new CWebGame(id));
+        }
+
+        [HttpPost] 
+        public IActionResult ToggleGameState(long id)
+        {
+            var g = new CWebGame() { Id = id };
+            g.Create();
+            return PartialView("_ManageGame", g);
+        }
         #endregion
 
     }

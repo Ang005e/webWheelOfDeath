@@ -8,11 +8,11 @@ namespace webWheelOfDeath.Models
 {
     public class CWebGame
     {
-        public long Id; 
+        public long Id;
         public string Game { get; set; }
         public string Difficulty { get; set; }
         public long FkDifficultyId { get; set; }
-        public short Attempts { get; set; } 
+        public short Attempts { get; set; }
         public short Misses { get; set; }
         public long DurationMilliseconds { get; set; }
         public short MinBalloons { get; set; }
@@ -63,14 +63,14 @@ namespace webWheelOfDeath.Models
             game.DurationMilliseconds = DurationMilliseconds;
             game.MinBalloons = MinBalloons;
             game.MaxBalloons = MaxBalloons;
-            game.IsActiveFlag = IsActiveFlag; 
+            game.IsActiveFlag = IsActiveFlag;
 
             try
             {
                 game.Create();
             }
             catch (CEntityException E)
-            { 
+            {
                 throw new CWheelOfDeathException("Error creating game: " + E.Message);
             }
         }
@@ -94,6 +94,13 @@ namespace webWheelOfDeath.Models
             var game = new CGame(Id);
             game.IsActiveFlag = active;
             game.Update();
+        }
+
+        public IEnumerable<CWebGame> GetGames()
+        {
+            var games = new List<CWebGame>();
+            var gameList = new CGame().GetAllGames();
+            return games;
         }
     }
 }
