@@ -68,8 +68,8 @@
                 @Html.DisplayFor(modelItem => item.IsActiveFlag)
             </td>
             <td>
-                <a data-ajax-nav data-action="GameDetail" data-itemid="@item.Id">Details</a>
-                @* <input type="checkbox" data-ajax-nav data-action="ToggleGameActive" data-itemid="@item.Id"> *@
+                    <a ajax-action="GameDetail" ajax-id="@item.Id">Details</a>
+                    <button ajax-action="ManageGameState" ajax-post="true">Toggle</button>
             </td>
         </tr>
 }

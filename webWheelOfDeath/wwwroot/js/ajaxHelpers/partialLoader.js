@@ -9,25 +9,31 @@ import { CMessageModal } from '/js/CAppModals.js';
  * @param {string} formName          – identifier passed in the CustomEvent detail
  */
 export function partialLoader(formData, actionUrl, refreshElementId, formName, isPost = false) {
-    // ToDo: replace with Javascript fetch
+    console.log('PartialLoader called:', { actionUrl, refreshElementId, formName, isPost });
+    
     $.ajax({
-        url: actionUrl,  // URL to the Login action
+        url: actionUrl,
         type: isPost ? 'POST' : 'GET',
         data: formData,
         success: function (partial) {
-            // Update the modal content with the returned partial view HTML
             $(refreshElementId).html(partial);
-
             document.dispatchEvent(new CustomEvent("partial-refresh", {
                 bubbles: true,
-                detail:
-                {
-                    form: formName
-                }
+                detail: { form: formName }
             }));
         },
-        error: function () {
-            new window.CMessageModal('#modal-message-id').display("There was an error processing your request.", false, 5000);
+        error: function (xhr, status, error) {
+            // Use the enhanced error handler
+            if (window.ajaxNav && window.ajaxNav.handleAjaxError) {
+                window.ajaxNav.handleAjaxError(xhr, status, error, actionUrl);
+            } else {
+                console.error('AJAX Error:', { xhr, status, error, url: actionUrl });
+                new window.CMessageModal('#modal-message-id').display(
+                    `Error: ${xhr.status} - ${xhr.statusText}\nURL: ${actionUrl}`, 
+                    false, 
+                    7000
+                );
+            }
         }
     });
 }

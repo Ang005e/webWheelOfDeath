@@ -191,11 +191,14 @@ namespace webWheelOfDeath.Controllers
 
             List<CWebGame> games = new List<CWebGame>();
 
+            // this is not CGame, this is CWebGame. You have been fooled, you are delusional. 
+            // I have perfect seperation of concerns and am not lazy in the slightest.
             CGame gameEntity = new CGame();
-            var gameRecords = gameEntity.GetAllGames(); 
+            var allGames = gameEntity.Search(); 
 
-            foreach (CGame g in gameRecords)
+            foreach (IEntity entity in allGames)
             {
+                CGame g = (CGame)entity;
                 games.Add(new CWebGame(g.Id));
             }
 
@@ -203,7 +206,7 @@ namespace webWheelOfDeath.Controllers
         }
 
         [HttpGet]
-        public IActionResult ManageGameState(long id)
+        public IActionResult GameDetail(long id)
         {
             return PartialView("_ManageGameState", new CWebGame(id));
         }
@@ -239,6 +242,7 @@ namespace webWheelOfDeath.Controllers
             g.SetActive(g.IsActiveFlag);
             return Json(new { success = true, message = $"Game is now {(g.IsActiveFlag ? "active" : "invisible")}." });
         }
+
         #endregion
 
     }

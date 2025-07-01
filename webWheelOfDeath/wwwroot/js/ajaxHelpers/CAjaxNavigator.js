@@ -3,7 +3,8 @@
 
 
 // Centralized AJAX navigation handler for all partial views
-// Please note this class was written with assistance from the Claude.ai tool
+// Please note this class was written with assistance from the Claude.ai tool. I did not wirte this code from scratch.
+// However, I have made significant modifications to the original code to suit my needs. And fixed all the bugs...
 export class AjaxNavigator {
 
     constructor() {
@@ -120,6 +121,42 @@ export class AjaxNavigator {
                 modal.display("Save failed. Please try again.", false, 5000);
             }
         });
+    }
+
+    // Add this method to the AjaxNavigator class
+    handleAjaxError(xhr, status, error, url) {
+        console.error('AJAX Error Details:', {
+            url: url,
+            status: xhr.status,
+            statusText: xhr.statusText,
+            responseText: xhr.responseText,
+            error: error
+        });
+
+        let message = 'Request failed: ';
+
+        if (xhr.status === 404) {
+            message += `The action or controller was not found.\nURL: ${url}\n`;
+            message += 'Check that the action name and controller match exactly.';
+        } else if (xhr.status === 500) {
+            // Try to extract error message from response
+            try {
+                if (xhr.responseText.includes('Message=')) {
+                    const match = xhr.responseText.match(/Message=([^\\r\\n]+)/);
+                    if (match) message += match[1];
+                } else {
+                    message += 'Server error - check the console for details';
+                }
+            } catch (e) {
+                message += xhr.statusText;
+            }
+        } else if (xhr.status === 400) {
+            message += 'Bad request - check parameter names match between view and controller';
+        } else {
+            message += xhr.statusText || error;
+        }
+
+        new window.CMessageModal('#modal-message-id').display(message, false, 7000);
     }
 
 
