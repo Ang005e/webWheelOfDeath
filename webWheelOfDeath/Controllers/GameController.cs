@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using webWheelOfDeath.Models;
 using Microsoft.AspNetCore.Http;
 using webWheelOfDeath.Models.ViewModels;
+using LibWheelOfDeath;
 
 namespace webWheelOfDeath.Controllers
 {
@@ -154,7 +155,7 @@ namespace webWheelOfDeath.Controllers
             ViewBag.GameSelected = true;
             // Create a gameDifficulty (performs backend DB search)
             var game = new CWebGame(gameId);
-
+            HttpContext.Session.SetString("game-id", gameId.ToString());
             // Return the _Game partial populated with data from a "gameDifficulty" model
             return PartialView("_Game", game);
         }
@@ -174,7 +175,7 @@ namespace webWheelOfDeath.Controllers
         {
             try
             {
-                gameRecord.FkPlayerId = long.Parse(HttpContext.Session.GetString("player-user-id") ??"0");
+                gameRecord.Id = int.Parse(HttpContext.Session.GetString("game-id")??"0");
                 gameRecord.Create();
                 return Json(new { success = true });
             }

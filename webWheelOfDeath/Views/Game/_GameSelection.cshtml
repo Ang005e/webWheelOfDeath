@@ -18,7 +18,7 @@
     @*check if game has been selected, and if so, hide this modal*@ 
     <div class="main-panel modal-player">
         <span class="close-popup">&#10006;</span>
-        <form>
+        <form data-ajax-form asp-action="Game">
             <fieldset>
                 <fieldset>
                     <label for="cboGameSelect">Select Game Mode</label>
@@ -68,7 +68,7 @@
         </form>
     </div>
 </div>
-
+@*
 <script type="module" defer="defer">
     import { partialLoader } from '/js/ajaxHelpers/partialLoader.js'
 
@@ -82,4 +82,4 @@
 			partialLoader(formData, "/Game/Game", "#page-content", "game-selection-form", true);
 		});
 	})
-</script>
+</script>*@

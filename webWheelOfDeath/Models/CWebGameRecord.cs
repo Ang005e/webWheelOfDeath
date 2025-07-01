@@ -7,8 +7,7 @@ namespace webWheelOfDeath.Models
         public int Id { get; set; }
         public long FkGameId { get; set; }
         public long FkPlayerId { get; set; }
-        public long FkResultId { get; set; } 
-        public bool IsWin { get;set; }
+        public long FkResultId { get; set; }
         public DateTime Date { get; set; }
         public long ElapsedTime { get; set; }
         public short BalloonsPopped { get; set; }

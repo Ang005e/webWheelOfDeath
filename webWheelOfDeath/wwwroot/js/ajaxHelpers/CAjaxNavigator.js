@@ -25,7 +25,8 @@ export class AjaxNavigator {
         });
 
         // Handle save buttons
-        $(document).on('click', '[data-ajax-save]', (e) => {
+        $(document).on('click', '[data-ajax-save]:not([data-action="SaveGameRecord"])', (e) => {
+            
             e.preventDefault();
             this.handleSave($(e.currentTarget));
         });
