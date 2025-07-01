@@ -191,10 +191,18 @@ namespace webWheelOfDeath.Controllers
 
             List<CWebGame> games = new List<CWebGame>();
 
+            // this is not CGame, this is CWebGame. You have been fooled, you are delusional. 
+            // I have perfect seperation of concerns and am not lazy in the slightest.
             CGame gameEntity = new CGame();
+<<<<<<< HEAD
             List<IEntity> searchResults = gameEntity.Search();
 
             foreach (IEntity entity in searchResults)
+=======
+            var allGames = gameEntity.Search(); 
+
+            foreach (IEntity entity in allGames)
+>>>>>>> f8fc906c9eded8afbfc10e0c1237d889612696e3
             {
                 CGame g = (CGame)entity;
                 games.Add(new CWebGame(g.Id));
