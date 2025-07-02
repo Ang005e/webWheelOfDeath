@@ -1,23 +1,15 @@
 ﻿using LibEntity;
+using LibEntity.NetCore.Exceptions;
+using LibEntity.NetCore.Infrastructure;
 using LibWheelOfDeath.Exceptions;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Numerics;
 
 namespace LibWheelOfDeath
 {
-    // CPlayer will inherit from CEntity, and through inbuilt class library mechanisms, link together
-    // the tblAccount field that this tblPlayer field is based on (in the database).
-
-    // For the reader's information...
-    // *This is not how I would have prefered to do it*. I would have simply omitted the CAccount Class
-    // and had tblPlayer handle all the database inheritence logic.
-    // However, after discussion with my lecturer, we agreed that reflecting the inheretance hirachy
-    // in C# was required in order to meet the assessment crieteria.
-
-    // The downside of this is that the CPlayer class will not have read/write access to any fields
-    // NOT already in tblPlayer. A seperate CAccount object will be created to access them.
-    public class CPlayer : CAccount
+    public class CPlayer : CEntity
     {
         #region Constructors
 
@@ -28,10 +20,14 @@ namespace LibWheelOfDeath
             Read(id);
         }
 
-        public CPlayer(string firstName, string lastName, string username, string password) 
-            : base("tblPlayer", firstName, lastName, password)
+        public CPlayer(string firstName, string lastName, string username, string password, bool? isActive = null) 
+            : this()
         {
+            FirstName = firstName;
+            LastName = lastName;
+            Password = password;
             Username = username;
+            _isActiveFlag = isActive;
         }
 
         #endregion
@@ -39,6 +35,21 @@ namespace LibWheelOfDeath
         #region Table Column Properties
 
         public string Username { get; set; } = string.Empty;
+        public bool OverrideValidate { get; set; } = false; //because usernames will be picked up as
+                                                            //non-unique when Update() gets called if we do this.
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+
+
+        internal bool? _isActiveFlag { get; private set; } // can be set null from inside the class, not from outside
+                                                           // this essentially makes 'null' the default value--which cannot
+                                                           // be re-set once a value is assigned.
+        public bool IsActiveFlag
+        {
+            get { return _isActiveFlag ?? true; }
+            set { _isActiveFlag = value; }
+        }
 
         #endregion
 
@@ -56,44 +67,72 @@ namespace LibWheelOfDeath
 
         public new void Create()
         {
-            base.Create(); // Create the CAccount table entry first. BEFORE updating this entities parameters.
-
-            Validate();
-
-            // Change the command text & parameters, adding the username...
             CommandText = $@"
-                insert into [tblPlayer]
+                insert into tblAccount
                 (
-                    [Username],
-                    [Id]
+                    [FirstName], 
+                    [LastName], 
+                    [Password], 
+                    [IsActiveFlag]
                 )
                 values
-                (          
-                    @pUsername,
-                    @pId
+                (
+                    @pFirstName, 
+                    @pLastName, 
+                    @pPassword, 
+                    @pIsActiveFlag
+                );
+                go
+                insert into [tblPlayer]
+                (
+                    [Id], 
+                    [Username]
+                )
+                values
+                (   
+                    @pId, 
+                    @pUsername     
                 );
             ";
-
-            Parameters.AddWithValue("@pId", Id);
+            Parameters.AddWithValue("@pFirstName", FirstName);
+            Parameters.AddWithValue("@pLastName", LastName);
             Parameters.AddWithValue("@pUsername", Username);
+            Parameters.AddWithValue("@pPassword", Password);
+            Parameters.AddWithValue("@pIsActiveFlag", IsActiveFlag);
 
-            base.Create(false); // Create the ID for THIS table, but based on the ID of the parent entity (CAccount)
+            Create();
         }
 
         public new int Update()
         {
-            
+
             CommandText = $@" 
             update 
+                [tblAccount]
+
+            set
+                [FirstName] = @pFirstName,
+				[LastName] = @pLastName,
+				[Password] = @pPassword,
+				[IsActiveFlag] = @pIsActiveFlag,
+                
+            where
+                Id = @pId
+
+            update
                 [tblPlayer]
             set
-                [Username] = @pUsername,
+                [Username] = @pUsername
             where
                 Id = @pId
             ";
 
             Parameters.AddWithValue("@pId", Id);
-            Parameters.AddWithValue("@pUsername", Username); 
+            Parameters.AddWithValue("@pUsername", Username);
+            Parameters.AddWithValue("@pFirstName", FirstName);
+            Parameters.AddWithValue("@pLastName", LastName);
+            Parameters.AddWithValue("@pPassword", Password);
+            Parameters.AddWithValue("@pIsActiveFlag", IsActiveFlag);
 
             return base.Update();
         }
@@ -101,49 +140,55 @@ namespace LibWheelOfDeath
 
         public override List<IEntity> Search()
         {
-            string fromClause = "[tblAccount] A, [tblPlayer] P";
-            string whereClause = "(1 = 1) ";
+            string fromClause = "[tblPlayer] P inner join [tblAccount] AC on P.Id = AC.Id";
+            string whereClause = "(1=1) ";
 
-            // Parameters.Clear();
+            List<SqlParameter> parameters = new List<SqlParameter>();
 
-            List <SqlParameter> parameters = new();
-
-            if (Id != 0L)                                                               
+            if (Id != 0L)
             {
                 whereClause += @$"and P.Id = @pId ";
-                parameters.AddWithValue("@pId", this.Id);
+                parameters.Add(new SqlParameter("@pId", this.Id));
             }
 
             if (!string.IsNullOrWhiteSpace(Username))
             {
                 whereClause += $"and P.Username = @pUsername ";
-                parameters.AddWithValue("@pUsername", $"{this.Username}");
-            }
-
-            if (FirstName.Length > 0)
-            {
-                whereClause += $"and A.FirstName = @pFirstName ";
-                parameters.AddWithValue("@pFirstName", $"{this.FirstName}");
-            }
-
-            if (LastName.Length > 0)
-            {
-                whereClause += $"and A.LastName = @pLastName ";
-                parameters.AddWithValue("@pLastName", $"{this.LastName}");
+                parameters.Add(new SqlParameter("@pUsername", $"{this.Username}"));
             }
 
             if (!string.IsNullOrWhiteSpace(Password))
             {
-                whereClause += $"and A.Password = @pPassword ";
-                parameters.AddWithValue("@pPassword", $"{this.Password}");
+                whereClause += $"and AC.Password = @pPassword ";
+                parameters.Add(new SqlParameter("@pPassword", $"{this.Password}"));
             }
+
+            if (!string.IsNullOrWhiteSpace(FirstName))
+            {
+                whereClause += $"and AC.FirstName = @pFirstName ";
+                parameters.Add(new SqlParameter("@pFirstName", $"{this.LastName}"));
+            }
+
+            if (!string.IsNullOrWhiteSpace(LastName))
+            {
+                whereClause += $"and AC.LastName = @pLastName ";
+                parameters.Add(new SqlParameter("@pLastName", $"{this.LastName}"));
+            }
+
+            if (IsActiveFlag != null)
+            {
+                whereClause += $"and AC.IsActiveFlag = @pIsActiveFlag ";
+                parameters.Add(new SqlParameter("@pIsActiveFlag", $"{this.IsActiveFlag}"));
+            }
+
+
 
             CommandText = @$"
                 select 
-                    A.*, P.Username
-                from 
+                    P.*, AC.*
+                from
                     {fromClause}
-                where 
+                where
                     {whereClause}
             ";
 
@@ -154,57 +199,10 @@ namespace LibWheelOfDeath
 
         #endregion
 
-        #region Other Methods
 
 
-        public new void Reset()
-        {
-            Id = 0L;
-            Username = string.Empty;
-        }
 
-        public new LibEntity.IEntity Populate(SqlDataReader reader, LibEntity.IEntity? entity = null) //IEntity Populate(SqlDataReader reader, IEntity? entity = null)
-        {
-
-            CPlayer row = (CPlayer?)entity ?? new CPlayer();
-
-            row.Id = (long)reader["Id"];
-            row.Username = (string)reader["Username"];
-
-            return row;
-        }
-
-        /// <summary>
-        /// Validate the data entity is correctly formatted before sending to the database.
-        /// </summary>
-        /// <exception cref="CWheelOfDeathException"></exception>
-        public new void Validate()
-        {
-            string message = "";
-
-            if (UsernameExists())
-            {
-                message += $"The {nameof(Username)} \"{Username}\" is already taken\n";
-            }
-
-            if (string.IsNullOrWhiteSpace(Username))
-            {
-                message += $"{nameof(Username)} must be provided\n";
-            }
-
-            if (Id < 0L)
-            {
-                message += $"{nameof(Id)} must be provided\n";
-            }
-
-            if (message.Length > 0)
-            {
-                throw new CWheelOfDeathException(message);
-            }
-
-            // ToDo: Add password validation
-        }
-
+        #region Helpers
 
         /// <summary>
         /// Attempt to match this entities username property
@@ -216,27 +214,11 @@ namespace LibWheelOfDeath
         {
             // make a new CPlayer enitity -- there may be properties set in this instance
             // that affect a search result.
-            CPlayer player = new CPlayer() {Username = this.Username};
+            CPlayer player = new CPlayer() { Username = this.Username };
             return AccountMatches(player, true);
         }
 
-        /// <summary>
-        /// Attempt to match this entities username and password properties 
-        /// to a matching account in the database.
-        /// </summary>
-        /// <exception cref="CWheelOfDeathException"></exception>
-        public bool Authenticate()
-        {
-            CPlayer player = new CPlayer() { Username = this.Username, Password = this.Password };
-            if (AccountMatches(player, true))
-            {
-                Id = this.Search()[0].Id;
-                return true;
-            }
-            return false;
-        }
-
-        public bool AccountMatches(CPlayer player, bool assertUnique)
+        public bool AccountMatches(CPlayer player, bool assertUnique = true)
         {
             // search for the player
             List<IEntity> matches = player.Search();
@@ -251,7 +233,7 @@ namespace LibWheelOfDeath
 
                 default: // impossible situation, but nonetheless...
 
-                    // ToDo: LOG REPORT
+                    // ToDo: LOG ERROR
 
                     if (assertUnique)
                     {
@@ -261,7 +243,96 @@ namespace LibWheelOfDeath
             }
         }
 
-        public new string ToString()
+        /// <summary>
+        /// Attempt to match this entities username and password properties 
+        /// to a matching account in the database.
+        /// </summary>
+        /// <exception cref="CWheelOfDeathException"></exception>
+        public bool Authenticate(bool updateInstanceOnSuccess = true)
+        {
+            CPlayer player = new CPlayer() { Username = this.Username, Password = this.Password };
+            if (AccountMatches(player, true))
+            {
+                if (updateInstanceOnSuccess)
+                {
+                    Read(player.Id);     // read the matching admin details from the database, since this instance 
+                                         // will not have other account details set.
+                }
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+
+
+
+
+        #region Other Methods
+
+
+        public override void Reset()
+        {
+            Id = 0L;
+            Username = string.Empty;
+            FirstName = string.Empty;
+            LastName = string.Empty;
+            Password = string.Empty;
+            _isActiveFlag = null;
+        }
+
+
+        public override IEntity Populate(SqlDataReader reader, IEntity? entity = null) //IEntity Populate(SqlDataReader reader, IEntity? entity = null)
+        {
+
+            CPlayer player = (CPlayer?)entity ?? new CPlayer();
+
+            player.Id = (long)reader["Id"];
+            player.Username = (string)reader["Username"];
+            player.FirstName = (string)reader["FirstName"];
+            player.LastName = (string)reader["LastName"];
+            player.Password = (string)reader["Password"];
+            player.IsActiveFlag = (bool)reader["IsActiveFlag"];
+
+            return player;
+        }
+
+        /// <summary>
+        /// Validate the data entity is correctly formatted before sending to the database.
+        /// </summary>
+        /// <exception cref="CWheelOfDeathException"></exception>
+        public override void Validate()
+        {
+
+            CValidator<CPlayer> validator = new(this);
+
+            // validator.NoDefaults();
+
+
+            if (UsernameExists() && !OverrideValidate)
+            {
+                validator.ManualAddFailure(
+                    LibEntity.NetCore.Exceptions.EnumValidationFailure.FailsUnique,
+                    $"The {nameof(Username)} \"{Username}\" is already taken\n");
+            }
+
+            if (Password.Length <= 12) validator.ManualAddFailure(EnumValidationFailure.OutOfRange, $"{nameof(Password)} must be more than 12 characters long");
+
+            if (!Password.Any(char.IsUpper)) validator.ManualAddFailure(EnumValidationFailure.OutOfRange, $"{nameof(Password)} must contain at least one uppercase letter");
+
+            if (!Password.Any(char.IsLower)) validator.ManualAddFailure(EnumValidationFailure.OutOfRange, $"{nameof(Password)} must contain at least one lowercase letter");
+
+            if (!Password.Any(char.IsDigit)) validator.ManualAddFailure(EnumValidationFailure.OutOfRange, $"{nameof(Password)} must contain at least one number");
+
+            if (!Password.Any(ch => "!@#$%^&*()_+-=[]{}|;:',.<>/?".Contains(ch))) validator.ManualAddFailure(EnumValidationFailure.OutOfRange, $"{nameof(Password)} must contain at least one special character");
+
+
+            validator.Validate();
+        }
+
+
+        public override string ToString()
         {
             return $"{this.Id}: {this.Username}";
         }

@@ -1,10 +1,12 @@
 ﻿using LibEntity;
+using LibEntity.NetCore.Exceptions;
 using LibEntity.NetCore.Infrastructure;
 using LibWheelOfDeath.Exceptions;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,7 +24,7 @@ namespace LibWheelOfDeath
 
     // The downside of this is that the CAdmin class will not have read/write access to any fields
     // NOT already in tblPlayer. A seperate CAccount object will be created to access them.
-    public class CAdmin : CAccount
+    public class CAdmin : CEntity
     {
         #region Constructors
 
@@ -50,15 +52,25 @@ namespace LibWheelOfDeath
 
         #region Table Column Properties
 
-        public string Username { get; set; }
-        public long FkAdminTypeId { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public long FkAdminTypeId { get; set; } = 0L;
         public bool OverrideValidate { get; set; } = false; //because usernames will be picked up as
                                                             //non-unique when Update() gets called if we do this.
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+
+
+        private bool? _isActiveFlag;
+        public bool IsActiveFlag
+        {
+            get { return _isActiveFlag ?? true; }
+            set { _isActiveFlag = value; }
+        }
 
         #endregion
 
         #region Table Entity Properties
-
 
         #endregion
 
@@ -71,11 +83,22 @@ namespace LibWheelOfDeath
 
         public override void Create()
         {
-
-            base.Create(); // Create the ID for the CAccount table
-
-            // add the username...
             CommandText = $@"
+                insert into tblAccount
+                (
+                    [FirstName], 
+                    [LastName], 
+                    [Password], 
+                    [IsActiveFlag]
+                )
+                values
+                (
+                    @pFirstName, 
+                    @pLastName, 
+                    @pPassword, 
+                    @pIsActiveFlag
+                );
+                go
                 insert into [tblAdmin]
                 (
                     [Id], 
@@ -89,11 +112,14 @@ namespace LibWheelOfDeath
                     @pUsername     
                 );
             ";
+            Parameters.AddWithValue("@pFirstName", FirstName);
+            Parameters.AddWithValue("@pLastName", LastName);
             Parameters.AddWithValue("@pUsername", Username);
-            Parameters.AddWithValue("@pFkAdminTypeId", FkAdminTypeId); 
-            Parameters.AddWithValue("@pId", Id);
+            Parameters.AddWithValue("@pPassword", Password);
+            Parameters.AddWithValue("@pIsActiveFlag", IsActiveFlag);
+            Parameters.AddWithValue("@pFkAdminTypeId", FkAdminTypeId);
 
-            Create(false); // Create the ID for THIS table, but based on the ID of the parent entity (CAccount)
+            Create();
         }
 
         public override int Update()
@@ -101,15 +127,33 @@ namespace LibWheelOfDeath
 
             CommandText = $@" 
             update 
-                [tblPlayer]
+                [tblAccount]
+
+            set
+                [FirstName] = @pFirstName,
+				[LastName] = @pLastName,
+				[Password] = @pPassword,
+				[IsActiveFlag] = @pIsActiveFlag,
+                
+            where
+                Id = @pId
+
+            update
+                [tblAdmin]
             set
                 [Username] = @pUsername,
+                [FkAdminTypeId] = @pFkAdminTypeId
             where
                 Id = @pId
             ";
 
-            // Parameters.AddWithValue("@pId", Id);
+            Parameters.AddWithValue("@pId", Id);
             Parameters.AddWithValue("@pUsername", Username);
+            Parameters.AddWithValue("@pFirstName", FirstName);
+            Parameters.AddWithValue("@pLastName", LastName);
+            Parameters.AddWithValue("@pPassword", Password);
+            Parameters.AddWithValue("@pIsActiveFlag", IsActiveFlag);
+            Parameters.AddWithValue("@pFkAdminTypeId", FkAdminTypeId);
 
             return base.Update();
         }
@@ -118,7 +162,7 @@ namespace LibWheelOfDeath
         public override List<IEntity> Search()
         {
 
-            string fromClause = "[tblAdmin] A ";
+            string fromClause = "[tblAdmin] A inner join [tblAccount] AC on A.Id = AC.Id";
             string whereClause = "(1=1) ";
 
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -141,10 +185,35 @@ namespace LibWheelOfDeath
                 parameters.Add(new SqlParameter("@pFkAdminTypeId", $"{this.FkAdminTypeId}"));
             }
 
+            if (!string.IsNullOrWhiteSpace(Password))
+            {
+                whereClause += $"and AC.Password = @pPassword ";
+                parameters.Add(new SqlParameter("@pPassword", $"{this.Password}"));
+            }
+
+            if (!string.IsNullOrWhiteSpace(FirstName))
+            {
+                whereClause += $"and AC.FirstName = @pFirstName ";
+                parameters.Add(new SqlParameter("@pFirstName", $"{this.LastName}"));
+            }
+
+            if (!string.IsNullOrWhiteSpace(LastName))
+            {
+                whereClause += $"and AC.LastName = @pLastName ";
+                parameters.Add(new SqlParameter("@pLastName", $"{this.LastName}"));
+            }
+
+            if (IsActiveFlag != null)
+            {
+                whereClause += $"and AC.IsActiveFlag = @pIsActiveFlag ";
+                parameters.Add(new SqlParameter("@pIsActiveFlag", $"{this.IsActiveFlag}"));
+            }
+
+
 
             CommandText = @$"
                 select 
-                    A.* 
+                    A.*, AC.*
                 from
                     {fromClause}
                 where
@@ -158,12 +227,14 @@ namespace LibWheelOfDeath
 
         #endregion
 
-        #region Other Methods
 
+
+
+        #region Helpers
 
         public List<CAdmin> GetAllAdmins()
         {
-            CommandText = $@" select  A.*  from [tblAdmin] A";
+            CommandText = $@" select  A.*, AC.*  from [tblAdmin] A inner join[tblAccount] AC on AC.Id = A.Id";
             List<IEntity> searchResults = Search();
             List<CAdmin> admins = new List<CAdmin>();
             foreach (IEntity entity in searchResults)
@@ -172,24 +243,6 @@ namespace LibWheelOfDeath
                 admins.Add(admin);
             }
             return admins;
-        }
-
-        public override void Reset()
-        {
-            Id = 0L;
-            Username = string.Empty;
-        }
-
-        public override LibEntity.IEntity Populate(SqlDataReader reader, LibEntity.IEntity? entity = null) //IEntity Populate(SqlDataReader reader, IEntity? entity = null)
-        {
-
-            CAdmin row = (CAdmin?)entity ?? new CAdmin();
-
-            row.Id = (long)reader["Id"];
-            row.FkAdminTypeId = (long)reader["FkAdminTypeId"];
-            row.Username = (string)reader["Username"];
-
-            return row;
         }
 
         /// <summary>
@@ -206,28 +259,10 @@ namespace LibWheelOfDeath
             return AccountMatches(player, true);
         }
 
-        /// <summary>
-        /// Attempt to match this entities username and password properties 
-        /// to a matching account in the database.
-        /// </summary>
-        /// <exception cref="CWheelOfDeathException"></exception>
-        public bool Authenticate()
-        {
-            CAdmin player = new CAdmin() { Username = this.Username, Password = this.Password };
-            if (AccountMatches(player, true))
-            {
-                CAdmin ad = (CAdmin)this.Search()[0];
-                Id = ad.Id;
-                FkAdminTypeId = ad.FkAdminTypeId;
-                return true;
-            }
-            return false;
-        }
-
-        public bool AccountMatches(CAdmin player, bool assertUnique)
+        public bool AccountMatches(CAdmin admin, bool assertUnique = true)
         {
             // search for the player
-            List<IEntity> matches = player.Search();
+            List<IEntity> matches = admin.Search();
 
             switch (matches.Count)
             {
@@ -239,7 +274,7 @@ namespace LibWheelOfDeath
 
                 default: // impossible situation, but nonetheless...
 
-                    // ToDo: LOG REPORT
+                    // ToDo: LOG ERROR
 
                     if (assertUnique)
                     {
@@ -249,6 +284,60 @@ namespace LibWheelOfDeath
             }
         }
 
+        /// <summary>
+        /// Attempt to match this entities username and password properties 
+        /// to a matching account in the database.
+        /// </summary>
+        /// <exception cref="CWheelOfDeathException"></exception>
+        public bool Authenticate(bool updateInstanceOnSuccess = true)
+        {
+            CAdmin admin = new CAdmin() { Username = this.Username, Password = this.Password };
+            if (AccountMatches(admin, true))
+            {
+                if (updateInstanceOnSuccess)
+                {
+                    Read(admin.Id);     // read the matching admin details from the database, since this instance 
+                                        // will not have other account details set.
+                }
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+
+
+
+        #region Other Methods
+
+        public override LibEntity.IEntity Populate(SqlDataReader reader, LibEntity.IEntity? entity = null) //IEntity Populate(SqlDataReader reader, IEntity? entity = null)
+        {
+
+            CAdmin admin = (CAdmin?)entity ?? new CAdmin();
+
+            admin.Id = (long)reader["Id"];
+            admin.FkAdminTypeId = (long)reader["FkAdminTypeId"];
+            admin.Username = (string)reader["Username"];
+            admin.FirstName = (string)reader["FirstName"];
+            admin.LastName = (string)reader["LastName"];
+            admin.Password = (string)reader["Password"];
+            admin.IsActiveFlag = (bool)reader["IsActiveFlag"];
+
+            return admin;
+        }
+
+        public override void Reset()
+        {
+            Id = 0L;
+            Username = string.Empty;
+            FirstName = string.Empty;
+            LastName = string.Empty;
+            Password = string.Empty;
+            IsActiveFlag = true;
+            FkAdminTypeId = 0L; 
+        }
+
 
         public override void Validate()
         {
@@ -256,7 +345,7 @@ namespace LibWheelOfDeath
             CValidator<CAdmin> validator = new(this);
 
             // validator.NoDefaults();
-            //validator.Password;
+
 
             if (UsernameExists() && !OverrideValidate)
             {
@@ -264,12 +353,24 @@ namespace LibWheelOfDeath
                     LibEntity.NetCore.Exceptions.EnumValidationFailure.FailsUnique, 
                     $"The {nameof(Username)} \"{Username}\" is already taken\n");
             }
+
+            if (Password.Length <= 12) validator.ManualAddFailure(EnumValidationFailure.OutOfRange, $"{nameof(Password)} must be more than 12 characters long");
+
+            if (!Password.Any(char.IsUpper)) validator.ManualAddFailure(EnumValidationFailure.OutOfRange, $"{nameof(Password)} must contain at least one uppercase letter");
+
+            if (!Password.Any(char.IsLower)) validator.ManualAddFailure(EnumValidationFailure.OutOfRange, $"{nameof(Password)} must contain at least one lowercase letter");
+
+            if (!Password.Any(char.IsDigit)) validator.ManualAddFailure(EnumValidationFailure.OutOfRange, $"{nameof(Password)} must contain at least one number");
+
+            if (!Password.Any(ch => "!@#$%^&*()_+-=[]{}|;:',.<>/?".Contains(ch))) validator.ManualAddFailure(EnumValidationFailure.OutOfRange, $"{nameof(Password)} must contain at least one special character");
+
+
             validator.Validate();
         }
 
         public override string ToString()
         {
-            return $"{this.Id}: {this.Username}";
+            return $"{this.Id}: {this.FirstName} {this.LastName} -- \"{this.Username}\" ({this.Password}). Account {(IsActiveFlag ? "active" : "inactive")}";
         }
 
         #endregion

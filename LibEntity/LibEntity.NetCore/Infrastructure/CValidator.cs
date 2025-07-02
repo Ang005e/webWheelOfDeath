@@ -14,6 +14,15 @@ namespace LibEntity.NetCore.Infrastructure
         }
     }
 
+    /// <summary>
+    /// ToDo
+    /// CHANGES INBOUND
+    /// Currently doesn't work; sabotages CRUDS class usage due to bad setup. 
+    /// Instead, I'll put nullable backing fields on each CRUDS class and getter/setter properties which return viable values.
+    /// This class will validate the backing fields, and the getters/setters will act as safety nets in case of null values.
+    /// The null values will serve as a warning flag that a field is default (unset).
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
     public class CValidator<TEntity> 
         where TEntity : CEntity
     {

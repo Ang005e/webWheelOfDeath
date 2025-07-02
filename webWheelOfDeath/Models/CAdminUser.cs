@@ -36,13 +36,14 @@ namespace webWheelOfDeath.Models
 
         public void Edit(long Id)
         {
-            CAdmin newAdmin = new(Id);
+            CAdmin newAdmin = new();
             newAdmin.FirstName = FirstName;
             newAdmin.LastName = LastName;
             newAdmin.Username = Username;
             newAdmin.Password = Password;
             newAdmin.IsActiveFlag = isActive;
             newAdmin.FkAdminTypeId = AdminTypeId;
+            newAdmin.Id = Id;
 
             newAdmin.OverrideValidate = true; // we don't want to check for unique usernames when updating an existing admin
 
