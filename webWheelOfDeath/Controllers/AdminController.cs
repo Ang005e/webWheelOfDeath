@@ -26,6 +26,7 @@ namespace webWheelOfDeath.Controllers
             // Communicate to the view whether the user is logged in or not -- so it knows which content to show.
             ViewBag.IsLoggedIn = HttpContext.Session.GetString("admin-id") != null;
 
+
             return View("Index");
         }
 
