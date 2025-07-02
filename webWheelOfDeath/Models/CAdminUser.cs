@@ -102,7 +102,7 @@ namespace webWheelOfDeath.Models
                 Password = this.Password
             };
 
-            if (admin.Authenticate(false)) // Don't update instance
+            if (admin.Authenticate(true)) 
             {
                 // Load the authenticated admin's data
                 this.Id = admin.Id; // SYNC THE ID

@@ -28,7 +28,7 @@ namespace LibWheelOfDeath
     {
         #region Constructors
 
-        public CAdmin() : base("tblAdmin") { }
+        public CAdmin() : base("vwAdminWithAccount") { }
 
         public CAdmin(long id) : this()
         {
@@ -52,13 +52,13 @@ namespace LibWheelOfDeath
 
         #region Table Column Properties
 
-        public string Username { get; set; } = string.Empty;
-        public long FkAdminTypeId { get; set; } = 0L;
-        public bool OverrideValidate { get; set; } = false; //because usernames will be picked up as
+        public string Username { get; set; }
+        public long FkAdminTypeId { get; set; }
+        public bool OverrideValidate { get; set; } //because usernames will be picked up as
                                                             //non-unique when Update() gets called if we do this.
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Password { get; set; }
 
 
         private bool? _isActiveFlag;
@@ -203,7 +203,7 @@ namespace LibWheelOfDeath
                 parameters.Add(new SqlParameter("@pLastName", $"{this.LastName}"));
             }
 
-            if (IsActiveFlag != null)
+            if (_isActiveFlag != null)
             {
                 whereClause += $"and AC.IsActiveFlag = @pIsActiveFlag ";
                 parameters.Add(new SqlParameter("@pIsActiveFlag", $"{this.IsActiveFlag}"));
@@ -234,7 +234,7 @@ namespace LibWheelOfDeath
 
         public List<CAdmin> GetAllAdmins()
         {
-            CommandText = $@" select  A.*, AC.*  from [tblAdmin] A inner join[tblAccount] AC on AC.Id = A.Id";
+            CommandText = $@" select  A.*, AC.*  from [tblAdmin] A inner join [tblAccount] AC on AC.Id = A.Id";
             List<IEntity> searchResults = Search();
             List<CAdmin> admins = new List<CAdmin>();
             foreach (IEntity entity in searchResults)
@@ -280,12 +280,12 @@ namespace LibWheelOfDeath
 
                 case 1: // matching credentials
                         // Copy the found Id back to the admin object
-                    var foundAdmin = (CAdmin)matches[0];
-                    admin.Id = foundAdmin.Id;
-                    admin.FirstName = foundAdmin.FirstName;
-                    admin.LastName = foundAdmin.LastName;
-                    admin.IsActiveFlag = foundAdmin.IsActiveFlag;
-                    admin.FkAdminTypeId = foundAdmin.FkAdminTypeId;
+                    //var foundAdmin = (CAdmin)matches[0];
+                    //admin.Id = foundAdmin.Id;
+                    //admin.FirstName = foundAdmin.FirstName;
+                    //admin.LastName = foundAdmin.LastName;
+                    //admin.IsActiveFlag = foundAdmin.IsActiveFlag;
+                    //admin.FkAdminTypeId = foundAdmin.FkAdminTypeId;
                     return true;
 
                 default: // multiple matches

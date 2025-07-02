@@ -84,6 +84,8 @@ namespace webWheelOfDeath.Controllers
 
                 if (!loginSuccess)
                 {
+                    // get the player, to set their ID
+                    player.BuildEntity();
 
                     // Set the "player-user-id" session variable to the player id (DB field)
                     HttpContext.Session.SetString("player-user-id", player.Id.ToString());

@@ -3,6 +3,21 @@ go
 
 
 
+drop view if exists vwPlayerWithAccount;
+go
+create view vwPlayerWithAccount as
+select P.Username, AC.* from [tblPlayer] P inner join [tblAccount] AC on AC.[Id] = P.[Id]
+go
+
+
+drop view if exists vwAdminWithAccount;
+go
+create view vwAdminWithAccount as
+select A.[FkAdminTypeId], A.Username, AC.* from [tblAdmin] A inner join [tblAccount] AC on A.[Id] = AC.[Id]
+go
+
+
+
 drop view if exists vwHallOfFameTop;
 go
 

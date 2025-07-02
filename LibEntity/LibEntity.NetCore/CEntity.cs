@@ -476,7 +476,6 @@ public abstract class CEntity : IEntity
                 // Hang up the call...
                 conn.Close();
             }
-
         }
         finally
         {

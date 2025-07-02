@@ -42,6 +42,9 @@ begin
 	where
 		R.[Date] >= @pStartDate and
 		R.[Date] <= @pEndDate
+	group by
+		G.[Game], G.[Id],
+		D.[Difficulty]
 end
 go
 

@@ -16,6 +16,7 @@ using webWheelOfDeath.Models.webWheelOfDeath.Models;
 
 namespace webWheelOfDeath.Models
 {
+    // relies on the principle that we store the player's ID server-side after authentication, otherwise we can't subsequently find the player.
     public class CGameUser : CEntityModel<CPlayer>, IAccountData
     {
 
@@ -96,13 +97,13 @@ namespace webWheelOfDeath.Models
                 Password = this.Password
             };
 
-            if (player.Authenticate(false)) // Don't update, its  a temp instance
+            if (player.Authenticate(false)) // Update so we can get the ID 
             {
-                this.Id = player.Id;
+                this.Id = player.Id; // SYNC THE ID
                 this.Refresh(); // Refresh for other account details than just credentials
-                return false;
+                return true;
             }
-            else return true;
+            else return false;
         }
 
         public bool UsernameExists()

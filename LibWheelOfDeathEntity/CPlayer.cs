@@ -13,7 +13,7 @@ namespace LibWheelOfDeath
     {
         #region Constructors
 
-        public CPlayer() : base("tblPlayer") { }
+        public CPlayer() : base("vwPlayerWithAccount") { }
 
         public CPlayer(long id) : this()
         {
@@ -34,12 +34,12 @@ namespace LibWheelOfDeath
 
         #region Table Column Properties
 
-        public string Username { get; set; } = string.Empty;
+        public string Username { get; set; }
         public bool OverrideValidate { get; set; } = false; //because usernames will be picked up as
                                                             //non-unique when Update() gets called if we do this.
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Password { get; set; }
 
 
         internal bool? _isActiveFlag { get; private set; } // can be set null from inside the class, not from outside
@@ -138,6 +138,8 @@ namespace LibWheelOfDeath
         }
 
 
+
+
         public override List<IEntity> Search()
         {
             string fromClause = "[tblPlayer] P inner join [tblAccount] AC on P.Id = AC.Id";
@@ -175,26 +177,11 @@ namespace LibWheelOfDeath
                 parameters.Add(new SqlParameter("@pLastName", $"{this.LastName}"));
             }
 
-            if (IsActiveFlag != null)
+            if (_isActiveFlag != null)
             {
                 whereClause += $"and AC.IsActiveFlag = @pIsActiveFlag ";
                 parameters.Add(new SqlParameter("@pIsActiveFlag", $"{this.IsActiveFlag}"));
             }
-
-
-
-            CommandText = @$"
-                select 
-                    P.*, AC.*
-                from
-                    {fromClause}
-                where
-                    {whereClause}
-            ";
-
-
-            return base.Search(parameters);
-        }
 
 
         #endregion
@@ -240,11 +227,11 @@ namespace LibWheelOfDeath
 
                 case 1: // matching credentials
                         // Copy the found Id back to the player object
-                    var foundPlayer = (CPlayer)matches[0];
-                    player.Id = foundPlayer.Id;
-                    player.FirstName = foundPlayer.FirstName;
-                    player.LastName = foundPlayer.LastName;
-                    player.IsActiveFlag = foundPlayer.IsActiveFlag;
+                    //var foundPlayer = (CPlayer)matches[0];
+                    //player.Id = foundPlayer.Id;
+                    //player.FirstName = foundPlayer.FirstName;
+                    //player.LastName = foundPlayer.LastName;
+                    //player.IsActiveFlag = foundPlayer.IsActiveFlag;
                     return true;
 
                 default: // multiple matches
