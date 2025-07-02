@@ -82,7 +82,7 @@ namespace webWheelOfDeath.Controllers
                 // Attempt authentication using the Model.
                 bool loginSuccess = player.Authenticate();
 
-                if (!loginSuccess)
+                if (loginSuccess)
                 {
                     // get the player, to set their ID
                     player.BuildEntity();

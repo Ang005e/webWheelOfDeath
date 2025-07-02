@@ -64,7 +64,7 @@ namespace webWheelOfDeath.Controllers
             // Attempt authentication.
             bool loginSuccess = admin.Authenticate();
 
-            if (!loginSuccess)
+            if (loginSuccess)
             {
                 // Set the "player-user-id" session variable to the player id (DB field)
                 HttpContext.Session.SetString("admin-user-id", admin.Id.ToString());

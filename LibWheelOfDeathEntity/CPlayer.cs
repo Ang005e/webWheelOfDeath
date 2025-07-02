@@ -68,8 +68,9 @@ namespace LibWheelOfDeath
         public new void Create()
         {
             CommandText = $@"
-                insert into tblAccount
+                insert into vwPlayerWithAccount
                 (
+                    [Username],
                     [FirstName], 
                     [LastName], 
                     [Password], 
@@ -81,17 +82,7 @@ namespace LibWheelOfDeath
                     @pLastName, 
                     @pPassword, 
                     @pIsActiveFlag
-                );
-                go
-                insert into [tblPlayer]
-                (
-                    [Id], 
-                    [Username]
-                )
-                values
-                (   
-                    @pId, 
-                    @pUsername     
+                    @pUsername    
                 );
             ";
             Parameters.AddWithValue("@pFirstName", FirstName);
@@ -138,50 +129,63 @@ namespace LibWheelOfDeath
         }
 
 
-
-
         public override List<IEntity> Search()
         {
-            string fromClause = "[tblPlayer] P inner join [tblAccount] AC on P.Id = AC.Id";
+            string fromClause = "vwPlayerWithAccount"; // "[tblPlayer] P inner join [tblAccount] AC on P.Id = AC.Id";
             string whereClause = "(1=1) ";
 
             List<SqlParameter> parameters = new List<SqlParameter>();
 
             if (Id != 0L)
             {
-                whereClause += @$"and P.Id = @pId ";
+                whereClause += @$"and Id = @pId ";
                 parameters.Add(new SqlParameter("@pId", this.Id));
             }
 
             if (!string.IsNullOrWhiteSpace(Username))
             {
-                whereClause += $"and P.Username = @pUsername ";
+                whereClause += $"and Username = @pUsername ";
                 parameters.Add(new SqlParameter("@pUsername", $"{this.Username}"));
             }
 
             if (!string.IsNullOrWhiteSpace(Password))
             {
-                whereClause += $"and AC.Password = @pPassword ";
+                whereClause += $"and Password = @pPassword ";
                 parameters.Add(new SqlParameter("@pPassword", $"{this.Password}"));
             }
 
             if (!string.IsNullOrWhiteSpace(FirstName))
             {
-                whereClause += $"and AC.FirstName = @pFirstName ";
+                whereClause += $"and FirstName = @pFirstName ";
                 parameters.Add(new SqlParameter("@pFirstName", $"{this.LastName}"));
             }
 
             if (!string.IsNullOrWhiteSpace(LastName))
             {
-                whereClause += $"and AC.LastName = @pLastName ";
+                whereClause += $"and LastName = @pLastName ";
                 parameters.Add(new SqlParameter("@pLastName", $"{this.LastName}"));
             }
 
             if (_isActiveFlag != null)
             {
-                whereClause += $"and AC.IsActiveFlag = @pIsActiveFlag ";
+                whereClause += $"and IsActiveFlag = @pIsActiveFlag ";
                 parameters.Add(new SqlParameter("@pIsActiveFlag", $"{this.IsActiveFlag}"));
             }
+
+
+
+            CommandText = @$"
+                select 
+                    *
+                from
+                    {fromClause}
+                where
+                    {whereClause}
+            ";
+
+
+            return base.Search(parameters);
+        }
 
 
         #endregion
