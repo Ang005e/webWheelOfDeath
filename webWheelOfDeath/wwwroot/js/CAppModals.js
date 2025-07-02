@@ -22,6 +22,23 @@ export class CMessageModal extends CModal {
         super.show(timeout);
     }
 
+    // new feedback display (mainly for server-communication/ajax stuff).
+    displayFeedback(feedback) {
+        const cssClass = this.#getFeedbackClass(feedback.Type);
+        this.mainPanel.className = `main-panel ${cssClass}`;
+        this.display(feedback.Message, false, feedback.Duration || 5000);
+    }
+
+    #getFeedbackClass(type) {
+        const classMap = {
+            'Success': 'modal-success',
+            'Error': 'modal-error',
+            'Warning': 'modal-warning',
+            'Info': 'modal-info'
+        };
+        return classMap[type] || 'modal-info';
+    }
+
     timerCompleted() {
         this.#messageElem.innerText = "";
         super.timerCompleted();

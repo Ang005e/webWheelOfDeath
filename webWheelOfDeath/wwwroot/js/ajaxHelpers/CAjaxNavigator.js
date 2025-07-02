@@ -2,7 +2,7 @@
 //import { CMessageModal } from './CAppModals.js';
 
 
-// Centralized AJAX navigation handler for all partial views
+// Centralised AJAX navigation handler for all partial views.
 // Please note this class was written with assistance from the Claude.ai tool. I did not wirte this code from scratch.
 // However, I have made significant modifications to the original code to suit my needs. And fixed all the bugs...
 export class AjaxNavigator {
@@ -101,7 +101,7 @@ export class AjaxNavigator {
     }
 
     handleSave($button) {
-        const modal = new window.CMessageModal('#modal-message-id'); // pure desparation a tthis point
+        const modal = new window.CMessageModal('#modal-message-id');
         const formData = $button.closest('form').serialize();
         const action = $button.data('action') || 'Save';
         const controller = $button.data('controller') || window.currentController;
@@ -115,48 +115,17 @@ export class AjaxNavigator {
             data: formData,
             success: function (response) {
                 $button.prop('disabled', true); // disable after save is complete, to stop dupes
-                modal.display("Saved!", false, 2000);
+                modal.display("Saved!", false, 3000);
             },
             error: function () {
-                modal.display("Save failed. Please try again.", false, 5000);
+                modal.display("Save failed", false, 5000);
             }
         });
     }
 
-    // Add this method to the AjaxNavigator class
     handleAjaxError(xhr, status, error, url) {
-        console.error('AJAX Error Details:', {
-            url: url,
-            status: xhr.status,
-            statusText: xhr.statusText,
-            responseText: xhr.responseText,
-            error: error
-        });
-
-        let message = 'Request failed: ';
-
-        if (xhr.status === 404) {
-            message += `The action or controller was not found.\nURL: ${url}\n`;
-            message += 'Check that the action name and controller match exactly.';
-        } else if (xhr.status === 500) {
-            // Try to extract error message from response
-            try {
-                if (xhr.responseText.includes('Message=')) {
-                    const match = xhr.responseText.match(/Message=([^\\r\\n]+)/);
-                    if (match) message += match[1];
-                } else {
-                    message += 'Server error - check the console for details';
-                }
-            } catch (e) {
-                message += xhr.statusText;
-            }
-        } else if (xhr.status === 400) {
-            message += 'Bad request - check parameter names match between view and controller';
-        } else {
-            message += xhr.statusText || error;
-        }
-
-        new window.CMessageModal('#modal-message-id').display(message, false, 7000);
+        // Use the central feedback manager
+        FeedbackManager.error(`Request failed: ${error}`, 7000);
     }
 
 
@@ -185,7 +154,7 @@ export class AjaxNavigator {
     }
 
     buildUrl(nav) {
-        // If explicit URL provided, use it
+        // If an explicit URL provided, use it
         if (nav.url) return nav.url;
 
         // Get controller from nav data or session
@@ -216,7 +185,7 @@ export class AjaxNavigator {
     }
 }
 
-// Initialize on document ready
+// Initialise on document ready
 $(document).ready(() => {
     window.ajaxNav = new AjaxNavigator();
 });

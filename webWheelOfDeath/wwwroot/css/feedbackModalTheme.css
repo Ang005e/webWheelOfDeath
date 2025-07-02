@@ -1,0 +1,21 @@
+﻿
+
+.modal-success {
+    background: #e6f7ea !important;
+    color: #228c46 !important;
+}
+
+.modal-error {
+    background: #faeaea !important;
+    color: #a94442 !important;
+}
+
+.modal-warning {
+    background: #fffbe6 !important;
+    color: #ad8a06 !important;
+}
+
+.modal-info {
+    background: #eaf4fa !important;
+    color: #1976d2 !important;
+}

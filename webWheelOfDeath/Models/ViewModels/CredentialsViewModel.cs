@@ -11,9 +11,5 @@ namespace webWheelOfDeath.Models.ViewModels
 
         [Required, DataType(DataType.Password), Display(Name = "Password")]
         public string Password { get; set; } = string.Empty;
-
-
-        // Server side use only (not lnked to the models):
-        public string? LoginAttemptFailed { get; set; }
     }
 }

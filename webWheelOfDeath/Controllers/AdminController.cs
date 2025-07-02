@@ -12,7 +12,7 @@ using webWheelOfDeath.Models.ViewModels;
 namespace webWheelOfDeath.Controllers
 {
 
-    public class AdminController : Controller
+    public class AdminController : BaseController
     {
 
         #region GET ACTIONS
@@ -156,13 +156,11 @@ namespace webWheelOfDeath.Controllers
             try
             {
                 gm.Create();
-                TempData["LastUserActionSuccess"] = true;
-                TempData["LastUserAction"] = "New gamemode created!";
+                AddFeedback("New gamemode created!", EnumFeedbackType.Success);
             }
             catch (CWheelOfDeathException E)
             {
-                TempData["LastUserActionSuccess"] = false;
-                TempData["LastUserAction"] = "Error creating gamemode: " + E.Message;
+                AddFeedback("Error creating gamemode: " + E.Message, EnumFeedbackType.Error);
             }
 
             return PartialView("_AdminCentre");
@@ -206,33 +204,25 @@ namespace webWheelOfDeath.Controllers
                 game.IsActiveFlag = !game.IsActiveFlag;
                 game.Update();
 
-                TempData["LastUserActionSuccess"] = true;
-                TempData["LastUserAction"] = $"Game is now {(game.IsActiveFlag ? "active" : "inactive")}";
-
+                AddFeedback($"Game is now {(game.IsActiveFlag ? "active" : "inactive")}", EnumFeedbackType.Success);
                 return PartialView("_AdminCentre");
-                //return Json(new
-                //{
-                //    success = true,
-                //    isActive = game.IsActiveFlag,
-                //    message = $"Game is now {(game.IsActiveFlag ? "active" : "inactive")}."
-                //});
+
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                AddFeedback("Error updating game: " + ex.Message, EnumFeedbackType.Error);
+                return PartialView("AdminCentre");
             }
         }
 
+        // ToDo: remove, unused
         [HttpPost]
         public IActionResult ManageGame(CWebGame g)
         {
             g.SetActive(g.IsActiveFlag);
 
-            TempData["LastUserActionSuccess"] = true;
-            TempData["LastUserAction"] = $"Game is now {(g.IsActiveFlag ? "active" : "inactive")}";
-
+            AddFeedback($"Game is now {(g.IsActiveFlag ? "active" : "inactive")}", EnumFeedbackType.Success);
             return PartialView("_AdminCentre");
-            //return Json(new { success = true, message = $"Game is now {(g.IsActiveFlag ? "active" : "invisible")}." });
         }
 
         #endregion
@@ -248,10 +238,8 @@ namespace webWheelOfDeath.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreateAdminAccount()
-        {
-            return PartialView("_CreateAdminAccount", new CAdminUser());
-        }
+        public IActionResult CreateAdminAccount() => PartialView("_CreateAdminAccount", new CAdminUser());
+
 
         [HttpPost]
         public IActionResult CreateAdminAccount(CAdminUser admin)
@@ -263,13 +251,11 @@ namespace webWheelOfDeath.Controllers
             try
             {
                 admin.Register();
-                TempData["LastUserActionSuccess"] = true;
-                TempData["LastUserAction"] = "New admin registered!";
+                AddFeedback("New admin registered!", EnumFeedbackType.Success);
             }
             catch (CWheelOfDeathException E)
             {
-                TempData["LastUserActionSuccess"] = false;
-                TempData["LastUserAction"] = "Error registering admin: " + E.Message;
+                AddFeedback("Error registering admin: " + E.Message, EnumFeedbackType.Error);
             }
             List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
             return PartialView("_ListAdminAccounts", admins);
@@ -278,7 +264,7 @@ namespace webWheelOfDeath.Controllers
         [HttpPost]
         public IActionResult ToggleAdminActive(long id)
         {
-            if (MatchesLoggedUser(id))
+            if (MatchesLoggedAdmin(id))
                 return DenyAccess(EnumAdminType.Admin, "manage accounts");
 
             CAdminUser user = new CAdminUser(id);
@@ -322,17 +308,8 @@ namespace webWheelOfDeath.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public bool MatchesLoggedUser(long id) {
+        private bool MatchesLoggedAdmin(long id) {
             return (id == long.Parse(HttpContext.Session.GetString("admin-user-id") ?? "0"));
-        }
-
-        protected void AddFeedback(string message, EnumFeedbackType type = EnumFeedbackType.Info)
-        {
-            var feedback = new FeedbackMessage(type, message);
-
-            // Store in multiple places, for compatibility with my old system
-            TempData["_Feedback"] = JsonSerializer.Serialize(feedback);
-            ViewBag._Feedback = feedback;
         }
 
         #endregion

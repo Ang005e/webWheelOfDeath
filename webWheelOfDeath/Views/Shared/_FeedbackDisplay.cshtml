@@ -1,0 +1,26 @@
+﻿@using System.Text.Json
+@using webWheelOfDeath.Models.Infrastructure
+
+@{
+    FeedbackMessage? feedback = null;
+
+    // Check ViewBag first (current request)
+    if (ViewBag._Feedback != null)
+    {
+        feedback = ViewBag._Feedback as FeedbackMessage;
+    }
+    // Then check TempData (after redirect)
+    else if (TempData["_Feedback"] != null)
+    {
+        feedback = JsonSerializer.Deserialize<FeedbackMessage>(TempData["_Feedback"].ToString());
+    }
+}
+
+@if (feedback != null)
+{
+    <div id="server-feedback"
+         data-feedback-type="@feedback.Type"
+         data-feedback-message="@feedback.Message"
+         data-feedback-duration="@(feedback.Duration ?? 5000)">
+    </div>
+}

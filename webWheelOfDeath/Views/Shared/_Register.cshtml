@@ -8,12 +8,7 @@
 
 
 
-@if ((Model.LastRegisterFailed ?? "").Length > 0)
-{
-    <script type="module">
-        new window.CMessageModal('#modal-message-id').display('@Model.LastRegisterFailed', false, 5000);
-    </script>
-}
+
 
 <div class="main-panel modal-player">
     <span class="close-popup">&#10006;</span>

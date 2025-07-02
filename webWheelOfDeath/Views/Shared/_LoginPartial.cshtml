@@ -10,12 +10,7 @@
 *@ 
 
 
-@if ((Model.LoginAttemptFailed??"").Length > 0)
-{
-    <script type="module">
-        new window.CMessageModal('#modal-message-id').display('@Model.LoginAttemptFailed', false, 5000);
-    </script>
-}
+
 
 
 <div class="main-panel modal-player">

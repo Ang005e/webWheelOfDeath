@@ -77,7 +77,7 @@ Framework: Razor MVC (.NET Core). AJAX/Fetch are used in combination with Partia
              width="667" />
     </header>
 
-    <!-- error modal for all pages -->
+    <!-- client-side error modal for all pages -->
     <div id="modal-message-id" class="modal-canvas hidden">
         <div class="main-panel modal-error">
             <span class="close-popup">&#10006;</span>
@@ -95,6 +95,11 @@ Framework: Razor MVC (.NET Core). AJAX/Fetch are used in combination with Partia
     </footer>
 
     @await RenderSectionAsync("Scripts", required: false)
+
+
+    @* Feedback System (for errors, awrnings, and info) *@
+    @await Html.PartialAsync("_FeedbackDisplay")
+    <script src="~/js/feedbackManager.js" type="module" defer="defer"></script>
 
 </body>
 

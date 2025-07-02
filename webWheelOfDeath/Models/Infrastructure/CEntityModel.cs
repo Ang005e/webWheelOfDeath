@@ -20,7 +20,7 @@ namespace webWheelOfDeath.Models.Infrastructure
         private TEntity _entity { get; set; } = new();
 
         /// <summary>
-        /// The underlying entity's Id. This ensures Id is ALWAYS properly synchronized.
+        /// The underlying entity's Id. This ensures Id is ALWAYS properly synchronised.
         /// </summary>
         public long Id
         {
@@ -39,7 +39,7 @@ namespace webWheelOfDeath.Models.Infrastructure
         protected CEntityModel()
         {
             _entity = new TEntity();
-            // Don't map from empty entity - it may access uninitialized properties
+            // Don't map from empty entity - it may access uninitialised properties
             // Derived classes should set properties directly
         }
 

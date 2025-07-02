@@ -6,13 +6,7 @@
     string lastUserAction = (string?)TempData["LastUserAction"] ?? "";
 	bool lastActionSuccess = (bool?)TempData["LastActionSuccess"] ?? false;
 }
-@* User Feedback from last user administration action. Hidden if there's no feedback to be given.*@
-<div class=".alert @(string.IsNullOrEmpty(lastUserAction) ? "hidden" : ".alert.show")
-    @(lastActionSuccess == true ? ".alert.success" : ".alert.fail")">
-    
-	<p>@lastUserAction</p>  
 
-</div>
 
 <fieldset>
     

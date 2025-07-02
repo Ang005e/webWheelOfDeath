@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using webWheelOfDeath.Models.ViewModels;
 using LibWheelOfDeath;
 using webWheelOfDeath.Models;
+using webWheelOfDeath.Models.Infrastructure;
 
 namespace webWheelOfDeath.Controllers
 {
@@ -14,7 +15,7 @@ namespace webWheelOfDeath.Controllers
 
     // temporary, doesnt survive round trips
 
-    public class GameController : Controller
+    public class GameController : BaseController
     {
         #region comments
         // private readonly ILogger<GameController> _logger;
@@ -95,23 +96,27 @@ namespace webWheelOfDeath.Controllers
 
                     ViewBag.IsLoggedIn = true;
 
-
                     // User login success - return the _GameSelection partial!
                     ViewBag.GameSelected = false;
+
+
                     try
                     {
                         var model = new CWebGamesByDifficulty();
+                        AddFeedback($"Welcome back, {player.Username}!", EnumFeedbackType.Success);
                         return PartialView("_GameSelection", model);
                     }
                     catch (Exception E)
                     {
-                        return Content($"Error loading game selection: {E.Message} - Inner: {E.InnerException?.Message}");
+                        AddFeedback("Invalid username or password", EnumFeedbackType.Warning);
+                        return PartialView("_LoginAndRegister", vm);
                     }
                 }
                 else
                 {
                     ModelState.Clear();
-                    vm.LoginAttemptFailed = "Login failed";
+                    AddFeedback("Login failed", EnumFeedbackType.Warning);
+                    vm.Password = ""; // clear PW
                     return PartialView("_LoginAndRegister", vm);
                 }
             }
@@ -135,7 +140,8 @@ namespace webWheelOfDeath.Controllers
             if (player.UsernameExists())
             {
                 ModelState.Clear();
-                vm.LastRegisterFailed = "Username is already taken";
+                AddFeedback("Username is already taken", EnumFeedbackType.Warning);
+                vm.Password = "";
                 return PartialView("_LoginAndRegister", vm);
             }
 
@@ -177,13 +183,15 @@ namespace webWheelOfDeath.Controllers
         {
             try
             {
-                gameRecord.Id = int.Parse(HttpContext.Session.GetString("game-id")??"0");
+                gameRecord.Id = int.Parse(HttpContext.Session.GetString("game-id") ?? "0");
                 gameRecord.Create();
+                AddFeedback("Game saved successfully!", EnumFeedbackType.Success);
                 return Json(new { success = true });
             }
-            catch (Exception E)
+            catch (Exception e)
             {
-                return Json(new { success = false, message = E.Message });
+                AddFeedback($"Failed to save game: {e.Message}", EnumFeedbackType.Error);
+                return Json(new { success = false });
             }
         }
 
