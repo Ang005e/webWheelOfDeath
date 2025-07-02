@@ -222,7 +222,7 @@ namespace webWheelOfDeath.Controllers
         [HttpGet]
         public IActionResult ListAdminAccounts()
         {
-            List<CAdminUser> admins = new CAdminUser().FetchAll();
+            List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
             return PartialView("_ListAdminAccounts", admins);
         }
 
@@ -250,7 +250,7 @@ namespace webWheelOfDeath.Controllers
             {
                 AddFeedback("Error registering admin: " + E.Message, EnumFeedbackType.Error);
             }
-            List<CAdminUser> admins = new CAdminUser().FetchAll();
+            List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
             return PartialView("_ListAdminAccounts", admins);
         }
 
@@ -258,7 +258,7 @@ namespace webWheelOfDeath.Controllers
         [HttpPost]
         public IActionResult ToggleAdminActive(long id)
         {
-            List<CAdminUser> admins = new CAdminUser().FetchAll();
+            List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
 
             if (MatchesLoggedAdmin(id))
             {
@@ -282,7 +282,7 @@ namespace webWheelOfDeath.Controllers
         public IActionResult DeleteAdminAccount(long id)
         {
 
-            List<CAdminUser> admins = new CAdminUser().FetchAll();
+            List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
 
             if (id == long.Parse(HttpContext.Session.GetString("admin-user-id") ?? "0"))
             {
@@ -311,21 +311,64 @@ namespace webWheelOfDeath.Controllers
         [HttpPost]
         public IActionResult CreatePlayerAccount(CGameUser player)
         {
-            if (!IsSuperAdmin()) // regular admins cannot create player accounts
-            {
-                return DenyAccess(EnumAdminType.Admin, "create player accounts");
-            }
             try
             {
                 player.Register();
-                AddFeedback("New admin registered!", EnumFeedbackType.Success);
+                AddFeedback("New player registered!", EnumFeedbackType.Success);
             }
             catch (CWheelOfDeathException E)
             {
-                AddFeedback("Error registering admin: " + E.Message, EnumFeedbackType.Error);
+                AddFeedback("Error registering player: " + E.Message, EnumFeedbackType.Error);
             }
-            List<CGameUser> players = new CGameUser().FetchAll();
-            return PartialView("_ListAdminAccounts", players);
+            List<CGameUser> players = new CGameUser().GetAllPlayers();
+            return PartialView("_ListPlayerAccounts", players);
+        }
+
+        [HttpGet]
+        public IActionResult ListPlayerAccounts()
+        {
+            // Get all players using CGameUser
+            var players = new CGameUser().GetAllPlayers();
+            return PartialView("_PlayerAccountList", players);
+        }
+
+
+        [HttpPost]
+        public IActionResult TogglePlayerActive(long id)
+        {
+            try
+            {
+                CGameUser player = new CGameUser(id);
+                player.IsActive = !player.IsActive;
+                player.Update();
+
+                AddFeedback($"Player account {(player.IsActive ? "activated" : "deactivated")}", EnumFeedbackType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddFeedback("Error updating player: " + ex.Message, EnumFeedbackType.Error);
+            }
+
+            var players = new CGameUser().GetAllPlayers();
+            return PartialView("_PlayerAccountList", players);
+        }
+
+        [HttpPost]
+        public IActionResult DeletePlayerAccount(long id)
+        {
+            try
+            {
+                CGameUser player = new CGameUser(id);
+                player.Delete();
+                AddFeedback("Player account deleted", EnumFeedbackType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddFeedback("Error deleting player: " + ex.Message, EnumFeedbackType.Error);
+            }
+
+            var players = new CGameUser().GetAllPlayers();
+            return PartialView("_PlayerAccountList", players);
         }
 
         #endregion

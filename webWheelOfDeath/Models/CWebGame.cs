@@ -3,21 +3,74 @@ using LibEntity.NetCore.Exceptions;
 using LibWheelOfDeath;
 using LibWheelOfDeath.Exceptions;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using webWheelOfDeath.Models.Infrastructure;
 
 namespace webWheelOfDeath.Models
 {
-    public class CWebGame
+    public class CWebGame : CEntityModel<CGame>
     {
-        public long Id;
-        public string Game { get; set; }
-        public string Difficulty { get; set; }
-        public long FkDifficultyId { get; set; }
-        public short Attempts { get; set; }
-        public short Misses { get; set; }
-        public long DurationMilliseconds { get; set; }
-        public short MinBalloons { get; set; }
-        public short MaxBalloons { get; set; }
-        public bool IsActiveFlag { get; set; } = true;
+        #region Backing Properties
+        private string? _game;
+        private long? _fkDifficultyId;
+        private short? _attempts;
+        private short? _misses;
+        private long? _durationMilliseconds;
+        private short? _minBalloons;
+        private short? _maxBalloons;
+        private bool? _isActiveFlag;
+        #endregion
+
+        #region Public Properties
+        public string Game
+        {
+            get => _game ?? string.Empty;
+            set => _game = value;
+        }
+
+        public CWebGameDifficulty Difficulty => new(FkDifficultyId);
+
+        public long FkDifficultyId
+        {
+            get => _fkDifficultyId ?? 0L;
+            set => _fkDifficultyId = value;
+        }
+
+        public short Attempts
+        {
+            get => _attempts ?? 0;
+            set => _attempts = value;
+        }
+
+        public short Misses
+        {
+            get => _misses ?? 0;
+            set => _misses = value;
+        }
+
+        public long DurationMilliseconds
+        {
+            get => _durationMilliseconds ?? 0L;
+            set => _durationMilliseconds = value;
+        }
+
+        public short MinBalloons
+        {
+            get => _minBalloons ?? 0;
+            set => _minBalloons = value;
+        }
+
+        public short MaxBalloons
+        {
+            get => _maxBalloons ?? 0;
+            set => _maxBalloons = value;
+        }
+
+        public bool IsActiveFlag
+        {
+            get => _isActiveFlag ?? true;
+            set => _isActiveFlag = value;
+        }
+        #endregion
 
         public CWebGame()
         {
@@ -29,77 +82,120 @@ namespace webWheelOfDeath.Models
             DurationMilliseconds = 0;
             MinBalloons = 0;
             MaxBalloons = 0;
-            Difficulty = string.Empty;
             FkDifficultyId = 0;
             IsActiveFlag = true;
         }
 
-        public CWebGame(long id)
-        {
-            CGame game = new CGame(id);
+        public CWebGame(long id) : base(id) { }
 
-            this.Id = game.Id;
-            Game = game.Game;
-            Attempts = game.Attempts;
-            Misses = game.Misses;
-            DurationMilliseconds = game.DurationMilliseconds;
-            MinBalloons = game.MinBalloons;
-            MaxBalloons = game.MaxBalloons;
-            FkDifficultyId = game.FkDifficultyId;
-            IsActiveFlag = game.IsActiveFlag;
+        //public void Create()
+        //{
+        //    var game = new CGame();
+        //    game.Game = Game;
+        //    game.Attempts = Attempts;
+        //    game.Misses = Misses;
+        //    game.FkDifficultyId = FkDifficultyId;
+        //    game.DurationMilliseconds = DurationMilliseconds;
+        //    game.MinBalloons = MinBalloons;
+        //    game.MaxBalloons = MaxBalloons;
+        //    game.IsActiveFlag = IsActiveFlag;
 
-            CDifficulty difficulty = new CDifficulty(game.FkDifficultyId);
-            Difficulty = difficulty.Difficulty;
-        }
+        //    try
+        //    {
+        //        game.Create();
+        //    }
+        //    catch (CEntityException E)
+        //    {
+        //        throw new CWheelOfDeathException("Error creating game: " + E.Message);
+        //    }
+        //}
 
-        public void Create()
-        {
-            var game = new CGame();
-            game.Game = Game;
-            game.Attempts = Attempts;
-            game.Misses = Misses;
-            game.FkDifficultyId = FkDifficultyId;
-            game.DurationMilliseconds = DurationMilliseconds;
-            game.MinBalloons = MinBalloons;
-            game.MaxBalloons = MaxBalloons;
-            game.IsActiveFlag = IsActiveFlag;
-
-            try
-            {
-                game.Create();
-            }
-            catch (CEntityException E)
-            {
-                throw new CWheelOfDeathException("Error creating game: " + E.Message);
-            }
-        }
-
-        public void Update()
-        {
-            var game = new CGame(Id);
-            game.Game = Game;
-            game.Attempts = Attempts;
-            game.Misses = Misses;
-            game.FkDifficultyId = FkDifficultyId;
-            game.DurationMilliseconds = DurationMilliseconds;
-            game.MinBalloons = MinBalloons;
-            game.MaxBalloons = MaxBalloons;
-            game.IsActiveFlag = IsActiveFlag;
-            game.Update();
-        }
+        //public void Update()
+        //{
+        //    var game = new CGame(Id);
+        //    game.Game = Game;
+        //    game.Attempts = Attempts;
+        //    game.Misses = Misses;
+        //    game.FkDifficultyId = FkDifficultyId;
+        //    game.DurationMilliseconds = DurationMilliseconds;
+        //    game.MinBalloons = MinBalloons;
+        //    game.MaxBalloons = MaxBalloons;
+        //    game.IsActiveFlag = IsActiveFlag;
+        //    game.Update();
+        //}
 
         public void SetActive(bool active)
         {
-            var game = new CGame(Id);
-            game.IsActiveFlag = active;
-            game.Update();
+            IsActiveFlag = active;
+            Update();
         }
 
         public IEnumerable<CWebGame> GetGames()
         {
             var games = new List<CWebGame>();
-            var gameList = new CGame().GetAllGames();
+            CGame game = new CGame();
+            foreach (CGame g in game.FetchAll())
+            {
+                CWebGame mapped = new();
+                mapped.MapFromEntity(g);
+                mapped.Id = g.Id;
+                games.Add(mapped);
+            }
             return games;
+        }
+
+        protected override void ValidateRequiredFields(bool isUpdate)
+        {
+            var errors = new List<string>();
+
+            if (_game == null)
+                errors.Add("Game name must be set");
+            if (_fkDifficultyId == null)
+                errors.Add("Difficulty must be set");
+            if (_minBalloons == null)
+                errors.Add("MinBalloons must be set");
+            if (_maxBalloons == null)
+                errors.Add("MaxBalloons must be set");
+            if (_durationMilliseconds == null)
+                errors.Add("DurationMilliseconds must be set");
+            if (_attempts == null)
+                errors.Add("Attempts must be set");
+            if (_misses == null)
+                errors.Add("Misses must be set");
+
+            if (isUpdate)
+            {
+                if (_isActiveFlag == null) // true is an acceptable default for game creation
+                    errors.Add("IsActiveFlag must be set when updating");
+            }
+
+            if (errors.Any())
+                throw new InvalidOperationException($"Required fields not set: {string.Join(", ", errors)}");
+        }
+
+
+        protected override void MapFromEntity(CGame entity)
+        {
+            Game = entity.Game;
+            Attempts = entity.Attempts;
+            Misses = entity.Misses;
+            DurationMilliseconds = entity.DurationMilliseconds;
+            MinBalloons = entity.MinBalloons;
+            MaxBalloons = entity.MaxBalloons;
+            FkDifficultyId = entity.FkDifficultyId;
+            IsActiveFlag = entity.IsActiveFlag;
+        }
+
+        protected override void MapToEntity(CGame entity)
+        {
+            entity.Game = Game;
+            entity.Attempts = Attempts;
+            entity.Misses = Misses;
+            entity.DurationMilliseconds = DurationMilliseconds;
+            entity.MinBalloons = MinBalloons;
+            entity.MaxBalloons = MaxBalloons;
+            entity.FkDifficultyId = FkDifficultyId;
+            entity.IsActiveFlag = IsActiveFlag;
         }
     }
 }
