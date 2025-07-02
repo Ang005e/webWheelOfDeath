@@ -11,7 +11,7 @@ namespace webWheelOfDeath.Models
         SuperAdmin = 2
     }
 
-    public class CAdminUser : CEntityModel<CAdmin>, IAdminAccountData
+    public class CAdminUser : CEntityModel<CAdmin, CAdminUser>, IAdminAccountData
     {
         #region Backing Properties
         private string? _firstName;
@@ -61,7 +61,6 @@ namespace webWheelOfDeath.Models
 
 
 
-
         #region Constructors
         // Default constructor
         public CAdminUser() : base() { }
@@ -70,6 +69,7 @@ namespace webWheelOfDeath.Models
         public CAdminUser(long id) : base(id) { }
         #endregion
 
+        
 
         #region Frontend Functions
         public void Register()
@@ -109,27 +109,6 @@ namespace webWheelOfDeath.Models
             return admin.UsernameExists();
         }
 
-        public List<CAdminUser> GetAllAdmins()
-        {
-            var adminUsers = new List<CAdminUser>();
-            var admin = new CAdmin();
-
-            foreach (CAdmin a in admin.GetAllAdmins())
-            {
-                var adminUser = new CAdminUser
-                {
-                    Id = a.Id,
-                    FirstName = a.FirstName,
-                    LastName = a.LastName,
-                    Username = a.Username,
-                    Password = a.Password,
-                    IsActive = a.IsActiveFlag,
-                    AdminTypeId = a.FkAdminTypeId
-                };
-                adminUsers.Add(adminUser);
-            }
-            return adminUsers;
-        }
         #endregion
 
 

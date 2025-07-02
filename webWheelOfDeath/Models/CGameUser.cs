@@ -17,7 +17,7 @@ using webWheelOfDeath.Models;
 namespace webWheelOfDeath.Models
 {
     // relies on the principle that we store the player's ID server-side after authentication, otherwise we can't subsequently find the player.
-    public class CGameUser : CEntityModel<CPlayer>, IAccountData
+    public class CGameUser : CEntityModel<CPlayer, CGameUser>, IAccountData
     {
         #region Backing Properties
         private string? _firstName;

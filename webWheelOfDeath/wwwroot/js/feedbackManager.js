@@ -22,61 +22,76 @@ export class CFeedbackManager {
     }
 
     display(message, type, duration = 5000) {
+        // CRITICAL: Clear any existing timeout first
+        if (this.modal) {
+            this.modal.cancel(); // Cancel any running timer
+        }
+
         // Convert enum to string if it's a number
         const typeString = this.getTypeString(type);
 
-        // Apply CSS class based on type
+        // Get modal elements
         const modalPanel = document.querySelector('#modal-message-id .main-panel');
-        if (modalPanel) {
-            // Remove existing type classes
-            modalPanel.classList.remove('modal-success', 'modal-error', 'modal-warning', 'modal-info');
+        const messageDisplay = document.querySelector('#modal-message-id .message-display');
+
+        if (modalPanel && messageDisplay) {
+            // CRITICAL: Clear old message first
+            messageDisplay.textContent = '';
+
+            // Remove ALL existing type classes
+            modalPanel.classList.remove('modal-success', 'modal-error', 'modal-warning', 'modal-info', 'modal-player', 'modal-winner');
 
             // Add new type class
             const cssClass = this.getFeedbackClass(typeString);
             modalPanel.classList.add(cssClass);
+
+            // Set new message
+            messageDisplay.textContent = message;
         }
 
-        // Display the message
-        this.modal.display(message, false, duration);
+        // Display with proper duration
+        this.modal.show(duration); // Use show() instead of display() to ensure timer works
 
         // Log for debugging
-        console.log(`[Feedback ${typeString}]: ${message}`);
+        console.log(`[Feedback ${typeString}]: ${message} (duration: ${duration}ms)`);
     }
 
     checkForServerFeedback() {
         const feedbackEl = document.getElementById('server-feedback');
         if (feedbackEl) {
-            // Use type name if available, otherwise use numeric value
             const type = feedbackEl.dataset.feedbackTypeName || feedbackEl.dataset.feedbackType;
             const message = feedbackEl.dataset.feedbackMessage;
-            const duration = parseInt(feedbackEl.dataset.feedbackDuration);
-        
+            const duration = parseInt(feedbackEl.dataset.feedbackDuration) || 5000; // Default fallback
+
             this.display(message, type, duration);
-            feedbackEl.remove(); // Clean up
+            feedbackEl.remove();
         }
     }
 
     interceptAjax() {
-        // Override jQuery AJAX
         const originalAjax = $.ajax;
         $.ajax = (options) => {
             const originalSuccess = options.success;
-            const originalError = options.error;
 
             options.success = (data, status, xhr) => {
-                // Check for feedback in header
                 const feedbackHeader = xhr.getResponseHeader('X-Feedback');
                 if (feedbackHeader) {
-                    const feedback = JSON.parse(feedbackHeader);
-                    this.displayFeedback(feedback);
+                    try {
+                        const feedback = JSON.parse(feedbackHeader);
+                        this.displayFeedback(feedback);
+                    } catch (e) {
+                        console.error('Failed to parse feedback header:', e);
+                    }
                 }
 
-                // Check for feedback in response body
                 if (typeof data === 'string') {
-                    const $html = $(data);
-                    const feedbackEl = $html.find('#server-feedback');
-                    if (feedbackEl.length) {
-                        this.displayFromElement(feedbackEl[0]);
+                    const $html = $('<div>').html(data);
+                    const feedbackEl = $html.find('#server-feedback')[0];
+                    if (feedbackEl) {
+                        const type = feedbackEl.dataset.feedbackTypeName || feedbackEl.dataset.feedbackType;
+                        const message = feedbackEl.dataset.feedbackMessage;
+                        const duration = parseInt(feedbackEl.dataset.feedbackDuration) || 5000;
+                        this.display(message, type, duration);
                     }
                 }
 
@@ -88,28 +103,10 @@ export class CFeedbackManager {
     }
 
     displayFeedback(feedback) {
-        this.display(feedback.Message, feedback.Type, feedback.Duration);
-    }
-
-    // Helpers for adding manual feedback
-    static success(message, duration) {
-        new CFeedbackManager().display(message, 'Success', duration);
-    }
-
-    static error(message, duration) {
-        new CFeedbackManager().display(message, 'Error', duration);
-    }
-
-    static warning(message, duration) {
-        new CFeedbackManager().display(message, 'Warning', duration);
-    }
-
-    static info(message, duration) {
-        new CFeedbackManager().display(message, 'Info', duration);
+        this.display(feedback.Message, feedback.Type, feedback.Duration || 5000);
     }
 
     getTypeString(type) {
-        // Handle both string and numeric enum values
         if (typeof type === 'string') return type;
 
         const typeMap = {
@@ -132,9 +129,24 @@ export class CFeedbackManager {
         };
         return classMap[type] || 'modal-info';
     }
+
+    static success(message, duration = 5000) {
+        new CFeedbackManager().display(message, 'Success', duration);
+    }
+
+    static error(message, duration = 5000) {
+        new CFeedbackManager().display(message, 'Error', duration);
+    }
+
+    static warning(message, duration = 5000) {
+        new CFeedbackManager().display(message, 'Warning', duration);
+    }
+
+    static info(message, duration = 5000) {
+        new CFeedbackManager().display(message, 'Info', duration);
+    }
 }
 
-// Initialize on document ready
 $(document).ready(() => {
     window.feedbackManager = new CFeedbackManager();
 });

@@ -169,21 +169,9 @@ namespace webWheelOfDeath.Controllers
         [HttpGet]
         public IActionResult ManageGameState()
         {
-            if (!IsSuperAdmin()) return DenyAccess(EnumAdminType.Admin, "manage games.");
+            if (!IsSuperAdmin()) return DenyAccess(EnumAdminType.Admin, "manage games");
 
-            List<CWebGame> games = new List<CWebGame>();
-
-            // this is not CGame, this is CWebGame. You have been fooled, you are delusional. 
-            // I have perfect seperation of concerns and am not lazy in the slightest.
-            CGame gameEntity = new CGame();
-
-            List<IEntity> searchResults = gameEntity.Search();
-
-            foreach (IEntity entity in searchResults)
-            {
-                CGame g = (CGame)entity;
-                games.Add(new CWebGame(g.Id));
-            }
+            IEnumerable<CWebGame> games = new CWebGame().GetGames();
 
             return PartialView("_ListGames", games);
         }
@@ -197,6 +185,7 @@ namespace webWheelOfDeath.Controllers
         [HttpPost]
         public IActionResult ToggleGameActive(long id)
         {
+            IEnumerable<CWebGame> games = new CWebGame().GetGames();
             try
             {
                 CGame game = new CGame(id);
@@ -205,13 +194,13 @@ namespace webWheelOfDeath.Controllers
                 game.Update();
 
                 AddFeedback($"Game is now {(game.IsActiveFlag ? "active" : "inactive")}", EnumFeedbackType.Success);
-                return PartialView("_AdminCentre");
+                return PartialView("_ListGames", games);
 
             }
             catch (Exception ex)
             {
                 AddFeedback("Error updating game: " + ex.Message, EnumFeedbackType.Error);
-                return PartialView("AdminCentre");
+                return PartialView("_ListGames", games);
             }
         }
 
@@ -233,10 +222,14 @@ namespace webWheelOfDeath.Controllers
         [HttpGet]
         public IActionResult ListAdminAccounts()
         {
-            List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
+            List<CAdminUser> admins = new CAdminUser().FetchAll();
             return PartialView("_ListAdminAccounts", admins);
         }
 
+        //
+        // Create an admin
+        //
+        // Get the correct partial page
         [HttpGet]
         public IActionResult CreateAdminAccount() => PartialView("_CreateAdminAccount", new CAdminUser());
 
@@ -257,15 +250,21 @@ namespace webWheelOfDeath.Controllers
             {
                 AddFeedback("Error registering admin: " + E.Message, EnumFeedbackType.Error);
             }
-            List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
+            List<CAdminUser> admins = new CAdminUser().FetchAll();
             return PartialView("_ListAdminAccounts", admins);
         }
 
+        // On post, create the admin account.
         [HttpPost]
         public IActionResult ToggleAdminActive(long id)
         {
+            List<CAdminUser> admins = new CAdminUser().FetchAll();
+
             if (MatchesLoggedAdmin(id))
-                return DenyAccess(EnumAdminType.Admin, "manage accounts");
+            {
+                AddFeedback("You cannot deactivate your own account", EnumFeedbackType.Warning);
+                return PartialView("_ListAdminAccounts", admins);
+            }
 
             CAdminUser user = new CAdminUser(id);
 
@@ -274,15 +273,16 @@ namespace webWheelOfDeath.Controllers
 
             AddFeedback($"Admin account {(user.IsActive ? "activated" : "deactivated")}", EnumFeedbackType.Success);
 
-            List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
             return PartialView("_ListAdminAccounts", admins);
         }
 
+        // There's no [HttpGet] method overload for DeleteAdminAccount, since the delete post
+        // is sent directly from the _ListAdminAccounts partial (via the delete button).
         [HttpPost]
         public IActionResult DeleteAdminAccount(long id)
         {
 
-            List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
+            List<CAdminUser> admins = new CAdminUser().FetchAll();
 
             if (id == long.Parse(HttpContext.Session.GetString("admin-user-id") ?? "0"))
             {
@@ -297,6 +297,36 @@ namespace webWheelOfDeath.Controllers
             return PartialView("_ListAdminAccounts", admins);
         }
 
+
+        #endregion
+
+
+        #region PLAYER MANAGEMENT ACTIONS
+
+
+        [HttpGet]
+        public IActionResult CreatePlayerAccount() => PartialView("_CreateAdminAccount", new CGameUser());
+
+
+        [HttpPost]
+        public IActionResult CreatePlayerAccount(CGameUser player)
+        {
+            if (!IsSuperAdmin()) // regular admins cannot create player accounts
+            {
+                return DenyAccess(EnumAdminType.Admin, "create player accounts");
+            }
+            try
+            {
+                player.Register();
+                AddFeedback("New admin registered!", EnumFeedbackType.Success);
+            }
+            catch (CWheelOfDeathException E)
+            {
+                AddFeedback("Error registering admin: " + E.Message, EnumFeedbackType.Error);
+            }
+            List<CGameUser> players = new CGameUser().FetchAll();
+            return PartialView("_ListAdminAccounts", players);
+        }
 
         #endregion
 

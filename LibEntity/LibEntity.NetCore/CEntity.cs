@@ -317,7 +317,7 @@ public abstract class CEntity : IEntity
     /// <returns></returns>
     public virtual List<IEntity> Search()
     {
-        // This method overload is for when we need the parameters to be cleared
+        // This overload is for when we need the parameters to be cleared
         try
         {
             return Search(Parameters);
@@ -506,6 +506,55 @@ public abstract class CEntity : IEntity
     public virtual void Reset()
     {
         Id = 0L;
+    }
+
+    #endregion
+
+
+    #region Other Methods
+
+    public virtual List<IEntity> FetchAll()
+    {
+        List<IEntity> list = new List<IEntity>();
+
+        try
+        {
+            using (SqlConnection conn = new SqlConnection())
+            {
+                conn.ConnectionString = this.ConnectionString;
+                conn.Open();
+
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandText = $"select * from {TableName}";
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows == false)
+                    {
+                        return list; // return an empty list
+                    }
+                    while (reader.Read())
+                    {
+                        // Create a new object of the same type...
+                        IEntity entity = Populate(reader);
+
+                        // Add the newly created and populated object 
+                        // to the result list...
+                        list.Add(entity);
+                    }
+                }
+                conn.Close();
+            }
+        }
+        catch (System.InvalidOperationException e)
+        {
+            if (string.IsNullOrEmpty(this.CommandText))
+            {
+                throw new InaccessableClassException($"CommandText is empty. Was {nameof(FetchAll)} called from a searchable object?\n System.InvalidOperationException:", e);
+            }
+        }
+        return list;
     }
 
     #endregion

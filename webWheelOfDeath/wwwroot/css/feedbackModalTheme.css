@@ -1,37 +1,46 @@
 ﻿
 
-/* Base modal panel - remove default background */
-#modal-message-id .main-panel {
-    /* Remove default background-image from theme.css */
-    background-image: none !important;
-    top: 20vh !important;
+/* Base modal panel - ensure it's visible above other content */
+#modal-message-id {
+    z-index: 10000 !important; /* Higher than other modals */
 }
 
-/* Success feedback */
-    #modal-message-id .main-panel.modal-success {
-        background-color: #4caf50;
-        color: white;
-        z-index: 99999 !important;
+    #modal-message-id .main-panel {
+        /* Remove default background-image from theme.css */
+        background-image: none !important;
+        /* Ensure solid background */
+        opacity: 1 !important;
+        /* Position above other modal content */
+        z-index: 10001 !important;
     }
 
-/* Error feedback */
-    #modal-message-id .main-panel.modal-error {
-        background-color: #f44336;
-        background-image: linear-gradient(to bottom right, rgba(255, 0, 0, 0.8), red);
-        color: white;
-        z-index: 9999999 !important;
-    }
+        /* Success feedback - green */
+        #modal-message-id .main-panel.modal-success {
+            background-color: #4caf50 !important;
+            color: white !important;
+        }
 
-/* Warning feedback */
-    #modal-message-id .main-panel.modal-warning {
-        background-color: #ff9800;
-        color: white;
-        z-index: 999999 !important;
-    }
+        /* Error feedback - red gradient */
+        #modal-message-id .main-panel.modal-error {
+            background-color: #f44336 !important;
+            background-image: linear-gradient(to bottom right, rgba(255, 0, 0, 0.8), red) !important;
+            color: white !important;
+        }
 
-/* Info feedback */
-    #modal-message-id .main-panel.modal-info {
-        background-color: #2196f3;
-        color: white;
-        z-index: 9999 !important;
+        /* Warning feedback - orange */
+        #modal-message-id .main-panel.modal-warning {
+            background-color: #ff9800 !important;
+            color: white !important;
+        }
+
+        /* Info feedback - blue */
+        #modal-message-id .main-panel.modal-info {
+            background-color: #2196f3 !important;
+            color: white !important;
+        }
+
+    /* Ensure message text is visible */
+    #modal-message-id .message-display {
+        color: white !important;
+        font-weight: bold;
     }

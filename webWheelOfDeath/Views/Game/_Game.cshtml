@@ -51,34 +51,43 @@
     }
 
     function createGame() {
-        // get duration, throws, min and max balloons from session variable set in controller.
-        // Or, perform a model bind.
-
         _game = new CWheelGame('@Context.Session.GetString("user-name")', "@Model.DurationMilliseconds", "@Model.MinBalloons", "@Model.MaxBalloons", "@Model.Attempts");
-        document.getElementById('#btnSaveResults').classList.remove('disabled') // un-disable the save button
 
-        document.addEventListener('game-save-success', () => {
-            document.getElementById('#btnSaveResults').classList.add('disabled') // disable the save button to prevent dupes
-        });
+        // Re-enable save button when game starts
+        const saveBtn = document.getElementById('btnSaveResults');
+        if (saveBtn) {
+            saveBtn.classList.remove('disabled');
+            saveBtn.disabled = false;
+        }
 
-        document.addEventListener('game-over', event => { 
+        // Listen for game-over event
+        document.addEventListener('game-over', event => {
             console.log('Game over event:', event.detail);
 
             window.lastGameResult = {
                 FkGameId: @Model.Id,
                 FkPlayerId: @(Context.Session.GetString("player-user-id") ?? "0"),
-                FkResultId: event.detail.gameStatus, 
+                FkResultId: event.detail.gameStatus,
                 ElapsedTime: event.detail.elapsed,
                 BalloonsPopped: event.detail.balloonsPopped,
                 Misses: event.detail.misses
             };
 
-
-            // Add the hidden inputs to the form
-            // const hiddenDiv = document.createElement('div');
-            // hiddenDiv.innerHTML = window.lastGameResult;
-            // form.appendChild(hiddenDiv);
-        
+            // Re-enable save button for new game result
+            const saveBtn = document.getElementById('btnSaveResults');
+            if (saveBtn) {
+                saveBtn.classList.remove('disabled');
+                saveBtn.disabled = false;
+            }
         });
     }
+
+    // Handle save success
+    $(document).on('game-save-success', function() {
+        const saveBtn = document.getElementById('btnSaveResults');
+        if (saveBtn) {
+            saveBtn.classList.add('disabled');
+            saveBtn.disabled = true;
+        }
+    });
 </script>

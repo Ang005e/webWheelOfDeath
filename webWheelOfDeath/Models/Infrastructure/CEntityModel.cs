@@ -15,7 +15,9 @@ namespace webWheelOfDeath.Models.Infrastructure
     /// <typeparamref name="TEntity"/>The type of the CRUDS library class that this model mirrors.
     /// 
     /// </summary>
-    public abstract class CEntityModel<TEntity> where TEntity : CEntity, new()
+    public abstract class CEntityModel<TEntity, TModel> 
+        where TEntity : CEntity, new()
+        where TModel : CEntityModel<TEntity, TModel>, new() // TModel was added purely so I could make FetchAll<> work
     {
         private TEntity _entity { get; set; } = new();
 
@@ -130,6 +132,23 @@ namespace webWheelOfDeath.Models.Infrastructure
 
             _entity.Read();
             MapFromEntity(_entity);
+        }
+
+        /// <summary>
+        /// Retrieve all entities in the database
+        /// </summary>
+        /// <returns>A list of all entities in the database</returns>
+        public virtual List<TModel> FetchAll()
+        {
+            var entities = new List<TModel>();
+            var searcher = new TEntity();
+
+            foreach (TEntity a in searcher.FetchAll())
+            {
+                var model = new TModel();
+                entities.Add(model);
+            }
+            return entities;
         }
 
         /// <summary>

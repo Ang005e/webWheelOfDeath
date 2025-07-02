@@ -32,9 +32,12 @@ export class AjaxNavigator {
             this.handleSave($(e.currentTarget));
         });
 
+        // Update the save game handler to dispatch the success event
         $(document).on('click', '[data-ajax-save][data-action="SaveGameRecord"]', function (e) {
             e.preventDefault();
             e.stopPropagation();
+
+            const $button = $(this);
 
             if (!window.lastGameResult) {
                 alert('No game result to save');
@@ -45,19 +48,28 @@ export class AjaxNavigator {
                 url: '/Game/SaveGameRecord',
                 type: 'POST',
                 data: window.lastGameResult,
-                contentType: 'application/x-www-form-urlencoded', // Explicitly set content type
+                contentType: 'application/x-www-form-urlencoded',
                 dataType: 'json',
                 success: function (response) {
                     if (response.success) {
-                        new window.CMessageModal('#modal-message-id').display("Game saved!", false, 3000);
-                        new CustomEvent('game-save-success') // to pick up in the doc and try to disable the save button
+                        // Dispatch event for button handling
+                        $(document).trigger('game-save-success');
+
+                        // Use feedback manager instead of direct modal call
+                        if (window.feedbackManager) {
+                            window.feedbackManager.display("Game saved!", 'Success', 3000);
+                        }
                     } else {
-                        new window.CMessageModal('#modal-message-id').display("Save failed: " + response.message, false, 5000);
+                        if (window.feedbackManager) {
+                            window.feedbackManager.display("Save failed: " + response.message, 'Error', 5000);
+                        }
                     }
                 },
                 error: function (xhr, status, error) {
                     console.error('Save error:', error);
-                    new window.CMessageModal('#modal-message-id').display("Save failed: " + error, false, 5000);
+                    if (window.feedbackManager) {
+                        window.feedbackManager.display("Save failed: " + error, 'Error', 5000);
+                    }
                 }
             });
         });

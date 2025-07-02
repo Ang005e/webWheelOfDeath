@@ -1,30 +1,28 @@
 
-/* Wheel Animations - See CWheelGame.js #startAnimation() */
-.wheelSpin1 {
-    animation: spin 3s ease-in-out infinite alternate;
-}
-
-.wheelSpin2 {
-    animation: spin 3s ease-in-out infinite alternate-reverse;
-}
-
-.wheelSpin3 {
-    animation: spin 4s linear infinite;
-}
-
-.wheelSpin4 {
-    animation: spin 4s linear infinite reverse;
-}
-
-.wheelSpin5 {
-    animation: spin 3s ease-in-out infinite;
-}
-
+/* Consistent side-to-side wheel animation */
+.wheelSpin1,
+.wheelSpin2,
+.wheelSpin3,
+.wheelSpin4,
+.wheelSpin5,
 .wheelSpin6 {
-    animation: spin 3s ease-in-out infinite reverse;
+    animation: wheelSwing 4s ease-in-out infinite;
 }
 
+/* Side-to-side swinging motion */
+@keyframes wheelSwing {
+    0% {
+        transform: rotate(-30deg);
+    }
 
+    50% {
+        transform: rotate(30deg);
+    }
+
+    100% {
+        transform: rotate(-30deg);
+    }
+}
 
 /* Balloon Animations - See CBalloon.js #startAnimation() */
 .balloonSpin1 {
