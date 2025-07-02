@@ -25,7 +25,7 @@ public abstract class CEntity : IEntity
 
     #region Table Column Properties
 
-    [DataProp]
+
     public long Id { get; set; }
 
     #endregion

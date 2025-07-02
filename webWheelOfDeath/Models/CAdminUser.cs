@@ -1,7 +1,7 @@
 ﻿using LibWheelOfDeath;
 using webWheelOfDeath.Exceptions;
 using webWheelOfDeath.Models.Infrastructure;
-using webWheelOfDeath.Models.webWheelOfDeath.Models;
+using webWheelOfDeath.Models;
 
 namespace webWheelOfDeath.Models
 {
@@ -14,7 +14,6 @@ namespace webWheelOfDeath.Models
     public class CAdminUser : CEntityModel<CAdmin>, IAdminAccountData
     {
         #region Backing Properties
-        // for the sake of allowing default values initially BUT erroring out if access to an unset prop is attempted
         private string? _firstName;
         private string? _lastName;
         private string? _username;
@@ -26,46 +25,36 @@ namespace webWheelOfDeath.Models
         #region Public Properties
         public string FirstName
         {
-            get => _firstName ?? throw new UnsetPropertyException<string>(_firstName);
+            get => _firstName ?? string.Empty;
             set => _firstName = value;
         }
 
         public string LastName
         {
-            get => _lastName ?? throw new UnsetPropertyException<string>(_lastName);
+            get => _lastName ?? string.Empty; 
             set => _lastName = value;
         }
 
         public string Username
         {
-            get => _username ?? throw new UnsetPropertyException<string>(_username);
+            get => _username ?? string.Empty; 
             set => _username = value;
         }
 
         public string Password
         {
-            get => _password ?? throw new UnsetPropertyException<string>(_password);
+            get => _password ?? string.Empty;
             set => _password = value;
         }
+
         public bool IsActive
         {
-            get
-            {
-                if (_isActive.HasValue)
-                    return _isActive.Value;
-                throw new UnsetPropertyException<bool?>(_isActive);
-            }
-            set { _isActive = value; }
+            get => _isActive ?? true;
+            set => _isActive = value;
         }
         public long AdminTypeId
         {
-            get
-            {
-                if (_adminTypeId.HasValue)
-                    return _adminTypeId.Value;
-
-                throw new UnsetPropertyException<long?>(_adminTypeId);
-            }
+            get => _adminTypeId ?? 0L;
             set => _adminTypeId = value;
         }
         #endregion
@@ -102,10 +91,12 @@ namespace webWheelOfDeath.Models
                 Password = this.Password
             };
 
-            if (admin.Authenticate(true)) 
+            long matchedId = admin.Authenticate();
+
+            if (matchedId > 0L) 
             {
-                // Load the authenticated admin's data
-                this.Id = admin.Id; // SYNC THE ID
+                // Load the authenticated admin's account data
+                this.Id = matchedId; // SYNC THE ID
                 this.Refresh(); // This will properly load all data
                 return true;
             }
@@ -164,6 +155,37 @@ namespace webWheelOfDeath.Models
             entity.Password = Password;
             entity.IsActiveFlag = IsActive;
             entity.FkAdminTypeId = AdminTypeId;
+        }
+        #endregion
+
+
+
+        #region Validation
+        /// <summary>
+        /// Call before any database operations to ensure required fields are set
+        /// </summary>
+        protected override void ValidateRequiredFields(bool isUpdate)
+        {
+            var errors = new List<string>();
+
+            if (_firstName == null)
+                errors.Add("FirstName must be set");
+            if (_lastName == null)
+                errors.Add("LastName must be set");
+            if (_username == null)   
+                errors.Add("Username must be set");
+            if (_password == null)   
+                errors.Add("Password must be set");
+            if (isUpdate)
+            {
+                if (_isActive == null)
+                    errors.Add("IsActive must be set");
+                if (_adminTypeId == null)
+                    errors.Add("AdminType must be set");
+            }
+
+            if (errors.Any())
+                throw new InvalidOperationException($"Required fields not set: {string.Join(", ", errors)}");
         }
         #endregion
 

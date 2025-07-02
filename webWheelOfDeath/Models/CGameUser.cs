@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using webWheelOfDeath.Exceptions;
 using webWheelOfDeath.Models.Infrastructure;
-using webWheelOfDeath.Models.webWheelOfDeath.Models;
+using webWheelOfDeath.Models;
 
 
 
@@ -19,10 +19,7 @@ namespace webWheelOfDeath.Models
     // relies on the principle that we store the player's ID server-side after authentication, otherwise we can't subsequently find the player.
     public class CGameUser : CEntityModel<CPlayer>, IAccountData
     {
-
         #region Backing Properties
-        // for the sake of allowing default values initially BUT erroring out if access to an unset prop is attempted
-
         private string? _firstName;
         private string? _lastName;
         private string? _username;
@@ -31,35 +28,66 @@ namespace webWheelOfDeath.Models
         #endregion
 
         #region Public Properties
+        //public string FirstName
+        //{
+        //    get => _firstName ?? string.Empty;
+        //    set => _firstName = value;
+        //}
         public string FirstName
         {
-            get => _firstName ?? throw new UnsetPropertyException<string>(_firstName);
+            get
+            {
+                DebugTrace.Enter($"CGameUser.FirstName.get");
+                try
+                {
+                    return _firstName ?? string.Empty;
+                }
+                finally
+                {
+                    DebugTrace.Exit($"CGameUser.FirstName.get");
+                }
+            }
             set => _firstName = value;
         }
+
         public string LastName
         {
-            get => _lastName ?? throw new UnsetPropertyException<string>(_lastName);
+            get => _lastName ?? string.Empty;
             set => _lastName = value;
         }
+
         public string Username
         {
-            get => _username ?? throw new UnsetPropertyException<string>(_username);
+            get => _username ?? string.Empty;
             set => _username = value;
         }
+
         public string Password
         {
-            get => _password ?? throw new UnsetPropertyException<string>(_password);
+            get => _password ?? string.Empty;
             set => _password = value;
         }
+
+        //public bool IsActive
+        //{
+        //    get => _isActive ?? true;
+        //    set => _isActive = value;
+        //}
         public bool IsActive
         {
             get
             {
-                if (_isActive.HasValue)
-                    return _isActive.Value;
-                throw new UnsetPropertyException<bool?>(_isActive);
+                DebugTrace.Enter($"CGameUser.IsActive.get");
+                try
+                {
+                    return _isActive ?? true;
+                }
+                finally
+                {
+                    DebugTrace.Exit($"CGameUser.IsActive.get");
+                }
             }
-            set { _isActive = value; }
+            set => _isActive = value;
         }
         #endregion
 
@@ -76,12 +104,10 @@ namespace webWheelOfDeath.Models
         public void Register()
         {
             var player = BuildEntity();
-            player.Validate();
+            player.Validate(); // validate password, etc.
             player.Create();
-
-            // SYNC THE ID BACK AFTER CREATION
+            // Sync the generated Id back
             this.Id = player.Id;
-            // no need to run refresh since it was just created
         }
         public bool Authenticate()
         {
@@ -97,9 +123,11 @@ namespace webWheelOfDeath.Models
                 Password = this.Password
             };
 
-            if (player.Authenticate(false)) // Update so we can get the ID 
+            long matchedId = player.Authenticate();
+
+            if (matchedId > 0L) // Update so we can get the ID 
             {
-                this.Id = player.Id; // SYNC THE ID
+                Id = matchedId; // SYNC THE ID
                 this.Refresh(); // Refresh for other account details than just credentials
                 return true;
             }
@@ -132,7 +160,36 @@ namespace webWheelOfDeath.Models
             entity.Password = Password;
             entity.IsActiveFlag = IsActive;
         }
-        #endregion 
+        #endregion
+
+
+
+        #region Validation
+        /// <summary>
+        /// Call before any database operations to ensure required fields are set
+        /// </summary>
+        protected override void ValidateRequiredFields(bool isUpdate)
+        {
+            var errors = new List<string>();
+
+            if (_firstName == null)
+                errors.Add("FirstName must be set");
+            if (_lastName == null)
+                errors.Add("LastName must be set");
+            if (_username == null)
+                errors.Add("Username must be set");
+            if (_password == null)
+                errors.Add("Password must be set");
+            if (isUpdate)
+            {
+                if (_isActive == null)
+                    errors.Add("IsActive must be set when updating");
+            }
+
+            if (errors.Any())
+                throw new InvalidOperationException($"Required fields not set: {string.Join(", ", errors)}");
+        }
+        #endregion
     }
 }
 

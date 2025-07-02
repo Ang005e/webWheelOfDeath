@@ -243,11 +243,11 @@ namespace LibWheelOfDeath
 
         public override void Validate()
         {
-            CValidator<CGameRecord> validator = new(this);
+            //CValidator<CGameRecord> validator = new(this);
 
-            // validator.NoDefaultsExcept(nameof(Misses), nameof(Id));
+            //validator.NoDefaultsExcept(nameof(Misses), nameof(Id));
 
-            validator.Validate();
+            //validator.Validate();
 
         }
 

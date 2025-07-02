@@ -1,10 +1,9 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using webWheelOfDeath.Models;
 using Microsoft.AspNetCore.Http;
 using webWheelOfDeath.Models.ViewModels;
 using LibWheelOfDeath;
-using webWheelOfDeath.Models.Depricated;
+using webWheelOfDeath.Models;
 
 namespace webWheelOfDeath.Controllers
 {
@@ -144,7 +143,7 @@ namespace webWheelOfDeath.Controllers
             player.Register();
 
             // extract the Credentials base from the player object and return the user to the login page.
-            return PartialView("_LoginPartial");
+            return PartialView("_LoginPartial", new CredentialsViewModel());
         }
 
         #endregion

@@ -65,33 +65,51 @@ namespace LibWheelOfDeath
 
         #region CRUDS
 
-        public new void Create()
+        public override void Create()
         {
+            // Insert into base table first, then get generated ID, then
+            // use to insert into child table with the same ID, then return the ID.
             CommandText = $@"
-                insert into vwPlayerWithAccount
-                (
-                    [Username],
-                    [FirstName], 
-                    [LastName], 
-                    [Password], 
-                    [IsActiveFlag]
-                )
-                values
-                (
-                    @pFirstName, 
-                    @pLastName, 
-                    @pPassword, 
-                    @pIsActiveFlag
-                    @pUsername    
-                );
-            ";
+            insert into 
+                [tblAccount] 
+            (
+                [FirstName], 
+                [LastName], 
+                [Password],
+                [IsActiveFlag]
+            )
+            values 
+            (
+                @pFirstName, 
+                @pLastName, 
+                @pPassword, 
+                @pIsActiveFlag
+            );
+        
+            declare @pNewId bigint = SCOPE_IDENTITY();
+        
+            insert into 
+                [tblPlayer] 
+            (
+                Id, 
+                Username
+            )
+            values 
+            (
+                @pNewId, 
+                @pUsername
+            );
+        
+            select @pNewId;
+        ";
+
             Parameters.AddWithValue("@pFirstName", FirstName);
             Parameters.AddWithValue("@pLastName", LastName);
             Parameters.AddWithValue("@pUsername", Username);
             Parameters.AddWithValue("@pPassword", Password);
             Parameters.AddWithValue("@pIsActiveFlag", IsActiveFlag);
 
-            Create();
+            base.Create(false);
         }
 
         public new int Update()
@@ -131,60 +149,59 @@ namespace LibWheelOfDeath
 
         public override List<IEntity> Search()
         {
-            string fromClause = "vwPlayerWithAccount"; // "[tblPlayer] P inner join [tblAccount] AC on P.Id = AC.Id";
+            string fromClause = "vwPlayerWithAccount"; 
             string whereClause = "(1=1) ";
 
-            List<SqlParameter> parameters = new List<SqlParameter>();
+            // Clear parameters first to avoid pollution
+            Parameters.Clear();
 
             if (Id != 0L)
             {
-                whereClause += @$"and Id = @pId ";
-                parameters.Add(new SqlParameter("@pId", this.Id));
+                whereClause += "and Id = @pId ";
+                Parameters.AddWithValue("@pId", this.Id);
             }
 
             if (!string.IsNullOrWhiteSpace(Username))
             {
-                whereClause += $"and Username = @pUsername ";
-                parameters.Add(new SqlParameter("@pUsername", $"{this.Username}"));
+                whereClause += "and Username = @pUsername ";
+                Parameters.AddWithValue("@pUsername", this.Username);
             }
 
             if (!string.IsNullOrWhiteSpace(Password))
             {
-                whereClause += $"and Password = @pPassword ";
-                parameters.Add(new SqlParameter("@pPassword", $"{this.Password}"));
+                whereClause += "and Password = @pPassword ";
+                Parameters.AddWithValue("@pPassword", this.Password);
             }
 
             if (!string.IsNullOrWhiteSpace(FirstName))
             {
-                whereClause += $"and FirstName = @pFirstName ";
-                parameters.Add(new SqlParameter("@pFirstName", $"{this.LastName}"));
+                whereClause += "and FirstName = @pFirstName ";
+                Parameters.AddWithValue("@pFirstName", this.FirstName);
             }
 
             if (!string.IsNullOrWhiteSpace(LastName))
             {
-                whereClause += $"and LastName = @pLastName ";
-                parameters.Add(new SqlParameter("@pLastName", $"{this.LastName}"));
+                whereClause += "and LastName = @pLastName ";
+                Parameters.AddWithValue("@pLastName", this.LastName);
             }
 
-            if (_isActiveFlag != null)
+            // Only add IsActiveFlag condition if explicitly set
+            if (_isActiveFlag.HasValue)
             {
-                whereClause += $"and IsActiveFlag = @pIsActiveFlag ";
-                parameters.Add(new SqlParameter("@pIsActiveFlag", $"{this.IsActiveFlag}"));
+                whereClause += "and IsActiveFlag = @pIsActiveFlag ";
+                Parameters.AddWithValue("@pIsActiveFlag", this.IsActiveFlag);
             }
 
-
-
-            CommandText = @$"
-                select 
-                    *
-                from
-                    {fromClause}
-                where
-                    {whereClause}
+            CommandText = $@"
+            select 
+                * 
+            from 
+                {fromClause}
+            where 
+                {whereClause}
             ";
 
-
-            return base.Search(parameters);
+            return base.Search();
         }
 
 
@@ -196,76 +213,65 @@ namespace LibWheelOfDeath
         #region Query Helpers
 
         /// <summary>
-        /// Attempt to match this entities username property
+        /// Attempt to match this entity's username property
         /// to a matching account in the database.
         /// </summary>
         /// <returns></returns>
         /// <exception cref="CWheelOfDeathException"></exception>
         public bool UsernameExists()
         {
-            // make a new CPlayer enitity -- there may be properties set in this instance
-            // that affect a search result.
             CPlayer player = new CPlayer() { Username = this.Username };
-            return AccountMatches(player, true);
+            return UniqueMatch(player) > 0;
         }
 
-
         /// <summary>
-        /// ToDo: assertUnique paramater causes inconsistant and untrackable behaviour; 
-        /// need some kind of warning that many accounts were picked up.
-        /// (it's also kind of redundant).
+        /// Return an ID (opposed to 0L) only if the argued <see cref="CPlayer"/> 
+        /// matches with a SINGLE database record.
         /// </summary>
         /// <param name="player"></param>
-        /// <param name="assertUnique"></param>
         /// <returns></returns>
         /// <exception cref="CWheelOfDeathException"></exception>
-        public bool AccountMatches(CPlayer player, bool assertUnique = true)
+        public long UniqueMatch(CPlayer player)
         {
-            // search for the player
+            // search for the admin
             List<IEntity> matches = player.Search();
 
             switch (matches.Count)
             {
-                case 0: // no matching credentials
-                    return false;
+                case 0: // no matches
+                    return 0L;
 
-                case 1: // matching credentials
-                        // Copy the found Id back to the player object
-                    //var foundPlayer = (CPlayer)matches[0];
-                    //player.Id = foundPlayer.Id;
-                    //player.FirstName = foundPlayer.FirstName;
-                    //player.LastName = foundPlayer.LastName;
-                    //player.IsActiveFlag = foundPlayer.IsActiveFlag;
-                    return true;
+                case 1:
+                    return player.Id;
 
                 default: // multiple matches
-                    if (assertUnique)
-                    {
-                        throw new CWheelOfDeathException($@"Internal data error: Player username matched multiple accounts");
-                    }
-                    return true;
+                    return 0L;
             }
         }
-
 
         /// <summary>
         /// Attempt to match this entities username and password properties 
         /// to a matching account in the database.
+        /// Returns the ID of the matched instance, or 0L if no match is found.
+        /// Multiple matches are impossible.
         /// </summary>
         /// <exception cref="CWheelOfDeathException"></exception>
-        public bool Authenticate(bool updateInstanceOnSuccess = true)
+        public long Authenticate()
         {
-            CPlayer player = new CPlayer() { Username = this.Username, Password = this.Password };
-            if (AccountMatches(player, true))
+            CPlayer searchPlayer = new CPlayer
             {
-                if (updateInstanceOnSuccess)
-                {
-                    Read(player.Id);     // read the matching admin details from the database, since this instance 
-                                         // will not have other account details set.
-                }
-                return true;
+                Username = this.Username,
+                Password = this.Password
+            };
+
+            List<IEntity> matches = searchPlayer.Search();
+
+            if (matches.Count == 1)
+            {
+                CPlayer foundAdmin = (CPlayer)matches[0];
+                return foundAdmin.Id;
             }
-            return false;
+            return 0L;
         }
 
         #endregion

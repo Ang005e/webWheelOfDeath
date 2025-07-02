@@ -32,14 +32,14 @@ insert into tblAdmin (Id, FkAdminTypeId, Username) values
 
 -- Players
 insert into tblPlayer (Id, Username) values
-    (3,  'player_peter'),
-    (4,  'gamer_lucy'),
-    (5,  'alex_ng'),
-    (6,  'maria_s'),
-    (7,  'carlos_d'),
-    (8,  'mei_li'),
-    (9,  'sam_w'),
-    (10, 'nora_b');
+    (4,  'player_peter'),
+    (5,  'gamer_lucy'),
+    (6,  'alex_ng'),
+    (7,  'maria_s'),
+    (8,  'carlos_d'),
+    (9,  'mei_li'),
+    (10,  'sam_w'),
+    (11, 'nora_b');
 
 
 insert into tblGame
@@ -62,10 +62,10 @@ declare @TimeoutResultId bigint = (select Id from tblResult where ResultType = '
 insert into tblGameRecord
     (FkGameId, FkPlayerId, FkResultId, [Date], ElapsedTime, BalloonsPopped, Misses)
 values
-    (1, 3, @WinResultId,     '2025-05-20T09:00:00', 95000,  8, 2),
-    (2, 3, @KilledResultId,    '2025-05-20T09:30:00', 180000, 12, 3),
-    (3, 3, @TimeoutResultId, '2025-05-20T10:00:00', 90000,  4, 4),
-    (1, 4, @KilledResultId,    '2025-05-20T10:30:00', 110000, 6, 4),
+    (1, 5, @WinResultId,     '2025-05-20T09:00:00', 95000,  8, 2),
+    (2, 11, @KilledResultId,    '2025-05-20T09:30:00', 180000, 12, 3),
+    (3, 6, @TimeoutResultId, '2025-05-20T10:00:00', 90000,  4, 4),
+    (1, 11, @KilledResultId,    '2025-05-20T10:30:00', 110000, 6, 4),
     (4, 5, @WinResultId,     '2025-05-20T11:00:00', 150000, 10, 2),
     (6, 6, @KilledResultId,    '2025-05-20T11:05:00', 220000, 14, 4),
     (7, 7, @TimeoutResultId, '2025-05-20T11:10:00', 600000, 17, 8),
@@ -78,9 +78,9 @@ values
     (6, 8, @TimeoutResultId, '2025-05-20T11:45:00', 240000, 10, 4),
     (5, 9, @WinResultId,     '2025-05-20T11:50:00', 380000, 23, 3),
     (2, 10,@KilledResultId,    '2025-05-20T11:55:00', 195000, 14, 5),
-    (7, 3, @WinResultId,     '2025-05-20T12:00:00', 520000, 25, 5),
+    (7, 8, @WinResultId,     '2025-05-20T12:00:00', 520000, 25, 5),
     (5, 4, @TimeoutResultId, '2025-05-20T12:05:00', 420000, 19, 5),
-    (7, 3, @KilledResultId,    '2025-05-20T12:10:00', 580000, 18, 8),
+    (7, 11, @KilledResultId,    '2025-05-20T12:10:00', 580000, 18, 8),
     (5, 4, @WinResultId,     '2025-05-20T12:15:00', 390000, 24, 2);
 go
 

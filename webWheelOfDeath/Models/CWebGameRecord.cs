@@ -1,39 +1,111 @@
 ﻿using LibWheelOfDeath;
+using webWheelOfDeath.Models.Infrastructure;
 
 namespace webWheelOfDeath.Models
 {
-    public class CWebGameRecord
+    public class CWebGameRecord : CEntityModel<CGameRecord>
     {
-        public int Id { get; set; }
-        public long FkGameId { get; set; }
-        public long FkPlayerId { get; set; }
-        public long FkResultId { get; set; }
-        public DateTime Date { get; set; }
-        public long ElapsedTime { get; set; }
-        public short BalloonsPopped { get; set; }
-        public short Misses { get; set; }
+        #region Backing Properties
+        private int? _id;
+        private long? _fkGameId;
+        private long? _fkPlayerId;
+        private long? _fkResultId;
+        private DateTime? _date;
+        private long? _elapsedTime;
+        private short? _balloonsPopped;
+        private short? _misses;
+        #endregion
 
-        public void Create()
+        #region Public Properties
+        public int Id
         {
-            // convert to abstract class + interface + generics -- generic entity, can automate this function
-            // by enforcing the addition of a Build() function.
-            CGameRecord gameRec = Build();
-            gameRec.Create();
+            get => _id ?? 0;
+            set => _id = value;
+        }
+        public long FkGameId
+        {
+            get => _fkGameId ?? 0L;
+            set => _fkGameId = value;
+        }
+        public long FkPlayerId
+        {
+            get => _fkPlayerId ?? 0L;
+            set => _fkPlayerId = value;
+        }
+        public long FkResultId
+        {
+            get => _fkResultId ?? 0L;
+            set => _fkResultId = value;
+        }
+        public DateTime Date
+        {
+            get => _date ?? DateTime.UtcNow;
+            set => _date = value;
+        }
+        public long ElapsedTime
+        {
+            get => _elapsedTime ?? 0L;
+            set => _elapsedTime = value;
+        }
+        public short BalloonsPopped
+        {
+            get => _balloonsPopped ?? 0;
+            set => _balloonsPopped = value;
+        }
+        public short Misses
+        {
+            get => _misses ?? 0;
+            set => _misses = value;
+        }
+        #endregion
+
+
+        protected override void MapFromEntity(CGameRecord entity)
+        {
+            FkGameId = entity.FkGameId;
+            FkPlayerId = entity.FkPlayerId;
+            FkResultId = entity.FkResultId;
+            Date = entity.Date ?? DateTime.UtcNow;
+            ElapsedTime = entity.ElapsedTime;
+            BalloonsPopped = entity.BalloonsPopped;
+            Misses = entity.Misses;
         }
 
-        private CGameRecord Build()
+        protected override void MapToEntity(CGameRecord entity)
         {
+            entity.FkGameId = FkGameId;
+            entity.FkPlayerId = FkPlayerId;
+            entity.FkResultId = FkResultId;
+            entity.Date = DateTime.UtcNow;
+            entity.ElapsedTime = ElapsedTime;
+            entity.BalloonsPopped = BalloonsPopped;
+            entity.Misses = Misses;
+        }
 
-            return new CGameRecord
-            {
-                FkGameId = FkGameId,
-                FkPlayerId = FkPlayerId,
-                FkResultId = FkResultId,
-                Date = DateTime.UtcNow,
-                ElapsedTime = ElapsedTime,
-                BalloonsPopped = BalloonsPopped,
-                Misses = Misses
-            };
+        /// <summary>
+        /// Call before any database operations to ensure required fields are set
+        /// </summary>
+        protected override void ValidateRequiredFields(bool isUpdate = false) // model class is not updatable
+        {
+            var errors = new List<string>();
+
+            if (_fkGameId == null)
+                errors.Add("FkGameId must be set");
+            if (_fkPlayerId == null)
+                errors.Add("FkPlayerId must be set");
+            if (_fkResultId == null)
+                errors.Add("FkResultId must be set");
+            //if (_date == null)
+            //    errors.Add("Date must be set"); // has an acceptable default population value
+            if (_elapsedTime == null)
+                errors.Add("ElapsedTime must be set");
+            if (_balloonsPopped == null)
+                errors.Add("BalloonsPopped must be set");
+            if (_misses == null)
+                errors.Add("Misses must be set");
+
+            if (errors.Any())
+                throw new InvalidOperationException($"Required fields not set: {string.Join(", ", errors)}");
         }
     }
 }

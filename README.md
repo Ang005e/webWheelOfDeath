@@ -6,6 +6,8 @@
 
 ### Application information
 
+#### Upfront: please note that at this stage, all validation logic is being moved closer to the frontend (the Model classes)
+
 #### Innovation: Removal of in-document <script>s via custom tag attributes & JavaScript (CAjaxNavigator)
 Throughout the app, you'll see \<a> links, \<button>s, and \<form>s with (custom) data attributes, including:
 - data-ajax-nav

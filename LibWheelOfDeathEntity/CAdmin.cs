@@ -52,20 +52,24 @@ namespace LibWheelOfDeath
 
         #region Table Column Properties
 
-        public string Username { get; set; }
-        public long FkAdminTypeId { get; set; }
-        public bool OverrideValidate { get; set; } //because usernames will be picked up as
-                                                            //non-unique when Update() gets called if we do this.
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Password { get; set; }
+        public string Username { get; set; } = string.Empty;
 
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
 
         private bool? _isActiveFlag;
         public bool IsActiveFlag
         {
             get { return _isActiveFlag ?? true; }
             set { _isActiveFlag = value; }
+        }
+
+        private long? _fkAdminTypeId;
+        public long FkAdminTypeId
+        {
+            get { return _fkAdminTypeId ?? 0L; }
+            set { _fkAdminTypeId = value; }
         }
 
         #endregion
@@ -75,7 +79,8 @@ namespace LibWheelOfDeath
         #endregion
 
         #region Other Properties
-
+        public bool OverrideValidate { get; set; } //because usernames will be picked up as
+                                                            //non-unique when Update() gets called if we do this.
 
         #endregion
 
@@ -84,7 +89,8 @@ namespace LibWheelOfDeath
         public override void Create()
         {
             CommandText = $@"
-                insert into tblAccount
+                insert into 
+                    [tblAccount]
                 (
                     [FirstName], 
                     [LastName], 
@@ -97,8 +103,10 @@ namespace LibWheelOfDeath
                     @pLastName, 
                     @pPassword, 
                     @pIsActiveFlag
-                );
-                go
+                )
+
+                declare @pNewId bigint = SCOPE_IDENTITY();
+
                 insert into [tblAdmin]
                 (
                     [Id], 
@@ -107,10 +115,11 @@ namespace LibWheelOfDeath
                 )
                 values
                 (   
-                    @pId, 
+                    @pNewId, 
                     @pFkAdminTypeId, 
                     @pUsername     
                 );
+                select @pNewId
             ";
             Parameters.AddWithValue("@pFirstName", FirstName);
             Parameters.AddWithValue("@pLastName", LastName);
@@ -119,7 +128,7 @@ namespace LibWheelOfDeath
             Parameters.AddWithValue("@pIsActiveFlag", IsActiveFlag);
             Parameters.AddWithValue("@pFkAdminTypeId", FkAdminTypeId);
 
-            Create();
+            base.Create(false);
         }
 
         public override int Update()
@@ -128,16 +137,16 @@ namespace LibWheelOfDeath
             CommandText = $@" 
             update 
                 [tblAccount]
-
+                
             set
                 [FirstName] = @pFirstName,
 				[LastName] = @pLastName,
 				[Password] = @pPassword,
 				[IsActiveFlag] = @pIsActiveFlag,
                 
-            where
-                Id = @pId
-
+            where 
+                Id = @pId 
+            ;
             update
                 [tblAdmin]
             set
@@ -145,7 +154,7 @@ namespace LibWheelOfDeath
                 [FkAdminTypeId] = @pFkAdminTypeId
             where
                 Id = @pId
-            ";
+            ;";
 
             Parameters.AddWithValue("@pId", Id);
             Parameters.AddWithValue("@pUsername", Username);
@@ -161,67 +170,65 @@ namespace LibWheelOfDeath
 
         public override List<IEntity> Search()
         {
-
-            string fromClause = "[tblAdmin] A inner join [tblAccount] AC on A.Id = AC.Id";
+            string fromClause = "vwAdminWithAccount";
             string whereClause = "(1=1) ";
 
-            List<SqlParameter> parameters = new List<SqlParameter>();
+            // Clear parameters first to avoid pollution
+            Parameters.Clear();
 
             if (Id != 0L)
             {
-                whereClause += @$"and A.Id = @pId ";
-                parameters.Add(new SqlParameter("@pId", this.Id));
+                whereClause += "and Id = @pId ";
+                Parameters.AddWithValue("@pId", this.Id);
             }
 
             if (!string.IsNullOrWhiteSpace(Username))
             {
-                whereClause += $"and A.Username = @pUsername ";
-                parameters.Add(new SqlParameter("@pUsername", $"{this.Username}"));
-            }
-
-            if (FkAdminTypeId>0L)
-            {
-                whereClause += $"and A.FkAdminTypeId = @pFkAdminTypeId ";
-                parameters.Add(new SqlParameter("@pFkAdminTypeId", $"{this.FkAdminTypeId}"));
+                whereClause += "and Username = @pUsername ";
+                Parameters.AddWithValue("@pUsername", this.Username);
             }
 
             if (!string.IsNullOrWhiteSpace(Password))
             {
-                whereClause += $"and AC.Password = @pPassword ";
-                parameters.Add(new SqlParameter("@pPassword", $"{this.Password}"));
+                whereClause += "and Password = @pPassword ";
+                Parameters.AddWithValue("@pPassword", this.Password);
             }
 
             if (!string.IsNullOrWhiteSpace(FirstName))
             {
-                whereClause += $"and AC.FirstName = @pFirstName ";
-                parameters.Add(new SqlParameter("@pFirstName", $"{this.LastName}"));
+                whereClause += "and FirstName = @pFirstName ";
+                Parameters.AddWithValue("@pFirstName", this.FirstName);
             }
 
             if (!string.IsNullOrWhiteSpace(LastName))
             {
-                whereClause += $"and AC.LastName = @pLastName ";
-                parameters.Add(new SqlParameter("@pLastName", $"{this.LastName}"));
+                whereClause += "and LastName = @pLastName ";
+                Parameters.AddWithValue("@pLastName", this.LastName);
             }
 
-            if (_isActiveFlag != null)
+            // Only add IsActiveFlag condition if explicitly set
+            if (_isActiveFlag.HasValue)
             {
-                whereClause += $"and AC.IsActiveFlag = @pIsActiveFlag ";
-                parameters.Add(new SqlParameter("@pIsActiveFlag", $"{this.IsActiveFlag}"));
+                whereClause += "and IsActiveFlag = @pIsActiveFlag ";
+                Parameters.AddWithValue("@pIsActiveFlag", this.IsActiveFlag);
+            }
+            // Likewise with admin type id
+            if (_fkAdminTypeId.HasValue)
+            {
+                whereClause += "and FkAdminTypeId = @pFkAdminTypeId ";
+                Parameters.AddWithValue("@pFkAdminTypeId", FkAdminTypeId);
             }
 
-
-
-            CommandText = @$"
-                select 
-                    A.*, AC.*
-                from
-                    {fromClause}
-                where
-                    {whereClause}
+            CommandText = $@"
+            select 
+                * 
+            from 
+                {fromClause}
+            where 
+                {whereClause}
             ";
 
-
-            return base.Search(parameters);
+            return base.Search();
         }
 
 
@@ -246,7 +253,7 @@ namespace LibWheelOfDeath
         }
 
         /// <summary>
-        /// Attempt to match this entities username property
+        /// Attempt to match this entity's username property
         /// to a matching account in the database.
         /// </summary>
         /// <returns></returns>
@@ -255,66 +262,58 @@ namespace LibWheelOfDeath
         {
             // make a new CAdmin enitity -- there may be properties set in this instance
             // that affect a search result.
-            CAdmin player = new CAdmin() { Username = this.Username };
-            return AccountMatches(player, true);
+            CAdmin admin = new CAdmin() { Username = this.Username };
+            return UniqueMatch(admin) > 0;
         }
 
         /// <summary>
-        /// ToDo: assertUnique paramater causes inconsistant and untrackable behaviour; 
-        /// need some kind of warning that many accounts were picked up.
-        /// (it's also kind of redundant).
+        /// Return an ID (opposed to 0L) only if the argued <see cref="CAdmin"/> 
+        /// matches with a SINGLE database record.
         /// </summary>
         /// <param name="player"></param>
-        /// <param name="assertUnique"></param>
         /// <returns></returns>
         /// <exception cref="CWheelOfDeathException"></exception>
-        public bool AccountMatches(CAdmin admin, bool assertUnique = true)
+        public long UniqueMatch(CAdmin admin)
         {
             // search for the admin
             List<IEntity> matches = admin.Search();
 
             switch (matches.Count)
             {
-                case 0: // no matching credentials
-                    return false;
+                case 0: // no matches
+                    return 0L;
 
-                case 1: // matching credentials
-                        // Copy the found Id back to the admin object
-                    //var foundAdmin = (CAdmin)matches[0];
-                    //admin.Id = foundAdmin.Id;
-                    //admin.FirstName = foundAdmin.FirstName;
-                    //admin.LastName = foundAdmin.LastName;
-                    //admin.IsActiveFlag = foundAdmin.IsActiveFlag;
-                    //admin.FkAdminTypeId = foundAdmin.FkAdminTypeId;
-                    return true;
+                case 1: 
+                    return admin.Id;
 
                 default: // multiple matches
-                    if (assertUnique)
-                    {
-                        throw new CWheelOfDeathException($@"Internal data error: Admin username matched multiple accounts");
-                    }
-                    return true;
+                    return 0L;
             }
         }
 
         /// <summary>
         /// Attempt to match this entities username and password properties 
         /// to a matching account in the database.
+        /// Returns the ID of the matched instance, or 0L if no match is found.
+        /// Multiple matches are impossible.
         /// </summary>
         /// <exception cref="CWheelOfDeathException"></exception>
-        public bool Authenticate(bool updateInstanceOnSuccess = true)
+        public long Authenticate()
         {
-            CAdmin admin = new CAdmin() { Username = this.Username, Password = this.Password };
-            if (AccountMatches(admin, true))
+            CAdmin searchAdmin = new CAdmin
             {
-                if (updateInstanceOnSuccess)
-                {
-                    Read(admin.Id);     // read the matching admin details from the database, since this instance 
-                                        // will not have other account details set.
-                }
-                return true;
+                Username = this.Username,
+                Password = this.Password
+            };
+
+            List<IEntity> matches = searchAdmin.Search();
+
+            if (matches.Count == 1)
+            {
+                CAdmin foundAdmin = (CAdmin)matches[0];
+                return foundAdmin.Id;
             }
-            return false;
+            return 0L;
         }
 
         #endregion
@@ -367,7 +366,7 @@ namespace LibWheelOfDeath
                     $"The {nameof(Username)} \"{Username}\" is already taken\n");
             }
 
-            if (Password.Length <= 12) validator.ManualAddFailure(EnumValidationFailure.OutOfRange, $"{nameof(Password)} must be more than 12 characters long");
+            if (Password.Length < 12) validator.ManualAddFailure(EnumValidationFailure.OutOfRange, $"{nameof(Password)} must be more than 12 characters long");
 
             if (!Password.Any(char.IsUpper)) validator.ManualAddFailure(EnumValidationFailure.OutOfRange, $"{nameof(Password)} must contain at least one uppercase letter");
 
