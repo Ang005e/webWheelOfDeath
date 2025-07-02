@@ -1,32 +1,39 @@
-﻿namespace webWheelOfDeath.Models.Infrastructure
+﻿namespace webWheelOfDeath.Models.Infrastructure;
+
+public enum EnumFeedbackType
 {
-    public enum EnumFeedbackType
+    None = 0,
+    Success = 1,
+    Warning = 2,
+    Error = 3,
+    Info = 4,
+}
+public class FeedbackMessage
+{
+    public EnumFeedbackType Type { get; set; }
+    public string Message { get; set; }
+    public int? Duration { get; set; }
+
+    // parameterless constructor for JSON deserialization
+    public FeedbackMessage()
     {
-        None = 0,
-        Success = 1,
-        Warning = 2,
-        Error = 3,
-        Info = 4,
+        Type = EnumFeedbackType.None;
+        Message = string.Empty;
     }
-    public class FeedbackMessage
+
+    public FeedbackMessage(EnumFeedbackType type, string message = "")
     {
-        public EnumFeedbackType Type { get; set; }
-        public string Message { get; set; }
-        public int? Duration { get; set; }
-        public FeedbackMessage(EnumFeedbackType type, string message = "")
+        Type = type;
+        if (string.IsNullOrWhiteSpace(message) && type != EnumFeedbackType.None)
         {
-            Type = type;
-            if (string.IsNullOrWhiteSpace(message) && type != EnumFeedbackType.None)
-            {
-                throw new ArgumentException($"{nameof(Message)} must be set when ${Type} is not {EnumFeedbackType.None}");
-            }
-            Message = message;
+            throw new ArgumentException($"{nameof(Message)} must be set when {Type} is not {EnumFeedbackType.None}");
         }
-        public FeedbackMessage(EnumFeedbackType type, string message, int? duration)
-        {
-            Type = type;
-            Message = message;
-            Duration = duration;
-        }
+        Message = message;
+    }
+
+    public FeedbackMessage(EnumFeedbackType type, string message, int? duration)
+        : this(type, message)
+    {
+        Duration = duration;
     }
 }

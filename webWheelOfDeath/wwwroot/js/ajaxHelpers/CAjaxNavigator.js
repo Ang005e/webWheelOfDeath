@@ -49,8 +49,8 @@ export class AjaxNavigator {
                 dataType: 'json',
                 success: function (response) {
                     if (response.success) {
-                        $(e.target).prop('disabled', true);
                         new window.CMessageModal('#modal-message-id').display("Game saved!", false, 3000);
+                        new CustomEvent('game-save-success') // to pick up in the doc and try to disable the save button
                     } else {
                         new window.CMessageModal('#modal-message-id').display("Save failed: " + response.message, false, 5000);
                     }

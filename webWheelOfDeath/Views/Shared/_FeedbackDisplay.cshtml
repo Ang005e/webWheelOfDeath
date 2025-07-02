@@ -19,7 +19,8 @@
 @if (feedback != null)
 {
     <div id="server-feedback"
-         data-feedback-type="@feedback.Type"
+         data-feedback-type="@((int)feedback.Type)"
+         data-feedback-type-name="@feedback.Type.ToString()"
          data-feedback-message="@feedback.Message"
          data-feedback-duration="@(feedback.Duration ?? 5000)">
     </div>

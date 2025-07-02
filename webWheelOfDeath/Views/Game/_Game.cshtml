@@ -29,7 +29,7 @@
                 <button 
                     data-ajax-save 
                     data-action="SaveGameRecord" 
-                    @* id="btnSaveResults"  *@
+                    id="btnSaveResults" 
                     class="ornate" 
                     type="button">Save Game Results</button>
             </fieldset>
@@ -37,20 +37,10 @@
     </div>
 </div>
 
-@* Removed, thanks to AjaxNavigator... *@
-@* Save the game record *@
-@* <script type="module" defer="defer"> *@
-@*     import { saveHandler } from "/js/ajaxHelpers/saveHandler.js" *@
-
-@*     saveHandler("btnSaveResults", '@Context.Session.GetString("controller")', "SaveGameRecord"); *@
-
-@* </script> *@
-
 
 <script type="module" defer="defer">
     'use strict';
     import { CWheelGame } from "/js/CWheelGame.js";
-    import { CMessageModal } from "/js/CAppModals.js";
 
     let _game;
 
@@ -65,8 +55,13 @@
         // Or, perform a model bind.
 
         _game = new CWheelGame('@Context.Session.GetString("user-name")', "@Model.DurationMilliseconds", "@Model.MinBalloons", "@Model.MaxBalloons", "@Model.Attempts");
+        document.getElementById('#btnSaveResults').classList.remove('disabled') // un-disable the save button
 
-        document.addEventListener('game-over', event => {
+        document.addEventListener('game-save-success', () => {
+            document.getElementById('#btnSaveResults').classList.add('disabled') // disable the save button to prevent dupes
+        });
+
+        document.addEventListener('game-over', event => { 
             console.log('Game over event:', event.detail);
 
             window.lastGameResult = {
@@ -80,9 +75,9 @@
 
 
             // Add the hidden inputs to the form
-            const hiddenDiv = document.createElement('div');
-            hiddenDiv.innerHTML = inputs;
-            form.appendChild(hiddenDiv);
+            // const hiddenDiv = document.createElement('div');
+            // hiddenDiv.innerHTML = window.lastGameResult;
+            // form.appendChild(hiddenDiv);
         
         });
     }
