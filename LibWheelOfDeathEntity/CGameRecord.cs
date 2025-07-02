@@ -217,7 +217,7 @@ namespace LibWheelOfDeath
             FkPlayerId.Id = (long)reader["Id"];
             FkPlayerId.FkGameId = (long)reader["FkGameId"];
             FkPlayerId.FkPlayerId = (long)reader["FkPlayerId"];
-            FkPlayerId.FkResultId = (short)reader["FkResultId"];
+            FkPlayerId.FkResultId = (long)reader["FkResultId"];
             FkPlayerId.Date = (DateTime)reader["Date"];
             FkPlayerId.ElapsedTime = (long)reader["ElapsedTime"];
             FkPlayerId.BalloonsPopped = (short)reader["BalloonsPopped"];

@@ -6,7 +6,6 @@ namespace webWheelOfDeath.Models
     public class CWebGameRecord : CEntityModel<CGameRecord>
     {
         #region Backing Properties
-        private int? _id;
         private long? _fkGameId;
         private long? _fkPlayerId;
         private long? _fkResultId;
@@ -17,11 +16,6 @@ namespace webWheelOfDeath.Models
         #endregion
 
         #region Public Properties
-        public int Id
-        {
-            get => _id ?? 0;
-            set => _id = value;
-        }
         public long FkGameId
         {
             get => _fkGameId ?? 0L;
@@ -60,6 +54,22 @@ namespace webWheelOfDeath.Models
         #endregion
 
 
+        public IEnumerable<CWebGameRecord> GetAll()
+        {
+            CGameRecord gr = new();
+            List<CWebGameRecord> list = new List<CWebGameRecord>();
+            foreach(CGameRecord record in gr.FetchAll())
+            {
+                CWebGameRecord webRecord = new CWebGameRecord();
+                webRecord.MapFromEntity(record);
+                webRecord.Id = record.Id;
+                list.Add(webRecord);
+            }
+            return list;
+        }
+
+
+        #region Entity Mapping
         protected override void MapFromEntity(CGameRecord entity)
         {
             FkGameId = entity.FkGameId;
@@ -81,6 +91,7 @@ namespace webWheelOfDeath.Models
             entity.BalloonsPopped = BalloonsPopped;
             entity.Misses = Misses;
         }
+        #endregion
 
         /// <summary>
         /// Call before any database operations to ensure required fields are set

@@ -35,18 +35,7 @@ namespace webWheelOfDeath.Models
         //}
         public string FirstName
         {
-            get
-            {
-                DebugTrace.Enter($"CGameUser.FirstName.get");
-                try
-                {
-                    return _firstName ?? string.Empty;
-                }
-                finally
-                {
-                    DebugTrace.Exit($"CGameUser.FirstName.get");
-                }
-            }
+            get => _firstName ?? string.Empty;
             set => _firstName = value;
         }
 
@@ -125,13 +114,17 @@ namespace webWheelOfDeath.Models
 
             long matchedId = player.Authenticate();
 
-            if (matchedId > 0L) // Update so we can get the ID 
+            // check their account is active
+            player.Read(matchedId);
+            if (player.IsActiveFlag == false) throw new AuthenticationFailureException("This account has been deactivated");
+
+            if (matchedId > 0L) // Update so we get the ID 
             {
                 Id = matchedId; // SYNC THE ID
                 this.Refresh(); // Refresh for other account details than just credentials
                 return true;
             }
-            else return false;
+            else throw new AuthenticationFailureException("Invalid username or password");
         }
 
         public bool UsernameExists()

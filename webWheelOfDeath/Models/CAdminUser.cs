@@ -96,12 +96,17 @@ namespace webWheelOfDeath.Models
 
             if (matchedId > 0L) 
             {
+
+                // check their account is active
+                admin.Read(matchedId);
+                if (admin.IsActiveFlag == false) throw new AuthenticationFailureException("This account has been deactivated");
+
                 // Load the authenticated admin's account data
                 this.Id = matchedId; // SYNC THE ID
                 this.Refresh(); // This will properly load all data
                 return true;
             }
-            return false;
+            else throw new AuthenticationFailureException("Invalid username or password");
         }
 
         public bool UsernameExists()

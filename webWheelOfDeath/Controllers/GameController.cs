@@ -5,6 +5,7 @@ using webWheelOfDeath.Models.ViewModels;
 using LibWheelOfDeath;
 using webWheelOfDeath.Models;
 using webWheelOfDeath.Models.Infrastructure;
+using webWheelOfDeath.Exceptions;
 
 namespace webWheelOfDeath.Controllers
 {
@@ -52,7 +53,7 @@ namespace webWheelOfDeath.Controllers
             // HttpContext.Session.SetString("Controller", "Game"); setting in ViewStart now
 
             // Communicate to the view whether the user is logged in or not -- so it knows which content to show
-            ViewBag.IsLoggedIn = HttpContext.Session.GetString("player-user-id") != null;
+            ViewBag.IsLoggedIn = HttpContext.Session.GetString("player-id") != null;
 
             return View("Index");
         }
@@ -69,60 +70,53 @@ namespace webWheelOfDeath.Controllers
 
         [HttpPost]
         public IActionResult Authenticate(CredentialsViewModel vm) // take in the shared ViewModel
-        {
+        {                
+            // Transfer data from shared ViewModel, to the specific account type Model
+            CGameUser player = new CGameUser
+            {
+                Username = vm.Username,
+                Password = vm.Password
+            };
+
+            bool? loginSuccess = null;
+
             try
             {
-                // Transfer data from shared ViewModel --> the specific account type Model
-                CGameUser player = new CGameUser
-                {
-                    Username = vm.Username,
-                    Password = vm.Password
-                };
-
-                // Attempt authentication using the Model.
-                bool loginSuccess = player.Authenticate();
-
-                if (loginSuccess)
-                {
-                    // get the player, to set their ID
-                    player.BuildEntity();
-
-                    // Set the "player-user-id" session variable to the player id (DB field)
-                    HttpContext.Session.SetString("player-user-id", player.Id.ToString());
-                    HttpContext.Session.SetString("player-user-name", player.Username);
-
-                    // CLEAR THE MODELSTATE ARRGGGGGGGGHHH
-                    ModelState.Clear();
-
-                    ViewBag.IsLoggedIn = true;
-
-                    // User login success - return the _GameSelection partial!
-                    ViewBag.GameSelected = false;
-
-
-                    try
-                    {
-                        var model = new CWebGamesByDifficulty();
-                        AddFeedback($"Welcome back, {player.Username}!", EnumFeedbackType.Success);
-                        return PartialView("_GameSelection", model);
-                    }
-                    catch (Exception E)
-                    {
-                        AddFeedback("Invalid username or password", EnumFeedbackType.Warning);
-                        return PartialView("_LoginAndRegister", vm);
-                    }
-                }
-                else
-                {
-                    ModelState.Clear();
-                    AddFeedback("Login failed", EnumFeedbackType.Warning);
-                    vm.Password = ""; // clear PW
-                    return PartialView("_LoginAndRegister", vm);
-                }
+                // Attempt authentication.
+                loginSuccess = player.Authenticate();
             }
-            catch (Exception E)
+            catch (AuthenticationFailureException ex)
             {
-                return StatusCode(500, $"Authentication error: {E.Message}");
+                AddFeedback($"Login failed: {ex.Reason}", EnumFeedbackType.Error);
+            }
+
+            if (loginSuccess??false)
+            {
+                // get the player, to set their ID
+                player.BuildEntity();
+
+                // Set the "player-id" session variable to the player id (DB field)
+                HttpContext.Session.SetString("player-id", player.Id.ToString());
+                HttpContext.Session.SetString("player-user-name", player.Username);
+
+                // CLEAR THE MODELSTATE ARRGGGGGGGGHHH
+                ModelState.Clear();
+
+                ViewBag.IsLoggedIn = true;
+
+                // User login success - return the _GameSelection partial!
+                ViewBag.GameSelected = false;
+
+                var model = new CWebGamesByDifficulty();
+                AddFeedback($"Welcome back, {player.Username}!", EnumFeedbackType.Success);
+                return PartialView("_GameSelection", model);
+            }
+            else
+            {
+                ModelState.Clear();
+                // never happens:
+                if (loginSuccess == null) AddFeedback("Unknown failure during authentication; please contact an administrator.", EnumFeedbackType.Error);
+                return PartialView("_LoginAndRegister", vm);
             }
         }
 
@@ -179,11 +173,12 @@ namespace webWheelOfDeath.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveGameRecord(CWebGameRecord gameRecord)
+        public IActionResult SaveGameRecord(CWebGameRecord gameRecord)  
         {
             try
             {
-                gameRecord.Id = int.Parse(HttpContext.Session.GetString("game-id") ?? "0");
+                gameRecord.FkGameId = long.Parse(HttpContext.Session.GetString("game-id") ?? "0"); // gameRecord.Id = int.Parse(HttpContext.Session.GetString("game-id") ?? "0");
+                                                                                                   // AAARRRGGGGGGGHFGGGGIFDGKKFKKFIHHJHGFYATWROF8UYGHE98762346340Q7WEGRFIPUOAYW087FUAS KILL ME.
                 gameRecord.Create();
                 AddFeedback("Game saved successfully!", EnumFeedbackType.Success);
                 return Json(new { success = true });
@@ -207,7 +202,7 @@ namespace webWheelOfDeath.Controllers
 
             CHallOfFame report = new();
             IEnumerable<CHallOfFame> reports = report.TopReport();
-            ViewBag.IsHallOfFameAsc = true; // used in the _HallOfFameReport partial to change the title, etc.
+            ViewBag.IsHallOfFameAsc = true; // used in the _HallOfFameReport partial to change stuff.
             return PartialView("_HallOfFameReport", reports);
 
         }
@@ -228,7 +223,7 @@ namespace webWheelOfDeath.Controllers
 
         public bool UserLoggedIn()
         {
-            ViewBag.IsLoggedIn = (HttpContext.Session.GetString("player-user-id") != null);
+            ViewBag.IsLoggedIn = (HttpContext.Session.GetString("player-id") != null);
             return ViewBag.IsLoggedIn;
         }
         public IActionResult Privacy()
