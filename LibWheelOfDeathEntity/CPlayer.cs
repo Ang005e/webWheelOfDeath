@@ -123,7 +123,7 @@ namespace LibWheelOfDeath
                 [FirstName] = @pFirstName,
 				[LastName] = @pLastName,
 				[Password] = @pPassword,
-				[IsActiveFlag] = @pIsActiveFlag,
+				[IsActiveFlag] = @pIsActiveFlag
                 
             where
                 Id = @pId
