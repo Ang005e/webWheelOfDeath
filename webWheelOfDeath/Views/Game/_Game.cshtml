@@ -66,7 +66,7 @@
 
             window.lastGameResult = {
                 FkGameId: @Model.Id,
-                FkPlayerId: @(Context.Session.GetString("player-user-id") ?? "0"),
+                FkPlayerId: @(Context.Session.GetString("player-id") ?? "0"),
                 FkResultId: event.detail.gameStatus,
                 ElapsedTime: event.detail.elapsed,
                 BalloonsPopped: event.detail.balloonsPopped,

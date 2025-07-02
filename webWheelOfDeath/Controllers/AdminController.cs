@@ -5,6 +5,7 @@ using LibWheelOfDeath.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Configuration;
+using webWheelOfDeath.Exceptions;
 using webWheelOfDeath.Models;
 using webWheelOfDeath.Models.Infrastructure;
 using webWheelOfDeath.Models.ViewModels;
@@ -23,7 +24,8 @@ namespace webWheelOfDeath.Controllers
             // HttpContext.Session.SetString("Controller", "Admin"); setting in ViewStart now
 
             // Communicate to the view whether the user is logged in or not -- so it knows which content to show.
-            ViewBag.IsLoggedIn = HttpContext.Session.GetString("admin-user-id") != null;
+            ViewBag.IsLoggedIn = HttpContext.Session.GetString("admin-id") != null;
+
 
             return View("Index");
         }
@@ -62,28 +64,40 @@ namespace webWheelOfDeath.Controllers
                 Password = vm.Password
             };
 
-            // Attempt authentication.
-            bool loginSuccess = admin.Authenticate();
+            bool? loginSuccess = null;
 
-            if (loginSuccess)
+            try
             {
-                // Set the "player-user-id" session variable to the player id (DB field)
-                HttpContext.Session.SetString("admin-user-id", admin.Id.ToString());
+                // Attempt authentication.
+                loginSuccess = admin.Authenticate();
+            }
+            catch (AuthenticationFailureException ex) 
+            {
+                AddFeedback($"Login failed: {ex.Reason}", EnumFeedbackType.Error);
+            }
+
+            if (loginSuccess??false)
+            {
+                // get Id
+                admin.BuildEntity();
+
+                // Set the "player-id" session variable to the player id (DB field)
+                HttpContext.Session.SetString("admin-id", admin.Id.ToString());
                 HttpContext.Session.SetString("admin-user-name", admin.Username);
 
                 // CLEAR THE MODELSTATE ARRGGGGGGGGHHH
                 ModelState.Clear();
+
+                AddFeedback($"Welcome back, {admin.Username}!");
                 
                 // Admin login success.
                 return PartialView("_AdminCentre");
             }
-            else
-            {
-                ModelState.Clear();
-                vm.Password = ""; // clear password
-                AddFeedback("Username or password were incorrect", EnumFeedbackType.Warning);
-                return PartialView("_LoginAndRegister", vm);
-            }
+
+            ModelState.Clear();
+            // never happens:
+            if (loginSuccess == null) AddFeedback("Unknown failure during authentication; please contact an administrator.", EnumFeedbackType.Error);
+            return PartialView("_LoginAndRegister", vm);
 
         }
 
@@ -115,7 +129,7 @@ namespace webWheelOfDeath.Controllers
 
         public long GetLoggedId()
         {
-            return long.Parse(HttpContext.Session.GetString("admin-user-id")??"0");
+            return long.Parse(HttpContext.Session.GetString("admin-id")??"0");
         }
 
         public bool IsSuperAdmin()
@@ -284,7 +298,7 @@ namespace webWheelOfDeath.Controllers
 
             List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
 
-            if (id == long.Parse(HttpContext.Session.GetString("admin-user-id") ?? "0"))
+            if (id == long.Parse(HttpContext.Session.GetString("admin-id") ?? "0"))
             {
                 AddFeedback("You cannot delete your own account!", EnumFeedbackType.Warning);
                 return PartialView("_ListAdminAccounts", admins);
@@ -305,7 +319,7 @@ namespace webWheelOfDeath.Controllers
 
 
         [HttpGet]
-        public IActionResult CreatePlayerAccount() => PartialView("_CreateAdminAccount", new CGameUser());
+        public IActionResult CreatePlayerAccount() => PartialView("_CreatePlayerAccount", new CGameUser());
 
 
         [HttpPost]
@@ -321,15 +335,14 @@ namespace webWheelOfDeath.Controllers
                 AddFeedback("Error registering player: " + E.Message, EnumFeedbackType.Error);
             }
             List<CGameUser> players = new CGameUser().GetAllPlayers();
-            return PartialView("_ListPlayerAccounts", players);
+            return PartialView("_ListPlayerAccount", players);
         }
 
         [HttpGet]
-        public IActionResult ListPlayerAccounts()
+        public IActionResult ListPlayerAccount()
         {
-            // Get all players using CGameUser
             var players = new CGameUser().GetAllPlayers();
-            return PartialView("_PlayerAccountList", players);
+            return PartialView("_ListPlayerAccount", players);
         }
 
 
@@ -350,14 +363,23 @@ namespace webWheelOfDeath.Controllers
             }
 
             var players = new CGameUser().GetAllPlayers();
-            return PartialView("_PlayerAccountList", players);
+            return PartialView("_ListPlayerAccount", players);
         }
 
         [HttpPost]
         public IActionResult DeletePlayerAccount(long id)
         {
+            var players = new CGameUser().GetAllPlayers();
             try
             {
+                // Check if player has game records first
+                CGameRecord searchRecord = new() { FkPlayerId = id };
+                if (searchRecord.Search().Any())
+                {
+                    AddFeedback("Cannot delete player with existing game records. Deactivate their account instead.", EnumFeedbackType.Warning);
+                    return PartialView("_ListPlayerAccount", players);
+                }
+
                 CGameUser player = new CGameUser(id);
                 player.Delete();
                 AddFeedback("Player account deleted", EnumFeedbackType.Success);
@@ -367,8 +389,31 @@ namespace webWheelOfDeath.Controllers
                 AddFeedback("Error deleting player: " + ex.Message, EnumFeedbackType.Error);
             }
 
+            return PartialView("_ListPlayerAccount", players);
+        }
+
+        [HttpGet]
+        public IActionResult EditPlayerAccount(long id)
+        {
+            CGameUser player = new CGameUser(id);
+            return PartialView("_EditPlayerAccount", player);
+        }
+
+        [HttpPost]
+        public IActionResult EditPlayerAccount(CGameUser player)
+        {
+            try
+            {
+                player.Update();
+                AddFeedback("Player account updated!", EnumFeedbackType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddFeedback("Error updating player: " + ex.Message, EnumFeedbackType.Error);
+            }
+
             var players = new CGameUser().GetAllPlayers();
-            return PartialView("_PlayerAccountList", players);
+            return PartialView("_ListPlayerAccount", players);
         }
 
         #endregion
@@ -382,7 +427,7 @@ namespace webWheelOfDeath.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         private bool MatchesLoggedAdmin(long id) {
-            return (id == long.Parse(HttpContext.Session.GetString("admin-user-id") ?? "0"));
+            return (id == long.Parse(HttpContext.Session.GetString("admin-id") ?? "0"));
         }
 
         #endregion

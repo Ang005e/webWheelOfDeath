@@ -1,4 +1,6 @@
 ﻿
+import { CMessageModal } from './CAppModals.js';
+
 // Monitors for, intercepts, and processes feedback (informational, warning, success, or error) messages,
 // sent from the server, that are intended to be displayed to the user.
 // Please note this class was written with assistance from the Claude.ai tool. I did not wirte this code from scratch.
@@ -11,7 +13,7 @@ export class CFeedbackManager {
             return CFeedbackManager.instance;
         }
 
-        this.modal = new window.CMessageModal('#modal-message-id');
+        this.modal = new CMessageModal('#modal-message-id');
         CFeedbackManager.instance = this;
 
         // Auto-display on page load

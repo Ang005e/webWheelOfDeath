@@ -6,7 +6,6 @@ namespace webWheelOfDeath.Models
     public class CWebGameRecord : CEntityModel<CGameRecord>
     {
         #region Backing Properties
-        private int? _id;
         private long? _fkGameId;
         private long? _fkPlayerId;
         private long? _fkResultId;
@@ -17,11 +16,6 @@ namespace webWheelOfDeath.Models
         #endregion
 
         #region Public Properties
-        public int Id
-        {
-            get => _id ?? 0;
-            set => _id = value;
-        }
         public long FkGameId
         {
             get => _fkGameId ?? 0L;

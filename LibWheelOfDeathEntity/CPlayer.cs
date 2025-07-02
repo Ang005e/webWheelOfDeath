@@ -112,7 +112,7 @@ namespace LibWheelOfDeath
             base.Create(false);
         }
 
-        public new int Update()
+        public override int Update()
         {
 
             CommandText = $@" 
