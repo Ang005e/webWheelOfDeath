@@ -1,4 +1,5 @@
-﻿using LibEntity;
+﻿using System.Text.Json;
+using LibEntity;
 using LibWheelOfDeath;
 using LibWheelOfDeath.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -45,7 +46,7 @@ namespace webWheelOfDeath.Controllers
         [HttpPost]
         public IActionResult Authenticate(CredentialsViewModel vm)
         {
-
+            // removed because it's the job of a ViewModel, not an interface
             //IWebCredentials creds = new CAdminUser() // we dont need or want to know about the rest, only IWebCredentials
             //{
             //    Username = vm.Username,
@@ -79,7 +80,8 @@ namespace webWheelOfDeath.Controllers
             else
             {
                 ModelState.Clear();
-                vm.LoginAttemptFailed = "Username or password were incorrect"; 
+                vm.Password = ""; // clear password
+                AddFeedback("Username or password were incorrect", EnumFeedbackType.Warning);
                 return PartialView("_LoginAndRegister", vm);
             }
 
@@ -100,36 +102,34 @@ namespace webWheelOfDeath.Controllers
             if (admin.UsernameExists())
             {
                 ModelState.Clear();
-                vm.LastRegisterFailed = "Username is already taken";
+                vm.Password = ""; // clear password
+                AddFeedback("Username is already taken", EnumFeedbackType.Warning);
                 return PartialView("_LoginAndRegister", vm);
             }
 
             // register actions
             admin.Register();
 
-            // extract the Credentials base from the player object and return the user to the login page.
-            return PartialView("_LoginPartial");
+            return PartialView("_LoginPartial", vm);
         }
 
-        public bool IsAnyAdmin()
+        public long GetLoggedId()
         {
-            return HttpContext.Session.GetString("admin-user-id") != null;
+            return long.Parse(HttpContext.Session.GetString("admin-user-id")??"0");
         }
 
         public bool IsSuperAdmin()
         {
-            long adminId = long.Parse(HttpContext.Session.GetString("admin-user-id")??"0");
-
-            if (adminId == 0) return false; // Not logged in, so (probably) not a super admin...
+            long adminId = GetLoggedId();
+            if (adminId <= 0) return false; // not logged in...?
 
             CAdminUser admin = new(adminId);
 
             return admin.AdminTypeId == 2; // EnumAdminType.SuperAdmin; 
         }
-        public IActionResult DenyAccess(Models.EnumAdminType denyLevel, string attemptedAction)
+        public IActionResult DenyAccess(EnumAdminType denyAtLevel, string attemptedAction)
         {
-            TempData["LastUserActionSuccess"] = false;
-            TempData["LastUserAction"] = $"{denyLevel.ToString()}s do not have permission to {attemptedAction}.";
+            AddFeedback($"{denyAtLevel.ToString()}s and below do not have permission to {attemptedAction}");
             return PartialView("_AdminCentre");
         }
 
@@ -256,9 +256,9 @@ namespace webWheelOfDeath.Controllers
         [HttpPost]
         public IActionResult CreateAdminAccount(CAdminUser admin)
         {
-            if (!IsSuperAdmin() && (admin.AdminTypeId == 2))
+            if (!IsSuperAdmin() && (admin.AdminTypeId > 1))
             {
-                return DenyAccess(EnumAdminType.Admin, "manage or create accounts");
+                return DenyAccess(EnumAdminType.Admin, "create super admin accounts");
             }
             try
             {
@@ -278,11 +278,15 @@ namespace webWheelOfDeath.Controllers
         [HttpPost]
         public IActionResult ToggleAdminActive(long id)
         {
+            if (MatchesLoggedUser(id))
+                return DenyAccess(EnumAdminType.Admin, "manage accounts");
+
             CAdminUser user = new CAdminUser(id);
+
             user.IsActive = !user.IsActive;
             user.Update();
-            TempData["LastUserActionSuccess"] = true;
-            TempData["LastUserAction"] = $"Admin account {(user.IsActive ? "Activated" : "Deactivated")}";
+
+            AddFeedback($"Admin account {(user.IsActive ? "activated" : "deactivated")}", EnumFeedbackType.Success);
 
             List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
             return PartialView("_ListAdminAccounts", admins);
@@ -291,30 +295,46 @@ namespace webWheelOfDeath.Controllers
         [HttpPost]
         public IActionResult DeleteAdminAccount(long id)
         {
-            if (!IsSuperAdmin())
-            {
-                return DenyAccess(EnumAdminType.Admin, "manage or create accounts");
-            }
 
             List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
 
             if (id == long.Parse(HttpContext.Session.GetString("admin-user-id") ?? "0"))
             {
-                TempData["LastUserActionSuccess"] = false;
-                TempData["LastUserAction"] = "You cannot delete your own account!";
+                AddFeedback("You cannot delete your own account!", EnumFeedbackType.Warning);
                 return PartialView("_ListAdminAccounts", admins);
             }
 
             CAdminUser user = new CAdminUser(id);
             user.Delete();
-            TempData["LastUserActionSuccess"] = true;
-            TempData["LastUserAction"] = $"Admin account deleted";
 
+            AddFeedback($"Admin account deleted", EnumFeedbackType.Success);
             return PartialView("_ListAdminAccounts", admins);
         }
 
 
         #endregion
 
+
+        #region Helpers
+
+        /// <summary>
+        /// Checks if the provided ID matches the ID of the currently logged account.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool MatchesLoggedUser(long id) {
+            return (id == long.Parse(HttpContext.Session.GetString("admin-user-id") ?? "0"));
+        }
+
+        protected void AddFeedback(string message, EnumFeedbackType type = EnumFeedbackType.Info)
+        {
+            var feedback = new FeedbackMessage(type, message);
+
+            // Store in multiple places, for compatibility with my old system
+            TempData["_Feedback"] = JsonSerializer.Serialize(feedback);
+            ViewBag._Feedback = feedback;
+        }
+
+        #endregion
     }
 }
