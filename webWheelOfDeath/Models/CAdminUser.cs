@@ -1,110 +1,171 @@
 ﻿using LibWheelOfDeath;
+using webWheelOfDeath.Exceptions;
+using webWheelOfDeath.Models.Infrastructure;
+using webWheelOfDeath.Models.webWheelOfDeath.Models;
 
 namespace webWheelOfDeath.Models
 {
-
     public enum EnumAdminType
     {
         Admin = 1,
         SuperAdmin = 2
     }
 
-    public class CAdminUser : CAdminCredentials
+    public class CAdminUser : CEntityModel<CAdmin>, IAdminAccountData
     {
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public long AdminTypeId { get; set; }
-        public EnumAdminType AdminType
-        {
-            get => (EnumAdminType)AdminTypeId;
-            set => AdminTypeId = (long)value;
-        }
-        public bool isActive { get; set; } = true;
+        #region Backing Properties
+        // for the sake of allowing default values initially BUT erroring out if access to an unset prop is attempted
+        private string? _firstName;
+        private string? _lastName;
+        private string? _username;
+        private string? _password;
+        private bool? _isActive;
+        private long? _adminTypeId;
+        #endregion
 
-        public CAdminUser() { }
-        public CAdminUser(long Id)
+        #region Public Properties
+        public string FirstName
         {
-            CAdmin admin = new();
-            admin.Read(Id);
-            FirstName = admin.FirstName;
-            LastName = admin.LastName;
-            Username = admin.Username;
-            Password = admin.Password;
-            isActive = admin.IsActiveFlag;
-            AdminTypeId = admin.FkAdminTypeId;
+            get => _firstName ?? throw new UnsetPropertyException<string>(_firstName);
+            set => _firstName = value;
         }
 
-        public void Edit(long Id)
+        public string LastName
         {
-            CAdmin newAdmin = new();
-            newAdmin.FirstName = FirstName;
-            newAdmin.LastName = LastName;
-            newAdmin.Username = Username;
-            newAdmin.Password = Password;
-            newAdmin.IsActiveFlag = isActive;
-            newAdmin.FkAdminTypeId = AdminTypeId;
-            newAdmin.Id = Id;
-
-            newAdmin.OverrideValidate = true; // we don't want to check for unique usernames when updating an existing admin
-
-            //newAdmin.Validate(); not gonna do much...
-
-            newAdmin.Update();
-
-            newAdmin.OverrideValidate = false; // reset the override flag, you never know...
+            get => _lastName ?? throw new UnsetPropertyException<string>(_lastName);
+            set => _lastName = value;
         }
 
-        public void Delete()
+        public string Username
         {
-            CAdmin newAdmin = new(Id);
-            newAdmin.Delete();
+            get => _username ?? throw new UnsetPropertyException<string>(_username);
+            set => _username = value;
         }
 
+        public string Password
+        {
+            get => _password ?? throw new UnsetPropertyException<string>(_password);
+            set => _password = value;
+        }
+        public bool IsActive
+        {
+            get
+            {
+                if (_isActive.HasValue)
+                    return _isActive.Value;
+                throw new UnsetPropertyException<bool?>(_isActive);
+            }
+            set { _isActive = value; }
+        }
+        public long AdminTypeId
+        {
+            get
+            {
+                if (_adminTypeId.HasValue)
+                    return _adminTypeId.Value;
+
+                throw new UnsetPropertyException<long?>(_adminTypeId);
+            }
+            set => _adminTypeId = value;
+        }
+        #endregion
+
+
+
+
+        #region Constructors
+        // Default constructor
+        public CAdminUser() : base() { }
+
+        // Load constructor - properly loads existing admin
+        public CAdminUser(long id) : base(id) { }
+        #endregion
+
+
+        #region Frontend Functions
         public void Register()
         {
-            CAdmin newAdmin = BuildAdmin();
-            newAdmin.Validate();
-            newAdmin.Create();
+            var admin = BuildEntity();
+            admin.Validate();
+            admin.Create();
+
+            // SYNC THE ID BACK AFTER CREATION
+            this.Id = admin.Id;
+            // no need to run refresh since it was just created
+        }
+
+        public bool Authenticate()
+        {
+            var admin = new CAdmin
+            {
+                Username = this.Username,
+                Password = this.Password
+            };
+
+            if (admin.Authenticate(false)) // Don't update instance
+            {
+                // Load the authenticated admin's data
+                this.Id = admin.Id; // SYNC THE ID
+                this.Refresh(); // This will properly load all data
+                return true;
+            }
+            return false;
         }
 
         public bool UsernameExists()
         {
-            CAdmin newAdmin = BuildAdmin();
-            return newAdmin.UsernameExists();
-        }
-
-        public CAdmin BuildAdmin()
-        {
-            CAdmin admin = new CAdmin(
-                FirstName,
-                LastName,
-                Username,
-                Password
-            );
-            admin.IsActiveFlag = isActive;
-            admin.FkAdminTypeId = AdminTypeId;
-
-            return admin;
+            var admin = new CAdmin { Username = this.Username };
+            return admin.UsernameExists();
         }
 
         public List<CAdminUser> GetAllAdmins()
         {
-            List<CAdminUser> adminUsers = new();
-            CAdmin admin = new();
+            var adminUsers = new List<CAdminUser>();
+            var admin = new CAdmin();
+
             foreach (CAdmin a in admin.GetAllAdmins())
             {
-                adminUsers.Add(new CAdminUser
+                var adminUser = new CAdminUser
                 {
                     Id = a.Id,
                     FirstName = a.FirstName,
                     LastName = a.LastName,
                     Username = a.Username,
                     Password = a.Password,
-                    isActive = a.IsActiveFlag,
+                    IsActive = a.IsActiveFlag,
                     AdminTypeId = a.FkAdminTypeId
-                });
+                };
+                adminUsers.Add(adminUser);
             }
             return adminUsers;
         }
+        #endregion
+
+
+
+        #region Entity Mapping
+        protected override void MapFromEntity(CAdmin entity)
+        {
+            // Id is handled by base class
+            FirstName = entity.FirstName;
+            LastName = entity.LastName;
+            Username = entity.Username;
+            Password = entity.Password;
+            IsActive = entity.IsActiveFlag;
+            AdminTypeId = entity.FkAdminTypeId;
+        }
+
+        protected override void MapToEntity(CAdmin entity)
+        {
+            // Id is handled by base class
+            entity.FirstName = FirstName;
+            entity.LastName = LastName;
+            entity.Username = Username;
+            entity.Password = Password;
+            entity.IsActiveFlag = IsActive;
+            entity.FkAdminTypeId = AdminTypeId;
+        }
+        #endregion
+
     }
 }

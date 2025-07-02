@@ -230,7 +230,7 @@ namespace LibWheelOfDeath
 
 
 
-        #region Helpers
+        #region Query Helpers
 
         public List<CAdmin> GetAllAdmins()
         {
@@ -259,9 +259,18 @@ namespace LibWheelOfDeath
             return AccountMatches(player, true);
         }
 
+        /// <summary>
+        /// ToDo: assertUnique paramater causes inconsistant and untrackable behaviour; 
+        /// need some kind of warning that many accounts were picked up.
+        /// (it's also kind of redundant).
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="assertUnique"></param>
+        /// <returns></returns>
+        /// <exception cref="CWheelOfDeathException"></exception>
         public bool AccountMatches(CAdmin admin, bool assertUnique = true)
         {
-            // search for the player
+            // search for the admin
             List<IEntity> matches = admin.Search();
 
             switch (matches.Count)
@@ -270,15 +279,19 @@ namespace LibWheelOfDeath
                     return false;
 
                 case 1: // matching credentials
+                        // Copy the found Id back to the admin object
+                    var foundAdmin = (CAdmin)matches[0];
+                    admin.Id = foundAdmin.Id;
+                    admin.FirstName = foundAdmin.FirstName;
+                    admin.LastName = foundAdmin.LastName;
+                    admin.IsActiveFlag = foundAdmin.IsActiveFlag;
+                    admin.FkAdminTypeId = foundAdmin.FkAdminTypeId;
                     return true;
 
-                default: // impossible situation, but nonetheless...
-
-                    // ToDo: LOG ERROR
-
+                default: // multiple matches
                     if (assertUnique)
                     {
-                        throw new CWheelOfDeathException($@"Internal data error: Player username matched multiple accounts");
+                        throw new CWheelOfDeathException($@"Internal data error: Admin username matched multiple accounts");
                     }
                     return true;
             }

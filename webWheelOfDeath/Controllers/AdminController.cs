@@ -3,7 +3,9 @@ using LibWheelOfDeath;
 using LibWheelOfDeath.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Configuration;
 using webWheelOfDeath.Models;
+using webWheelOfDeath.Models.Infrastructure;
 using webWheelOfDeath.Models.ViewModels;
 
 namespace webWheelOfDeath.Controllers
@@ -44,20 +46,29 @@ namespace webWheelOfDeath.Controllers
         public IActionResult Authenticate(CredentialsViewModel vm)
         {
 
-            CAdminCredentials creds = new CAdminCredentials
+            //IWebCredentials creds = new CAdminUser() // we dont need or want to know about the rest, only IWebCredentials
+            //{
+            //    Username = vm.Username,
+            //    Password = vm.Password
+            //};
+
+            //// Attempt authentication.
+            //bool loginSuccess = creds.Authenticate();
+
+            CAdminUser admin = new CAdminUser() // we dont need or want to know about the rest, only IWebCredentials
             {
                 Username = vm.Username,
                 Password = vm.Password
             };
 
             // Attempt authentication.
-            creds.Authenticate();
+            bool loginSuccess = admin.Authenticate();
 
-            if (!creds.loginAttemptFailed)
+            if (!loginSuccess)
             {
                 // Set the "player-user-id" session variable to the player id (DB field)
-                HttpContext.Session.SetString("admin-user-id", creds.Id.ToString());
-                HttpContext.Session.SetString("admin-user-name", creds.Username);
+                HttpContext.Session.SetString("admin-user-id", admin.Id.ToString());
+                HttpContext.Session.SetString("admin-user-name", admin.Username);
 
                 // CLEAR THE MODELSTATE ARRGGGGGGGGHHH
                 ModelState.Clear();
@@ -68,7 +79,7 @@ namespace webWheelOfDeath.Controllers
             else
             {
                 ModelState.Clear();
-                vm.LastLoginFailed = "Username or passwoed were incorrect"; 
+                vm.LoginAttemptFailed = "Username or password were incorrect"; 
                 return PartialView("_LoginAndRegister", vm);
             }
 
@@ -112,8 +123,8 @@ namespace webWheelOfDeath.Controllers
             if (adminId == 0) return false; // Not logged in, so (probably) not a super admin...
 
             CAdminUser admin = new(adminId);
-            
-            return admin.AdminType == EnumAdminType.SuperAdmin; 
+
+            return admin.AdminTypeId == 2; // EnumAdminType.SuperAdmin; 
         }
         public IActionResult DenyAccess(Models.EnumAdminType denyLevel, string attemptedAction)
         {
@@ -245,7 +256,7 @@ namespace webWheelOfDeath.Controllers
         [HttpPost]
         public IActionResult CreateAdminAccount(CAdminUser admin)
         {
-            if (!IsSuperAdmin() && (admin.AdminType == EnumAdminType.SuperAdmin))
+            if (!IsSuperAdmin() && (admin.AdminTypeId == 2))
             {
                 return DenyAccess(EnumAdminType.Admin, "manage or create accounts");
             }
@@ -268,10 +279,10 @@ namespace webWheelOfDeath.Controllers
         public IActionResult ToggleAdminActive(long id)
         {
             CAdminUser user = new CAdminUser(id);
-            user.isActive = !user.isActive;
-            user.Edit(id);
+            user.IsActive = !user.IsActive;
+            user.Update();
             TempData["LastUserActionSuccess"] = true;
-            TempData["LastUserAction"] = $"Admin account {(user.isActive ? "Activated" : "Deactivated")}";
+            TempData["LastUserAction"] = $"Admin account {(user.IsActive ? "Activated" : "Deactivated")}";
 
             List<CAdminUser> admins = new CAdminUser().GetAllAdmins();
             return PartialView("_ListAdminAccounts", admins);

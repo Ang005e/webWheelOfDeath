@@ -4,6 +4,7 @@ using webWheelOfDeath.Models;
 using Microsoft.AspNetCore.Http;
 using webWheelOfDeath.Models.ViewModels;
 using LibWheelOfDeath;
+using webWheelOfDeath.Models.Depricated;
 
 namespace webWheelOfDeath.Controllers
 {
@@ -72,21 +73,21 @@ namespace webWheelOfDeath.Controllers
             try
             {
                 // Transfer data from shared ViewModel --> the specific account type Model
-                CPlayerCredentials creds = new CPlayerCredentials
+                CGameUser player = new CGameUser
                 {
                     Username = vm.Username,
                     Password = vm.Password
                 };
 
                 // Attempt authentication using the Model.
-                creds.Authenticate();
+                bool loginSuccess = player.Authenticate();
 
-                if (!creds.loginAttemptFailed)
+                if (!loginSuccess)
                 {
 
                     // Set the "player-user-id" session variable to the player id (DB field)
-                    HttpContext.Session.SetString("player-user-id", creds.Id.ToString());
-                    HttpContext.Session.SetString("player-user-name", creds.Username);
+                    HttpContext.Session.SetString("player-user-id", player.Id.ToString());
+                    HttpContext.Session.SetString("player-user-name", player.Username);
 
                     // CLEAR THE MODELSTATE ARRGGGGGGGGHHH
                     ModelState.Clear();
@@ -109,7 +110,7 @@ namespace webWheelOfDeath.Controllers
                 else
                 {
                     ModelState.Clear();
-                    vm.LastLoginFailed = "Login failed";
+                    vm.LoginAttemptFailed = "Login failed";
                     return PartialView("_LoginAndRegister", vm);
                 }
             }

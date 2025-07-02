@@ -202,7 +202,7 @@ namespace LibWheelOfDeath
 
 
 
-        #region Helpers
+        #region Query Helpers
 
         /// <summary>
         /// Attempt to match this entities username property
@@ -218,6 +218,16 @@ namespace LibWheelOfDeath
             return AccountMatches(player, true);
         }
 
+
+        /// <summary>
+        /// ToDo: assertUnique paramater causes inconsistant and untrackable behaviour; 
+        /// need some kind of warning that many accounts were picked up.
+        /// (it's also kind of redundant).
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="assertUnique"></param>
+        /// <returns></returns>
+        /// <exception cref="CWheelOfDeathException"></exception>
         public bool AccountMatches(CPlayer player, bool assertUnique = true)
         {
             // search for the player
@@ -229,12 +239,15 @@ namespace LibWheelOfDeath
                     return false;
 
                 case 1: // matching credentials
+                        // Copy the found Id back to the player object
+                    var foundPlayer = (CPlayer)matches[0];
+                    player.Id = foundPlayer.Id;
+                    player.FirstName = foundPlayer.FirstName;
+                    player.LastName = foundPlayer.LastName;
+                    player.IsActiveFlag = foundPlayer.IsActiveFlag;
                     return true;
 
-                default: // impossible situation, but nonetheless...
-
-                    // ToDo: LOG ERROR
-
+                default: // multiple matches
                     if (assertUnique)
                     {
                         throw new CWheelOfDeathException($@"Internal data error: Player username matched multiple accounts");
@@ -242,6 +255,7 @@ namespace LibWheelOfDeath
                     return true;
             }
         }
+
 
         /// <summary>
         /// Attempt to match this entities username and password properties 

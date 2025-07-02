@@ -1,7 +1,7 @@
 ﻿using Azure.Identity;
 using LibWheelOfDeath;
 
-namespace webWheelOfDeath.Models
+namespace webWheelOfDeath.Models.Depricated
 {
     /// <summary>
     /// Exposes appropriate API functions required by the web controller
@@ -25,8 +25,8 @@ namespace webWheelOfDeath.Models
 
             CPlayer player = new CPlayer()
             {
-                Username = this.Username,
-                Password = this.Password,
+                Username = Username,
+                Password = Password,
             };
             loginAttemptFailed = !player.Authenticate();
             Id = player.Id;

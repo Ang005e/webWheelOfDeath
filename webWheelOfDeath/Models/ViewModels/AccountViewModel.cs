@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using webWheelOfDeath.Models.Infrastructure;
 
 namespace webWheelOfDeath.Models.ViewModels
 {
-    public class AccountViewModel
+    public class AccountViewModel : IAccountData
     {
         [Display(Name = "First Name")]
         public string FirstName { get; set; } = string.Empty;
