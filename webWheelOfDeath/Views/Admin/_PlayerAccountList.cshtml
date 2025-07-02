@@ -1,7 +1,7 @@
-﻿@model IEnumerable<webWheelOfDeath.Models.CAdminUser>
+﻿@model IEnumerable<webWheelOfDeath.Models.CGameUser>
 
 <p>
-    <a ajax-action="CreateAdminAccount">Create New</a>
+    <a ajax-action="CreatePlayer">Create New</a>
     <a ajax-action="AdminCentre">Back to Index</a>
 </p>
 <table class="table">
@@ -14,16 +14,13 @@
                 @Html.DisplayNameFor(model => model.LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AdminTypeId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsActive)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Username)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Password)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsActive)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Id)
@@ -41,23 +38,20 @@
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AdminTypeId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Username)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Password)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
-                    <button ajax-action="ToggleAdminActive" ajax-post="true" ajax-id="item.Id">Toggle Active</button>
-                    <button ajax-action="DeleteAdminAccount" ajax-post="true" ajax-id="item.Id">Delete</button>
+                <a ajax-action="PlayerDetail" ajax-id="@item.Id">Details</a>
+                <button ajax-action="TogglePlayerActive" ajax-id="@item.Id" ajax-post="true">Toggle Active</button>
             </td>
         </tr>
 }

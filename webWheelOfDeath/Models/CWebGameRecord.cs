@@ -3,7 +3,7 @@ using webWheelOfDeath.Models.Infrastructure;
 
 namespace webWheelOfDeath.Models
 {
-    public class CWebGameRecord : CEntityModel<CGameRecord, CWebGameRecord>
+    public class CWebGameRecord : CEntityModel<CGameRecord>
     {
         #region Backing Properties
         private int? _id;

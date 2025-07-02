@@ -193,13 +193,13 @@ namespace LibWheelOfDeath
 
         #region Other Methods
 
-        public List<CGame> GetAllGames()
-        {
-            CommandText = @$"select * from tblGame";
-            List<IEntity> entities = base.Search();
+        //public List<CGame> GetAllGames()
+        //{
+        //    CommandText = @$"select * from tblGame";
+        //    List<IEntity> entities = base.Search();
 
-            return entities.ConvertAll(game => (CGame)game);
-        }
+        //    return entities.ConvertAll(game => (CGame)game);
+        //}
 
         /// <summary>
         /// Retrieves games associated with this difficulty.
@@ -348,7 +348,7 @@ namespace LibWheelOfDeath
 
             // validator.NoDefaultsExcept(nameof(IsActiveFlag));
             
-            //validator.Validate(); //if (builder.ShouldThrow()) throw builder.ValidationException();
+            validator.Validate(); //if (builder.ShouldThrow()) throw builder.ValidationException();
 
         }
 
