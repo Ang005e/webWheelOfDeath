@@ -74,6 +74,7 @@ namespace webWheelOfDeath.Controllers
             catch (AuthenticationFailureException ex) 
             {
                 AddFeedback($"Login failed: {ex.Reason}", EnumFeedbackType.Error);
+                loginSuccess = false;
             }
 
             if (loginSuccess??false)

@@ -354,8 +354,8 @@ export class CWheelGame extends CTimer {
             // Check for a new record...
             const FASTEST_PLAYER_KEY = 'fastest_player';
             const FASTEST_TIME_KEY = 'fastest_time';
-            const fastestPlayerOnRecord = localStorage.getItem(FASTEST_PLAYER_KEY);
-            const fastestTimeOnRecord = localStorage.getItem(FASTEST_TIME_KEY);
+            const fastestPlayerOnRecord = sessionStorage.getItem(FASTEST_PLAYER_KEY);
+            const fastestTimeOnRecord = sessionStorage.getItem(FASTEST_TIME_KEY);
 
             let message;
 

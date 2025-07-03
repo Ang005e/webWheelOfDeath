@@ -5,6 +5,7 @@ using LibWheelOfDeath.Exceptions;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Numerics;
 
 namespace LibWheelOfDeath
@@ -274,9 +275,26 @@ namespace LibWheelOfDeath
             return 0L;
         }
 
+        public (string username, long elapsedTime) GetFastestPlayer()
+        {
+            string sql = @"
+                select top(1) R.ElapsedTime, P.Username
+                from tblPlayer P
+                inner join tblGameRecord R on P.Id = R.FkPlayerId
+                order by R.ElapsedTime asc
+            ";
+
+            DataTable table = sql.Fetch<DataTable>();
+            if (table.Rows.Count == 0)
+                return (string.Empty, 0L);
+
+            DataRow row = table.Rows[0];
+            string username = row["Username"].ToString() ?? string.Empty;
+            long elapsedTime = row["ElapsedTime"] is DBNull ? 0L : Convert.ToInt64(row["ElapsedTime"]);
+            return (username, elapsedTime);
+        }
+
         #endregion
-
-
 
 
 

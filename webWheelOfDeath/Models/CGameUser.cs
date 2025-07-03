@@ -114,14 +114,14 @@ namespace webWheelOfDeath.Models
 
             long matchedId = player.Authenticate();
 
-            // check their account is active
-            player.Read(matchedId);
-            if (player.IsActiveFlag == false) throw new AuthenticationFailureException("This account has been deactivated");
-
             if (matchedId > 0L) // Update so we get the ID 
             {
                 Id = matchedId; // SYNC THE ID
                 this.Refresh(); // Refresh for other account details than just credentials
+
+                // check their account is active
+                if (player.IsActiveFlag == false) throw new AuthenticationFailureException("This account has been deactivated");
+
                 return true;
             }
             else throw new AuthenticationFailureException("Invalid username or password");
@@ -145,6 +145,11 @@ namespace webWheelOfDeath.Models
                 players.Add(mapped);
             }
             return players;
+        }
+        public (string, long) FastestPlayerAndTheirTimeBecauseIDontCareAboutSeperationOfConcernsIts3AmInTheMorning()
+        {
+            (string, long) gjdfsglrg = new CPlayer().GetFastestPlayer();
+            return gjdfsglrg;
         }
         #endregion
 

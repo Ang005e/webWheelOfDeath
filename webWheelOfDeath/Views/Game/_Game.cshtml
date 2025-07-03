@@ -1,7 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@model CWebGame;
+@model CNewWheelGame;
 
 
 <div id="modal-winner-id" class="modal-canvas hidden">
@@ -51,7 +51,19 @@
     }
 
     function createGame() {
-        _game = new CWheelGame('@Context.Session.GetString("user-name")', "@Model.DurationMilliseconds", "@Model.MinBalloons", "@Model.MaxBalloons", "@Model.Attempts");
+
+        const FASTEST_PLAYER_KEY = 'fastest_player';
+        const FASTEST_TIME_KEY = 'fastest_time';
+        sessionStorage.setItem(FASTEST_PLAYER_KEY, '@Model.FastestPlayer')
+        sessionStorage.setItem(FASTEST_TIME_KEY, '@Model.FastestTime')
+
+        _game = new CWheelGame(
+            '@Context.Session.GetString("user-name")', 
+            "@Model.DurationMilliseconds", 
+            "@Model.MinBalloons", 
+            "@Model.MaxBalloons", 
+            "@Model.Attempts"
+        );
 
         // Re-enable save button when game starts
         const saveBtn = document.getElementById('btnSaveResults');

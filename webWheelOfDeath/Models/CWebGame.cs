@@ -27,7 +27,15 @@ namespace webWheelOfDeath.Models
             set => _game = value;
         }
 
-        public CWebGameDifficulty Difficulty => new(FkDifficultyId);
+        public CWebGameDifficulty Difficulty
+        {
+            get
+            {
+                if (FkDifficultyId == 0)
+                    return new CWebGameDifficulty(); // Return empty object for new games
+                return new CWebGameDifficulty(FkDifficultyId);
+            }
+        }
 
         public long FkDifficultyId
         {

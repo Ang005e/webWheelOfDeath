@@ -6,21 +6,20 @@
 .wheelSpin4,
 .wheelSpin5,
 .wheelSpin6 {
-    animation: wheelSwing 4s ease-in-out infinite;
+    animation: wheelSwing 6s ease-in-out infinite;
 }
 
-/* Side-to-side swinging motion */
 @keyframes wheelSwing {
     0% {
-        transform: rotate(-30deg);
+        transform: rotate(720deg);
     }
 
     50% {
-        transform: rotate(30deg);
+        transform: rotate(360deg);
     }
 
     100% {
-        transform: rotate(-30deg);
+        transform: rotate(720deg);
     }
 }
 

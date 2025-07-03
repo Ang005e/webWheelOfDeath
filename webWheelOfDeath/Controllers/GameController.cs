@@ -88,6 +88,7 @@ namespace webWheelOfDeath.Controllers
             catch (AuthenticationFailureException ex)
             {
                 AddFeedback($"Login failed: {ex.Reason}", EnumFeedbackType.Error);
+                loginSuccess = false;
             }
 
             if (loginSuccess??false)
@@ -156,11 +157,12 @@ namespace webWheelOfDeath.Controllers
         {
             ViewBag.GameSelected = true;
             // Create a gameDifficulty (performs backend DB search)
-            var game = new CWebGame(gameId);
+            var game = new CNewWheelGame(gameId);
             HttpContext.Session.SetString("game-id", gameId.ToString());
             // Return the _Game partial populated with data from a "gameDifficulty" model
             return PartialView("_Game", game);
         }
+
         public IActionResult GameSelection()
         {
             if (!UserLoggedIn())

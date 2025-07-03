@@ -4,7 +4,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="CreateAdminAccount" data-ajax-form >
+        <form asp-action="CreateAdminAccount" data-ajax-form>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
@@ -26,10 +26,13 @@
                 <input type="password" asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="AdminTypeId" /> @Html.DisplayNameFor(model => model.AdminTypeId)
-                </label>
+            <div class="form-group">
+                <label asp-for="AdminTypeId" class="control-label">Admin Type</label>
+                <select asp-for="AdminTypeId" class="form-control">
+                    <option value="1">Admin</option>
+                    <option value="2">Super Admin</option>
+                </select>
+                <span asp-validation-for="AdminTypeId" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
@@ -45,4 +48,4 @@
 
 <div>
     <a asp-action="Index">Back to List</a>
-</div> 
+</div>

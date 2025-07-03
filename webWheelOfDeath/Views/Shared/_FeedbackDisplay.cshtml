@@ -13,8 +13,10 @@
     else if (TempData["_Feedback"] != null)
     {
         feedback = JsonSerializer.Deserialize<FeedbackMessage>(TempData["_Feedback"].ToString());
+        TempData.Remove("_Feedback"); // ensure it's cleared, prevent BLOODY GHOST DATA DAMN IT!!!!!
     }
 }
+
 
 @if (feedback != null)
 {

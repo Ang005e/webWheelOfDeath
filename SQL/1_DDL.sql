@@ -92,7 +92,7 @@ create table [tblGame]
 
 create table [tblResult]
 (
-	[Id]				bigint			not null	primary key identity,
+	[Id]				bigint			not null	primary key, -- no identity, manual insert, because Mr Majidi made his EnumGameStatus all stupid and incorrect and OH MY GOD THE TROUBLE I WENT TO YOU BLOODY IT'S 6:28AM IN TH EMORNING I SHOULD BE ASLEEP
 	[IsWin]				bit				not null,
 	[ResultType]		varchar(255)
 );

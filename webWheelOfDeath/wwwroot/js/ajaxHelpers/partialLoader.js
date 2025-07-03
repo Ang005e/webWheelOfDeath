@@ -14,6 +14,10 @@ export function partialLoader(formData, actionUrl, refreshElementId, formName, i
         url: actionUrl,
         type: isPost ? 'POST' : 'GET',
         data: formData,
+        cache: false,  // prevent cache from messing with checkbox states between refereshes
+        headers: {
+            'Cache-Control': 'no-cache'  // likewise
+        },
         success: function (partial) {
             $(refreshElementId).html(partial);
             document.dispatchEvent(new CustomEvent("partial-refresh", {

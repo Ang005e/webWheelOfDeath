@@ -2,6 +2,7 @@
 using webWheelOfDeath.Exceptions;
 using webWheelOfDeath.Models.Infrastructure;
 using webWheelOfDeath.Models;
+using System.Numerics;
 
 namespace webWheelOfDeath.Models
 {
@@ -94,16 +95,14 @@ namespace webWheelOfDeath.Models
 
             long matchedId = admin.Authenticate();
 
-            if (matchedId > 0L) 
+            if (matchedId > 0L) // Update so we get the ID 
             {
+                Id = matchedId; // SYNC THE ID
+                this.Refresh(); // Refresh for other account details than just credentials
 
                 // check their account is active
-                admin.Read(matchedId);
                 if (admin.IsActiveFlag == false) throw new AuthenticationFailureException("This account has been deactivated");
 
-                // Load the authenticated admin's account data
-                this.Id = matchedId; // SYNC THE ID
-                this.Refresh(); // This will properly load all data
                 return true;
             }
             else throw new AuthenticationFailureException("Invalid username or password");

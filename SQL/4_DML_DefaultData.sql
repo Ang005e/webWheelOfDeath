@@ -9,13 +9,12 @@ go
 insert into tblGlobalSettings default values;
 go
 
-insert into tblResult (IsWin, ResultType) values
-    (1,'Won'),
-    (0,'Killed'),
-    (0,'Timed_Out'),
-	(0,'Exceeded_Throws');
+insert into tblResult (Id, IsWin, ResultType) values
+    (2, 1,'Won'),
+    (3, 0,'Killed'),
+    (4, 0,'Timed_Out'),
+	(5, 0,'Exceeded_Throws');
 go
-
 
 -- Default super admin
 insert into tblAccount (FirstName, LastName, Password, IsActiveFlag) values (
