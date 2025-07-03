@@ -1,0 +1,716 @@
+commit 3a9324b1ca965dbe070fe7deab57b759d9d38496
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Thu Jul 3 08:43:46 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Thu Jul 3 08:43:46 2025 +0800
+
+    app finished
+
+commit d80619f377bf1d3647085071e55c3219ee75e48e
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Thu Jul 3 08:19:43 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Thu Jul 3 08:19:43 2025 +0800
+
+    functional
+
+commit edba1116e2089174ab59f721d592d252260fd2b8
+Merge: f4a9d89 9b61a56
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Thu Jul 3 06:20:44 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Thu Jul 3 06:20:44 2025 +0800
+
+    done
+
+commit f4a9d8971504142ae0269fa641121998c131e613
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Thu Jul 3 06:03:33 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Thu Jul 3 06:19:09 2025 +0800
+
+    Final applicaion completed; minor fixes to be made
+
+commit 9b61a56d6ad43bda98907a61eb0868edec7ae731
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Thu Jul 3 06:03:33 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Thu Jul 3 06:03:33 2025 +0800
+
+    Final applicaion completed; minor fixes to be made
+
+commit 7e3455842e212bfa8587e29e82a89eeb2bc9a43c
+Merge: e3d2e72 dca4c1c
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Thu Jul 3 04:00:28 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Thu Jul 3 04:00:28 2025 +0800
+
+    htwrs
+
+commit e3d2e7289ac4791c474ceb370fafb52397f10fa3
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Thu Jul 3 03:44:15 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Thu Jul 3 03:59:28 2025 +0800
+
+    IMgwe r tg5rd3gtyv
+
+commit dca4c1c810a96490004e2c7cadb07f4bfcc09983
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Thu Jul 3 03:44:15 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Thu Jul 3 03:44:15 2025 +0800
+
+    IMgwe r tg5rd3gtyv
+
+commit 055fc6bec0adbec716de1d68b9a7a9013edde325
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Thu Jul 3 01:55:21 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Thu Jul 3 01:55:21 2025 +0800
+
+    Before reverting changes to CEmtityModel (removing FetchAll method)
+
+commit e681be94c699971c5771b21591f1cd05da87a459
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Thu Jul 3 00:55:28 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Thu Jul 3 00:55:28 2025 +0800
+
+    almost done
+
+commit a80955457f51bd11bba0e98d99808edb2ec605ed
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Wed Jul 2 23:56:28 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Wed Jul 2 23:56:28 2025 +0800
+
+    Implemented new server-to-client feedback message modal.
+
+commit b7d1ebf5d1a0baf0834fff44cae7b7dc488e2427
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Wed Jul 2 22:15:06 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Wed Jul 2 22:15:06 2025 +0800
+
+    began implementing feedback system
+
+commit 01252b1aa69d94b42c09cc31764b7e8e3fb2d21d
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Wed Jul 2 20:50:27 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Wed Jul 2 20:50:27 2025 +0800
+
+    Application in acceptable working state.
+
+commit 70d6cfa6891b753fc10098a57481e25f89a36208
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Wed Jul 2 20:35:33 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Wed Jul 2 20:35:33 2025 +0800
+
+    Fixed Player page. Starting work on admin page.
+
+commit 3005239a146655c76726028e5d6a78e9cb2cf508
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Wed Jul 2 16:20:22 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Wed Jul 2 16:35:24 2025 +0800
+
+    Started updating CRUDS, attempting to fix the browser crashing problem
+
+commit 02ec563920f24b85b90541aff9d2f74784009ca2
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Wed Jul 2 15:53:32 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Wed Jul 2 15:53:32 2025 +0800
+
+    Before converting CPlayer CRUDS to vwPlayerWithAccount (same for CAdmin, if this works)
+
+commit fe18be7215e33eebc805967f32577c8997cc6daf
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Wed Jul 2 14:43:44 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Wed Jul 2 14:43:44 2025 +0800
+
+    Architecture fixes, IS = 0 when login problem observed (login broken)
+
+commit ef3603f245d6a195188488f359efae9cf2ea0599
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Wed Jul 2 12:19:27 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Wed Jul 2 12:19:27 2025 +0800
+
+    removed workflows
+
+commit 9e061982ab220ac1c6b98f71c74be045c731a71c
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Wed Jul 2 12:08:30 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Wed Jul 2 12:08:30 2025 +0800
+
+    Removed CAccount inheritence hierachy; CPlayer and CAdmin are seperate classes now
+
+commit a13480a1e926f302b2fbdfa34dd61fb5803c4cc8
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Tue Jul 1 20:47:57 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Tue Jul 1 20:47:57 2025 +0800
+
+    Revamped folder structure--bought critical dependencies (LibEntity and LibWheelOfDeath) into version control.
+
+commit 3f5c37f3d4b58125d6cf594993987433d483ce1d
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Tue Jul 1 20:11:53 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Tue Jul 1 20:11:53 2025 +0800
+
+    breaking changes (changed directory structure)
+
+commit 029a126f30f411437906cb1ca34d4f8389bd1721
+Merge: bf2f302 f8fc906
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Tue Jul 1 12:10:37 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Tue Jul 1 12:10:37 2025 +0800
+
+    bcvb
+
+commit bf2f302a3f4deb99059ed88ca8b82ff566603718
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Tue Jul 1 11:56:59 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Tue Jul 1 12:09:09 2025 +0800
+
+    afsdds
+
+commit f8fc906c9eded8afbfc10e0c1237d889612696e3
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Tue Jul 1 11:56:59 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Tue Jul 1 11:56:59 2025 +0800
+
+    afsdds
+
+commit a86ba79490cd6397655e485b2788b6980d653fe9
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Tue Jul 1 11:10:54 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Tue Jul 1 11:10:54 2025 +0800
+
+    dasfsd
+
+commit 0c0023490aa7b602ae8eb98d9eb0d93fccf418e4
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Tue Jul 1 10:50:09 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Tue Jul 1 10:50:09 2025 +0800
+
+    sync
+
+commit 84c4d4b965b7b31711abbd965dccfaf48e18b997
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Tue Jul 1 10:00:45 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Tue Jul 1 10:00:45 2025 +0800
+
+    sync
+
+commit e6d5ece50c8369ddbcae343c15082ce2c8865280
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Tue Jul 1 09:00:32 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Tue Jul 1 09:00:32 2025 +0800
+
+    HBYTWVRI IT WORKS
+
+commit 270fa3f2a7f5ee42fc0bb3f43ffdbab11e7ec092
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Tue Jul 1 07:03:33 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Tue Jul 1 07:03:33 2025 +0800
+
+    Before changing names on form
+
+commit 209f0ee13fd97e6a3c1b63df867641a9bfce0fab
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Tue Jul 1 06:04:43 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Tue Jul 1 06:04:43 2025 +0800
+
+    lastests commit
+
+commit a95c5669613f0a1a1a47c88f119a5093e4f1fcea
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Tue Jul 1 04:36:46 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Tue Jul 1 04:36:46 2025 +0800
+
+    iajbfsgs
+
+commit 3d5ce81423081377eea58dcb6c178905f1419388
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Tue Jul 1 04:26:17 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Tue Jul 1 04:26:17 2025 +0800
+
+    asdf
+
+commit 31647fa4c7d2e5d72911a3415b4553dc16e00723
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Tue Jul 1 00:43:04 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Tue Jul 1 00:43:04 2025 +0800
+
+    broke the register modal, again
+
+commit d04eaf5c3c0748f58f14f873c8532f03e82b347d
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Mon Jun 30 23:27:14 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Mon Jun 30 23:27:14 2025 +0800
+
+    Fixed many thingies
+
+commit 492c6966e0eb7f00fa866265752cba4f530fbce2
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Mon Jun 30 18:32:33 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Mon Jun 30 18:32:33 2025 +0800
+
+    attempted fix of _GameSelection errors
+
+commit edd678d4835b8996f662e0af638e465e8bd8a518
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Mon Jun 30 14:41:06 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Mon Jun 30 14:41:06 2025 +0800
+
+    Cleaned up, moved sql in _GameSelection to MVC structure
+
+commit 717ecdeee1e0fbd4a1519ea3bd049ddceb1157fc
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Mon Jun 30 11:00:59 2025 +0800
+Commit:     Ang005e <Tully2022@gmail.com>
+CommitDate: Mon Jun 30 11:00:59 2025 +0800
+
+    Added ajaxHelpers folder and moved partialLoader
+
+commit 6c0957555def73f8972035d944dc9f8eb3513dea
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Mon Jun 30 10:37:11 2025 +0800
+Commit:     Ang005e <Tully2022@gmail.com>
+CommitDate: Mon Jun 30 10:37:11 2025 +0800
+
+    Game Page functional
+
+commit b0a47d19130df203f0653af560ad859dbc0c4ef1
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Mon Jun 30 09:53:31 2025 +0800
+Commit:     Ang005e <Tully2022@gmail.com>
+CommitDate: Mon Jun 30 09:53:31 2025 +0800
+
+    after folder structure changes
+
+commit adbb8ad40e225e16c1b3183a258fd0003d2be6b1
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Sun Jun 29 23:16:28 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Sun Jun 29 23:16:28 2025 +0800
+
+    kasjfbgd
+
+commit ac655c832b168f798cf26c5829fa1953955dc91a
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Wed Jun 25 23:03:18 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Wed Jun 25 23:03:18 2025 +0800
+
+    aqw
+
+commit 0edc03cf3918f8af8cbecba5665271212d8aa432
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Wed Jun 25 00:35:38 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Wed Jun 25 00:35:38 2025 +0800
+
+    added blah.
+
+commit 92e8ae2d1cc53a3575cc6231b2b339a12d45c8e9
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue May 20 10:15:54 2025 +0800
+Commit:     Ang005e <Tully2022@gmail.com>
+CommitDate: Tue May 20 10:15:54 2025 +0800
+
+    Player login, registration, and game selection completed and passed testing.
+
+commit 3b29ad5dd5aa90068ef5669389717aa00f4a1dce
+Merge: 43afe02 e7670c9
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Thu May 8 11:45:59 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Thu May 8 11:45:59 2025 +0800
+
+    Merge branch 'master' of https://github.com/Ang005e/webWheelOfDeath
+
+commit 43afe0209e81a5666ccbc906fad613c2a53e4985
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Thu May 8 11:45:15 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Thu May 8 11:45:15 2025 +0800
+
+    Completed Login and Game Selection feature
+
+commit e7670c92b0755c15ccc8f745c03718ca3e23be41
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Mon May 5 21:24:10 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Mon May 5 21:24:10 2025 +0800
+
+    Update sync-openai.yml
+
+commit f8b38b359b598767795315670d2d75d2b5debb89
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Mon May 5 21:20:43 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Mon May 5 21:20:43 2025 +0800
+
+    Update sync-openai.yml
+
+commit 4f4c7409403898dc991755ba1745b760b3133194
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Mon May 5 21:19:48 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Mon May 5 21:19:48 2025 +0800
+
+    Update sync-openai.yml
+
+commit c7a5207387e369e5384c5f50b73c6fb529ee6803
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Mon May 5 21:03:11 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Mon May 5 21:03:11 2025 +0800
+
+    Update sync-openai.yml
+
+commit ee491732337e807b0ce9504fae1fd4025ad6b450
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Mon May 5 21:01:27 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Mon May 5 21:01:27 2025 +0800
+
+    Update sync-openai.yml
+
+commit 340c90a5ff678edcc1a23b2c581d8d4c34934d53
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Mon May 5 18:44:09 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Mon May 5 18:44:09 2025 +0800
+
+    Update sync-openai.yml
+
+commit d45d11492d882b00c167ed92965f12adea604b39
+Merge: de16616 2c47f1d
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Mon May 5 09:21:25 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Mon May 5 09:21:25 2025 +0800
+
+    Merge pull request #3 from Ang005e/server-controlled-partials
+    
+    Server controlled partials
+
+commit 2c47f1d8d7b5e22ec5cd4ed2493505e1c45c97e4
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Mon May 5 09:18:52 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Mon May 5 09:18:52 2025 +0800
+
+    Successful changes to Index.cshtml
+
+commit de1661629426688286ccab8e3d9ed54fc8acf158
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Wed Apr 30 19:38:05 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Wed Apr 30 19:38:05 2025 +0800
+
+    Update sync-openai.yml
+
+commit 275fd4bebf872214206b82f8e93decc81ff1823a
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Wed Apr 30 19:21:51 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Wed Apr 30 19:21:51 2025 +0800
+
+    Update sync-openai.yml
+
+commit 87cf4b3e85c10f5fa8c6705957fe6f2447124b3a
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Wed Apr 30 12:51:52 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Wed Apr 30 12:51:52 2025 +0800
+
+    Update sync-openai.yml
+
+commit b3d17fbcf8106d3f073b7a2318ddc4243a0fa39f
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Wed Apr 30 08:46:59 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Wed Apr 30 08:46:59 2025 +0800
+
+    Delete metadata_schema.json
+
+commit b541af371c7cf2b9822b3124a1884ced7f773e62
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Wed Apr 30 01:10:08 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Wed Apr 30 01:10:08 2025 +0800
+
+    Update sync-openai.yml
+
+commit 6d951cd3ab453cddfed5b235df0d739e11c91f44
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Wed Apr 30 00:59:40 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Wed Apr 30 00:59:40 2025 +0800
+
+    Update sync-openai.yml
+
+commit 3f6d290d7777b1b2cc08207e9a48de36b71190b1
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Wed Apr 30 00:42:29 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Wed Apr 30 00:42:29 2025 +0800
+
+    Update sync-openai.yml
+
+commit fdcd16dec067268c78c1b7988892463263691543
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Wed Apr 30 00:28:10 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Wed Apr 30 00:28:10 2025 +0800
+
+    Update sync-openai.yml
+
+commit 9db1e964047f824586c2a82bd8c447051fc21ee4
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Wed Apr 30 00:17:26 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Wed Apr 30 00:17:26 2025 +0800
+
+    Update sync-openai.yml
+
+commit 2b3af7ac2ba6f10a1f24a36e559a4bf1e84788ce
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Wed Apr 30 00:09:35 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Wed Apr 30 00:09:35 2025 +0800
+
+    Update sync-openai.yml
+
+commit ea1e7ccd6392960e1f3b0352d4ec4c43e0becc49
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Wed Apr 30 00:04:30 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Wed Apr 30 00:04:30 2025 +0800
+
+    Update sync-openai.yml
+
+commit be75e782d0032a66da46fda0d88f38570f33e058
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue Apr 29 23:46:40 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Apr 29 23:46:40 2025 +0800
+
+    Update sync-openai.yml
+
+commit 21673cddbd50792530949515a35772cbd4e619d3
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue Apr 29 23:37:35 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Apr 29 23:37:35 2025 +0800
+
+    Update sync-openai.yml
+
+commit 6a92b63c04283d739c60a548150e605f9942e98c
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue Apr 29 22:41:41 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Apr 29 22:41:41 2025 +0800
+
+    Update sync-openai.yml
+
+commit c2f7441fa251fb81703341fa1ec2572cd5a5a3df
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue Apr 29 22:34:22 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Apr 29 22:34:22 2025 +0800
+
+    Create metadata_schema.json
+
+commit 245a80eed092c2e1afaac9f5a1b88d6e466f0ba6
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue Apr 29 22:29:11 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Apr 29 22:29:11 2025 +0800
+
+    Update sync-openai.yml
+    
+    implemented mwhahahahahaha evil AI features hehehehe
+
+commit a564c59dd4c7926d4a1a990179dd3cdb326279de
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue Apr 29 20:26:55 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Apr 29 20:26:55 2025 +0800
+
+    Update sync-openai.yml
+
+commit 1d4a0c64ca8b9c27be629eeec9704d5b98e85061
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue Apr 29 20:22:04 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Apr 29 20:22:04 2025 +0800
+
+    Update sync-openai.yml
+
+commit f6e46b83a43d3b13b1cb3775d1e8611be2471291
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue Apr 29 20:00:26 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Apr 29 20:00:26 2025 +0800
+
+    Update sync-openai.yml
+
+commit 14fa326c0b510b7de2d7695dc61aa472ad7488d3
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue Apr 29 19:56:10 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Apr 29 19:56:10 2025 +0800
+
+    Update sync-openai.yml
+
+commit c7fc7f0c1500872d3bb6b2a0e23010eccd0436db
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue Apr 29 19:45:36 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Apr 29 19:45:36 2025 +0800
+
+    Update sync-openai.yml
+
+commit 671619d323b0fba952da942582d7fab3ad694fe8
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue Apr 29 19:28:44 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Apr 29 19:28:44 2025 +0800
+
+    Update sync-openai.yml
+
+commit e34e79b22661543ab006e2e0fd75370674e36376
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue Apr 29 19:24:05 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Apr 29 19:24:05 2025 +0800
+
+    Update sync-openai.yml
+
+commit 110f49b5507ee1055c7f4743e07e8276ee2e7004
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue Apr 29 19:04:08 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Apr 29 19:04:08 2025 +0800
+
+    Update sync-openai.yml
+
+commit 307561be5d46bf387dc7130e4d4268e06719a4c6
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue Apr 29 16:25:53 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Apr 29 16:25:53 2025 +0800
+
+    Update sync-openai.yml
+
+commit d999ae39c001bb331cebe22c3bb6d28239640c6f
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue Apr 29 16:08:56 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Apr 29 16:08:56 2025 +0800
+
+    Create sync-openai.yml
+    
+    updated - converted to git-based blacklist
+
+commit 1db2a1ba0b5ef5adb41d8a979bf9c9bdd147547c
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Tue Apr 29 11:31:33 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Tue Apr 29 11:31:33 2025 +0800
+
+    Posts and partials functional - about to implement major changes to Index.cshtml Razor structure.
+
+commit 625ea79b9cc39e5ab1ea7cb7e7afe5fa7025b0d1
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Mon Apr 28 18:37:02 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Mon Apr 28 18:37:02 2025 +0800
+
+    Complteted Partial views
+
+commit b9a4df6183efbc0d7a1116887602df86c6b7089d
+Author:     Angus Blake <60034674@tafe.wa.edu.au>
+AuthorDate: Mon Apr 28 15:57:02 2025 +0800
+Commit:     Angus Blake <60034674@tafe.wa.edu.au>
+CommitDate: Mon Apr 28 15:57:02 2025 +0800
+
+    Before major changes to CWheelGame
+
+commit ed35ddaf71098b4ceaffbb70a9afb679e39f788a
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Mon Apr 28 14:07:01 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Mon Apr 28 14:07:01 2025 +0800
+
+    Squshed and merged tests branch
+
+commit 6fb9fba62b72e5dbd4252311ec69eff86ae8d681
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Mon Apr 28 14:05:13 2025 +0800
+Commit:     GitHub <noreply@github.com>
+CommitDate: Mon Apr 28 14:05:13 2025 +0800
+
+    Merge pull request #1 from Ang005e/tests
+    
+    Squashed and merged "tests" branch
+
+commit 8eaf3d07e478766001142f2b179b65c21a2783e2
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Mon Apr 7 13:16:03 2025 +0800
+Commit:     Ang005e <Tully2022@gmail.com>
+CommitDate: Mon Apr 7 13:16:03 2025 +0800
+
+    Added CPlayer class
+
+commit d3e5787c26b8e9b5347772717bb93ff122b27061
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Tue Mar 25 13:19:13 2025 +0800
+Commit:     Ang005e <Tully2022@gmail.com>
+CommitDate: Tue Mar 25 13:19:13 2025 +0800
+
+    Fixed modal popups
+
+commit 9045c4c3a1ef28c98fea03f954c475381bd58bdd
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Mon Mar 17 12:48:59 2025 +0800
+Commit:     Ang005e <Tully2022@gmail.com>
+CommitDate: Mon Mar 17 12:48:59 2025 +0800
+
+    initial commit
+
+commit 99eb0de2b4b5b3b4596c2288acc09c5fcfcad8bd
+Author:     Ang005e <Tully2022@gmail.com>
+AuthorDate: Mon Mar 17 09:22:38 2025 +0800
+Commit:     Ang005e <Tully2022@gmail.com>
+CommitDate: Mon Mar 17 09:22:38 2025 +0800
+
+    initial commit

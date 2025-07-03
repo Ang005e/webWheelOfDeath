@@ -8,7 +8,7 @@ namespace LibWheelOfDeath.ReportClasses
 {
     /// <summary>
     /// Public interface. Allows access to Views (i.e. the *Hall of Fame* report view), through <see cref="LibWheelOfDeath"/>'s 
-    /// static view classes (i.e.<see cref="LibWheelOfDeath.Report_Classes.CHallOfFameReport{TModel}"/>).
+    /// static view classes (i.e.<see cref="Report_Classes.CHallOfFameReport{TModel}"/>).
     /// </summary>
     public interface IHallOfFame
     {

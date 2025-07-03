@@ -15,7 +15,7 @@
                 <label asp-for="FkDifficultyId" class="control-label"></label>
                 <select asp-for="FkDifficultyId" class="form-control"> 
                     <option value="">Select Difficulty</option>
-                    @foreach (var difficulty in (IEnumerable<CWebGameDifficulty>)ViewBag.Difficulties)
+                    @foreach (var difficulty in (IEnumerable<CWebDifficulty>)ViewBag.Difficulties)
                     {
                         <option value="@difficulty.Id">@difficulty.Difficulty</option>
                     }

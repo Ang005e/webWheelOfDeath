@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using webWheelOfDeath.Exceptions;
 using webWheelOfDeath.Models.Infrastructure;
-using webWheelOfDeath.Models;
+using webWheelOfDeath.Models.Depricated;
 
 
 

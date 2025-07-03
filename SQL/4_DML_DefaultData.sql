@@ -20,7 +20,7 @@ go
 insert into tblAccount (FirstName, LastName, Password, IsActiveFlag) values (
 	'admin',
 	'admin',
-	'admin',
+	'adminAdmin11!',
 	1
 );
 

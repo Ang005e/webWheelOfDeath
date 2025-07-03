@@ -1,4 +1,4 @@
-﻿namespace webWheelOfDeath.Models
+﻿namespace webWheelOfDeath.Models.Depricated
 {
     public static class DebugTrace
     {

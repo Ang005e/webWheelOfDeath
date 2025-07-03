@@ -27,7 +27,7 @@ end;
 go
 
 
-create procedure uspGamePopularity
+create procedure [uspGamePopularity]
 	@pStartDate datetime,
 	@pEndDate datetime
 as

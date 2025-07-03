@@ -201,7 +201,6 @@ namespace LibEntity.NetCore.Infrastructure
             _failureBuilder.AddFailure(new CValidationFailure(ruleBroken, displayMessage));
         }
 
-
         private void Add<TProp>(Validation<TProp, TEntity> v)
             where TProp : IComparable
             => _validations.Add(v);

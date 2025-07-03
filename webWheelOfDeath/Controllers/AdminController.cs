@@ -2,6 +2,7 @@
 using LibEntity;
 using LibWheelOfDeath;
 using LibWheelOfDeath.Exceptions;
+using LibWheelOfDeath.ReportClasses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Configuration;
@@ -16,7 +17,7 @@ namespace webWheelOfDeath.Controllers
     public class AdminController : BaseController
     {
 
-        #region GET ACTIONS
+        #region PRIMARY GET ACTIONS
         public IActionResult Index()
         {
             // Accessed from other shared partials (i.e. _LoginAndRegister)
@@ -42,8 +43,7 @@ namespace webWheelOfDeath.Controllers
         #endregion
 
 
-
-        #region ACCOUNT/AUTH ACTIONS
+        #region AUTHENTICATION
 
         [HttpPost]
         public IActionResult Authenticate(CredentialsViewModel vm)
@@ -58,7 +58,7 @@ namespace webWheelOfDeath.Controllers
             //// Attempt authentication.
             //bool loginSuccess = creds.Authenticate();
 
-            CAdminUser admin = new CAdminUser() // we dont need or want to know about the rest, only IWebCredentials
+            CAdminUser admin = new CAdminUser()
             {
                 Username = vm.Username,
                 Password = vm.Password
@@ -68,11 +68,12 @@ namespace webWheelOfDeath.Controllers
 
             try
             {
-                // Attempt authentication.
+                // Attempt auth.
                 loginSuccess = admin.Authenticate();
             }
             catch (AuthenticationFailureException ex) 
             {
+                // AddFeedback, my sweet, sweet creation.
                 AddFeedback($"Login failed: {ex.Reason}", EnumFeedbackType.Error);
                 loginSuccess = false;
             }
@@ -102,6 +103,16 @@ namespace webWheelOfDeath.Controllers
 
         }
 
+        public IActionResult DenyAccess(EnumAdminType denyAtLevel, string attemptedAction)
+        {
+            AddFeedback($"{denyAtLevel.ToString()}s and below do not have permission to {attemptedAction}");
+            return PartialView("_AdminCentre");
+        }
+
+        #endregion
+
+
+        #region ADMIN REGISTRATION
 
         [HttpPost]
         public IActionResult Register(AccountViewModel vm)
@@ -128,38 +139,18 @@ namespace webWheelOfDeath.Controllers
             return PartialView("_LoginPartial", vm);
         }
 
-        public long GetLoggedId()
-        {
-            return long.Parse(HttpContext.Session.GetString("admin-id")??"0");
-        }
-
-        public bool IsSuperAdmin()
-        {
-            long adminId = GetLoggedId();
-            if (adminId <= 0) return false; // not logged in...?
-
-            CAdminUser admin = new(adminId);
-
-            return admin.AdminTypeId == 2; // EnumAdminType.SuperAdmin; 
-        }
-        public IActionResult DenyAccess(EnumAdminType denyAtLevel, string attemptedAction)
-        {
-            AddFeedback($"{denyAtLevel.ToString()}s and below do not have permission to {attemptedAction}");
-            return PartialView("_AdminCentre");
-        }
-
         #endregion
 
 
-        #region GAME MANAGEMENT ACTIONS
+        #region GAME MANAGEMENT
 
         [HttpGet]
         public IActionResult CreateGame()
         {
             if (!IsSuperAdmin()) return DenyAccess(EnumAdminType.Admin, "create new game modes");
 
-            var diffs = CWebGameDifficulty.GetDifficulties();
-            ViewBag.Difficulties = diffs.Count() > 0 ? diffs : new List<CWebGameDifficulty>();
+            var diffs = CWebDifficulty.GetDifficulties();
+            ViewBag.Difficulties = diffs.Count() > 0 ? diffs : new List<CWebDifficulty>();
             return PartialView("_CreateGame", new CWebGame());
         }
 
@@ -232,7 +223,7 @@ namespace webWheelOfDeath.Controllers
         #endregion
 
 
-        #region ADMIN MANAGEMENT ACTIONS
+        #region ADMIN MANAGEMENT
 
         [HttpGet]
         public IActionResult ListAdminAccounts()
@@ -312,11 +303,25 @@ namespace webWheelOfDeath.Controllers
             return PartialView("_ListAdminAccounts", admins);
         }
 
+        [HttpPost]
+        public IActionResult PromoteDemoteAdmin(long id)
+        {
+            if (!IsSuperAdmin())
+                return DenyAccess(EnumAdminType.Admin, "promote/demote admins");
+
+            var admin = new CAdminUser(id);
+            admin.AdminTypeId = admin.AdminTypeId == 1 ? 2 : 1; // just toggle
+            admin.Update();
+
+            AddFeedback($"Admin {(admin.AdminTypeId == 2 ? "promoted" : "demoted")}", EnumFeedbackType.Success);
+            return RedirectToAction("ListAdminAccounts");
+        }
+
 
         #endregion
 
 
-        #region PLAYER MANAGEMENT ACTIONS
+        #region PLAYER MANAGEMENT
 
 
         [HttpGet]
@@ -420,6 +425,69 @@ namespace webWheelOfDeath.Controllers
         #endregion
 
 
+        #region DIFFICULTY MANAGEMENT
+
+        [HttpGet]
+        public IActionResult ManageDifficulties()
+        {
+            var difficulties = CWebDifficulty.GetDifficulties();
+            return PartialView("_ListDifficulties", difficulties);
+        }
+
+        [HttpPost]
+        public IActionResult CreateDifficulty(CWebDifficulty model)
+        {
+            try
+            {
+                model.Create();
+                AddFeedback("Difficulty created!", EnumFeedbackType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddFeedback($"Error: {ex.Message}", EnumFeedbackType.Error);
+            }
+
+            return RedirectToAction("ManageDifficulties");
+        }
+
+        #endregion
+
+
+        #region REPORTS
+
+        // ToDo seperate concerns
+        [HttpGet]
+        public IActionResult GamePopularity()
+        {
+            var filter = new GamePopularityFilter();
+            var results = CGamePopularityReport.GetPopularity(
+                filter.StartDate,
+                filter.EndDate,
+                filter.SortAscending
+            );
+
+            ViewBag.Filter = filter;
+            return PartialView("_GamePopularity", results);
+        }
+
+        // ToDo seperate concerns
+        [HttpPost]
+        public IActionResult GamePopularityReport(GamePopularityFilter filter)
+        {
+            var results = CGamePopularityReport.GetPopularity(
+                filter.StartDate,
+                filter.EndDate,
+                filter.SortAscending
+            );
+
+            ViewBag.Filter = filter;
+            return PartialView("_GamePopularityReport", results);
+        }
+
+
+        #endregion
+
+
         #region Helpers
 
         /// <summary>
@@ -429,6 +497,21 @@ namespace webWheelOfDeath.Controllers
         /// <returns></returns>
         private bool MatchesLoggedAdmin(long id) {
             return (id == long.Parse(HttpContext.Session.GetString("admin-id") ?? "0"));
+        }
+
+        public long GetLoggedId()
+        {
+            return long.Parse(HttpContext.Session.GetString("admin-id") ?? "0");
+        }
+
+        public bool IsSuperAdmin()
+        {
+            long adminId = GetLoggedId();
+            if (adminId <= 0) return false; // not logged in...?
+
+            CAdminUser admin = new(adminId);
+
+            return admin.AdminTypeId == 2; // EnumAdminType.SuperAdmin; 
         }
 
         #endregion

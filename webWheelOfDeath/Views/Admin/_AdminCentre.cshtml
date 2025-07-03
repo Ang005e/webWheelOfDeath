@@ -7,13 +7,16 @@
 	bool lastActionSuccess = (bool?)TempData["LastActionSuccess"] ?? false;
 }
 
-
-<fieldset>
-    
+<label for="domainManagement">Domain Management</label>
+<fieldset id="domainManagement" name="domainManagement">
     <button ajax-action="ManageGameState" id="btnManageGames">Manage Gamemodes</button>
-
     <button ajax-action="ListAdminAccounts">Manage Admins</button>
-
     <button ajax-action="ListPlayerAccount">Manage Players</button>
-
 </fieldset>
+<label for="reports">Reports</label>
+<fieldset id="reports" name="reports">
+    <button ajax-action="GamePopularityReport" ajax-post="false">Game Popularity</button>
+</fieldset>
+    <a href="/Game" target="_blank" class="btn btn-info">Return to the Wheel Of Death</a>
+
+

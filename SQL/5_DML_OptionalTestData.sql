@@ -6,23 +6,23 @@ insert into tblDifficulty (Difficulty) values ('Easy'), ('Medium'), ('Hard');
 
 
 insert into tblAccount (FirstName, LastName, Password, IsActiveFlag) values
-    ('John',   'Super',    'AAaa11!!BBbb', 1);
+    ('John',   'Super',    'AAaa11!!BBbb11', 1);
 declare @pSuperAdminId bigint = SCOPE_IDENTITY()
 
 insert into tblAccount (FirstName, LastName, Password, IsActiveFlag) values
-    ('Sarah',  'Std',      'BBbb22@@CCcc', 1);
+    ('Sarah',  'Std',      'BBbb22@@CCcc11', 1);
 declare @pStandardAdminId bigint = SCOPE_IDENTITY()
 
 
 insert into tblAccount (FirstName, LastName, Password, IsActiveFlag) values
-    ('Peter',  'Player',   'CCcc33##DDdd', 1),
-    ('Lucy',   'Gamer',    'DDdd44$$EEee', 1),
-    ('Alex',   'Nguyen',   'EEee55%%FFff', 1),
-    ('Maria',  'Smith',    'FFff66^^GGgg', 1),
-    ('Carlos', 'Diaz',     'GGgg77&&HHhh', 1),
-    ('Mei',    'Li',       'HHhh88**IIii', 1),
-    ('Sam',    'Walker',   'IIii99((JJjj', 1),
-    ('Nora',   'Brown',    'JJjj00))KKkk', 1);
+    ('Peter',  'Player',   'CCcc33##DDdd11', 1),
+    ('Lucy',   'Gamer',    'DDdd44$$EEee11', 1),
+    ('Alex',   'Nguyen',   'EEee55%%FFff11', 1),
+    ('Maria',  'Smith',    'FFff66^^GGgg11', 1),
+    ('Carlos', 'Diaz',     'GGgg77&&HHhh11', 1),
+    ('Mei',    'Li',       'HHhh88**IIii11', 1),
+    ('Sam',    'Walker',   'IIii99((JJjj11', 1),
+    ('Nora',   'Brown',    'JJjj00))KKkk11', 1);
 
 
 -- Admins

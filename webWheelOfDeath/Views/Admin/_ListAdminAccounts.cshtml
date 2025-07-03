@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<webWheelOfDeath.Models.CAdminUser>
 
 <p>
-    <a ajax-action="CreateAdminAccount">Create New</a>
+    <a ajax-action="CreateAdminAccount">Register New Admin</a>
     <a ajax-action="AdminCentre">Back to Index</a>
 </p>
 <table class="table">
@@ -50,8 +50,9 @@
                 @Html.DisplayFor(modelItem => item.Password)
             </td>
             <td>
-                    <button ajax-action="ToggleAdminActive" ajax-post="true" ajax-id="item.Id">Toggle Active</button>
-                    <button ajax-action="DeleteAdminAccount" ajax-post="true" ajax-id="item.Id">Delete</button>
+                <button ajax-action="PromoteDemoteAdmin" ajax-post="true" ajax-id="item.Id">@(item.AdminTypeId == 1 ? "Promote" : "Demote")</button>
+                <button ajax-action="ToggleAdminActive" ajax-post="true" ajax-id="item.Id">Toggle Active</button>
+                <button ajax-action="DeleteAdminAccount" ajax-post="true" ajax-id="item.Id">Delete</button>
             </td>
         </tr>
 }
