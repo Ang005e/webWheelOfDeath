@@ -275,16 +275,20 @@ namespace LibWheelOfDeath
             return 0L;
         }
 
-        public (string username, long elapsedTime) GetFastestPlayer()
+        public (string username, long elapsedTime) GetFastestPlayerForGame(long gameId)
         {
             string sql = @"
                 select top(1) R.ElapsedTime, P.Username
                 from tblPlayer P
                 inner join tblGameRecord R on P.Id = R.FkPlayerId
+                where R.FkGameId = @pGameId
                 order by R.ElapsedTime asc
             ";
 
-            DataTable table = sql.Fetch<DataTable>();
+            var parameters = new List<SqlParameter>();
+            parameters.AddWithValue("@pGameId", gameId);
+
+            DataTable table = DataServices.Fetch<DataTable>(sql, parameters);
             if (table.Rows.Count == 0)
                 return (string.Empty, 0L);
 

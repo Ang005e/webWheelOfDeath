@@ -351,7 +351,7 @@ export class CWheelGame extends CTimer {
 
         // Check for a win...
         if (status === EnumGameStatus.Won) {
-            // Check for a new record...
+            // Get the game-specific record from sessionStorage (set by server)
             const FASTEST_PLAYER_KEY = 'fastest_player';
             const FASTEST_TIME_KEY = 'fastest_time';
             const fastestPlayerOnRecord = sessionStorage.getItem(FASTEST_PLAYER_KEY);
@@ -359,22 +359,19 @@ export class CWheelGame extends CTimer {
 
             let message;
 
-            if (fastestTimeOnRecord === null || this.elapsedTime < parseInt(fastestTimeOnRecord)) {
-
-                localStorage.setItem(FASTEST_PLAYER_KEY, this.playerUsername);
-                localStorage.setItem(FASTEST_TIME_KEY, this.elapsedTime.toString());
-
-                if (fastestTimeOnRecord === null) {
-                    message = `Your time of ${Util.toSeconds(this.elapsedTime, 1)} seconds is the new record!`;
+            if (!fastestTimeOnRecord || fastestTimeOnRecord === '0' || this.elapsedTime < parseInt(fastestTimeOnRecord)) {
+                // New record for this game mode!
+                if (!fastestTimeOnRecord || fastestTimeOnRecord === '0') {
+                    message = `Your time of ${Util.toSeconds(this.elapsedTime, 1)} seconds is the first recorded time for this game mode!`;
                 } else {
-                    message = `Your time of ${Util.toSeconds(this.elapsedTime, 1)} seconds replaces the previous fastest time of ${Util.toSeconds(fastestTimeOnRecord, 1)} seconds as the new record!`;
+                    message = `Your time of ${Util.toSeconds(this.elapsedTime, 1)} seconds beats the previous best of ${Util.toSeconds(fastestTimeOnRecord, 1)} seconds (held by ${fastestPlayerOnRecord}) for this game mode!`;
                 }
             } else {
-                message = `Try harder next time to beat the all-time record of ${Util.toSeconds(fastestTimeOnRecord, 1)} seconds, held by ${fastestPlayerOnRecord}!`;
+                message = `Try harder next time to beat the best time of ${Util.toSeconds(fastestTimeOnRecord, 1)} seconds for this game mode, held by ${fastestPlayerOnRecord}!`;
             }
 
-           new CWinnerModal('#modal-winner-id', true)
-            .display(Util.toSeconds(this.elapsedTime, 1), this.#gameBalloonCount, this.#missCounter, message);
+            new CWinnerModal('#modal-winner-id', true)
+                .display(Util.toSeconds(this.elapsedTime, 1), this.#gameBalloonCount, this.#missCounter, message);
         }
 
         // Dispatch event with needed data for DB

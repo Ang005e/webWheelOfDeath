@@ -146,10 +146,9 @@ namespace webWheelOfDeath.Models
             }
             return players;
         }
-        public (string, long) FastestPlayerAndTheirTimeBecauseIDontCareAboutSeperationOfConcernsIts3AmInTheMorning()
+        public (string, long) GetFastestPlayerForGame(long gameId)
         {
-            (string, long) gjdfsglrg = new CPlayer().GetFastestPlayer();
-            return gjdfsglrg;
+            return new CPlayer().GetFastestPlayerForGame(gameId);
         }
         #endregion
 
