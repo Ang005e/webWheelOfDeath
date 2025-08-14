@@ -4,24 +4,19 @@
 
 
 ### OVERVIEW
-"""
 This project is a Fullstack SPA split into 4 Visual Studio projects, under one solution (webWheelOfDeath).
 1. LibEntity (aka LibEntity.NetCore) -- class library. Base CRUDS framework.
 2. LibWheelOfDeath -- class library. CRUDS functions that map to specific database entities.
 3. UnitTests -- MSTest unit test project. 
 4. webWheelOfDeath -- ASP .Net Core MVC web application.
 
-"""
-
 ### GENERAL CONVENTIONS
-"""
 Largely, each partial view, class, interface, and controller class is contained to a single file. 
 All partial view files are prefixed with a "_".
 All controllers and corresponding files are named "{Controllername}Controller"
 All interfaces are prefixed with "I" (i.e., ICredentials). Some are paired with a class, in its file.
 All enums are prefixed with "Enum" (i.e. EnumStatus). They'll be located with a class in the most relevant file (under the same namespace).
 Most classes and corresponding files are prefixed with "C" (i.e. CEntity, CAppModals). This is consistent across JavaScript and C# classes.
-"""
 
 ## Frontend
 
